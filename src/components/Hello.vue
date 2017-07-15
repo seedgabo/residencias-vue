@@ -19,10 +19,11 @@
 export default {
   name: 'hello',
   mounted() {
-    setTimeout(() => {
-      this.getData();
-      this.getSliders();
-    }, 100);
+    this.api.ready
+      .then(() => {
+        this.getData();
+        this.getSliders();
+      });
   },
   data() {
     return {

@@ -19,11 +19,12 @@ var api = {
         return axios.post(this.url + uri, data, { headers: { 'Auth-Token': this.user.token } })
     },
     put: function(uri, data) {
-        return axios.post(this.url + uri, data, { headers: { 'Auth-Token': this.user.token } })
+        return axios.put(this.url + uri, data, { headers: { 'Auth-Token': this.user.token } })
     },
     delete: function(uri) {
         return axios.delete(this.url + uri, { headers: { 'Auth-Token': this.user.token } })
     },
+
 
     trans: function(string, inputs = {}) {
         var trans = _.get(this.i18n, string);

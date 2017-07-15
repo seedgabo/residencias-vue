@@ -92,18 +92,13 @@
 <script>
 export default {
   mounted() {
-    var user = window.localStorage.getItem('user');
-    if (user) {
-      this.api.user = JSON.parse(user);
-      var residence = window.localStorage.getItem('residence');
-      this.getLangs();
-      if (residence) {
-        this.api.residence = JSON.parse(residence);
-      }
-    } else {
-      this.navigate('/login');
-    }
-
+    this.api.ready.then((data) => {
+      console.log(data);
+    })
+      .catch((err) => {
+        console.error(err);
+        this.navigate('/login');
+      });
   },
   data() {
     return {
@@ -125,14 +120,7 @@ export default {
       window.localStorage.clear();
       this.$router.push('/login')
     },
-    getLangs() {
-      this.api.get('lang')
-        .then((response) => {
-          console.log(response.data);
-          this.api.i18n = response.data;
-        })
-        .catch(console.error)
-    }
+
   }
 }
 </script>

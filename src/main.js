@@ -9,8 +9,25 @@ import router from './router'
 
 Vue.use(Vuetify)
 Vue.config.productionTip = false
-
-/* eslint-disable no-new */
+var api = require('./services/api.js');
+api.ready = new Promise((resolve, reject) => {
+        var user = window.localStorage.getItem('user');
+        if (user) {
+            api.user = JSON.parse(user);
+            var residence = window.localStorage.getItem('residence');
+            if (residence) {
+                api.residence = JSON.parse(residence);
+            }
+            var i18n = window.localStorage.getItem('i18n');
+            if (i18n) {
+                api.i18n = JSON.parse(i18n);
+            }
+            return resolve(api.user);
+        } else {
+            return reject();
+        }
+    })
+    /* eslint-disable no-new */
 new Vue({
     el: '#app',
     router,

@@ -82,6 +82,7 @@ export default {
         .then((response) => {
           console.log(response.data);
           this.api.i18n = response.data;
+          window.localStorage.setItem('i18n', JSON.stringify(response.data));
         })
         .catch(console.error)
     }
