@@ -209,6 +209,7 @@ export default {
         .then((response) => {
           console.log(response.data)
           this.snackbar_success = true;
+          window.localStorage.setItem('user', JSON.stringify(this.api.user));
         })
         .catch(console.error);
     }

@@ -21,7 +21,6 @@ export default {
   mounted() {
     this.api.ready
       .then(() => {
-        this.getData();
         this.getSliders();
       });
   },
@@ -32,14 +31,6 @@ export default {
     }
   },
   methods: {
-    getData() {
-      this.api.get('getData')
-        .then((response) => {
-          console.log(response.data)
-          this.api.residence = response.data.residence;
-        })
-        .catch(console.error)
-    },
     getSliders() {
       this.api.get('sliders?with[]=image')
         .then((response) => {

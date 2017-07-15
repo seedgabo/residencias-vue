@@ -2,15 +2,22 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 window._ = require('lodash');
 window.trans = (string) => _.get(window.i18n, string);
+window.jQuery = window.$ = require('jquery')
+
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import App from './App'
 import router from './router'
 
 Vue.use(Vuetify)
+import 'fullcalendar'
+import '../node_modules/fullcalendar/dist/locale-all.js'
+Vue.use(require('vue-full-calendar'))
 Vue.config.productionTip = false
+
 var api = require('./services/api.js');
-api.ready = new Promise((resolve, reject) => {
+api.ready = new Promise(
+    (resolve, reject) => {
         var user = window.localStorage.getItem('user');
         if (user) {
             api.user = JSON.parse(user);
@@ -26,8 +33,11 @@ api.ready = new Promise((resolve, reject) => {
         } else {
             return reject();
         }
-    })
-    /* eslint-disable no-new */
+    }
+)
+
+/* eslint-disable no-new */
+
 new Vue({
     el: '#app',
     router,
