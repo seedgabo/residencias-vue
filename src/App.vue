@@ -1,6 +1,6 @@
 <template>
   <v-app id="example-2" standalone>
-    <v-navigation-drawer temporary v-model="drawer" light overflow absolute>
+    <v-navigation-drawer temporary v-model="drawer" overflow>
       <v-list class="pa-0" v-if="api.user.id">
         <v-list-tile avatar tag="div" class="primary">
           <v-list-tile-avatar>
@@ -33,7 +33,7 @@
 
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar prominent fixed class="blue accent-4" v-if="api.user.id" dark>
+    <v-toolbar prominent fixed class="blue accent-5" v-if="api.user.id" dark>
       <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
       <div>
         <v-toolbar-title>
@@ -90,7 +90,10 @@
 </template>
 
 <script>
-import Echo from "laravel-echo"
+import Echo from 'laravel-echo'
+window.Pusher = require('pusher-js');
+window.io = require('socket.io-client')
+
 export default {
   mounted() {
     this.api.ready.then((data) => {
@@ -127,7 +130,6 @@ export default {
         console.warn('already started Echo');
         return;
       }
-      console.log("echo to:", this.user.hostEcho);
       this.api.Echo = new Echo({
         key: '807bbfb3ca20f7bb886e',
         authEndpoint: this.api.url + 'broadcasting/auth',
@@ -306,18 +308,18 @@ export default {
 
         })
 
-      this.Echo.private('App.Residence.' + this.api.user.residence_id)
+      this.api.Echo.private('App.Residence.' + this.api.user.residence_id)
         .listen('VisitConfirm', (data) => {
           console.log("VisitConfirm: ", data);
           this.newVisit(data.visit, data.visitor);
         })
 
-      this.Echo.private('App.User.' + this.api.user.id)
+      this.api.Echo.private('App.User.' + this.api.user.id)
         .notification((notification) => {
           console.log(notification);
         });
 
-      this.Echo.join('App.Mobile')
+      this.api.Echo.join('App.Mobile')
         .here((data) => {
           console.log("here:", data);
         })
@@ -327,6 +329,13 @@ export default {
         .leaving((data) => {
           console.log("leaving", data);
         })
+    },
+    stopEcho() {
+      this.api.Echo.leave('Application');
+      this.api.Echo.leave('App.User.' + this.api.user.id);
+      this.api.Echo.leave('App.Residence.' + this.api.user.residence_id);
+      this.api.Echo.leave('App.Mobile');
+      this.api.Echo = undefined;
     },
     navigate(uri) {
       this.$router.push(uri)

@@ -3,16 +3,21 @@
 window._ = require('lodash');
 window.trans = (string) => _.get(window.i18n, string);
 window.jQuery = window.$ = require('jquery')
-
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import App from './App'
 import router from './router'
+import Vue2Filters from 'vue2-filters'
+
+require('vue2-animate/dist/vue2-animate.min.css')
 
 Vue.use(Vuetify)
+Vue.use(Vue2Filters)
+
 import 'fullcalendar'
 import '../node_modules/fullcalendar/dist/locale-all.js'
 Vue.use(require('vue-full-calendar'))
+
 Vue.config.productionTip = false
 
 var api = require('./services/api.js');
