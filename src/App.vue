@@ -36,16 +36,16 @@
     <v-toolbar prominent fixed class="blue accent-5" v-if="api.user.id" dark>
       <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
       <!-- <v-btn icon v-tooltip:bottom="{ html: api.trans('literals.events') }">
-                                                                              <v-icon>event</v-icon>
-                                                                            </v-btn>
+                                                                                          <v-icon>event</v-icon>
+                                                                                        </v-btn>
 
-                                                                            <v-btn icon v-tooltip:bottom="{ html: api.trans('literals.dynamic_documents') }">
-                                                                              <v-icon>insert_drive_file</v-icon>
-                                                                            </v-btn>
+                                                                                        <v-btn icon v-tooltip:bottom="{ html: api.trans('literals.dynamic_documents') }">
+                                                                                          <v-icon>insert_drive_file</v-icon>
+                                                                                        </v-btn>
 
-                                                                            <v-btn icon v-tooltip:bottom="{ html: api.trans('literals.invoices') }">
-                                                                              <v-icon>account_balance_wallet</v-icon>
-                                                                            </v-btn> -->
+                                                                                        <v-btn icon v-tooltip:bottom="{ html: api.trans('literals.invoices') }">
+                                                                                          <v-icon>account_balance_wallet</v-icon>
+                                                                                        </v-btn> -->
 
       <v-spacer>
         <div class="text-xs-center">
@@ -288,13 +288,21 @@ export default {
         */
 
         .listen('EventCreated', (data) => {
-          if (!(data.event.privacity == "public" || data.event.creator.residece_id == this.api.user.residence_id)) return;
+          if (!(data.event.privacity == "public" || data.residence.id == this.api.user.residence_id)) return;
           console.log("created event:", data);
           this.api.events[this.api.events.length] = data.event
+
+          if (data.event.privacity == 'private') {
+            data.event.borderColor = "red";
+          } else {
+            data.event.borderColor = "lime";
+          }
+          data.event.className = data.event.type;
+          this.$router.app.$emit('eventCreated', data.event)
         })
         .listen('EventUpdated', (data) => {
           console.log("updated event:", data);
-          if (!(data.event.privacity == "public" || data.event.creator.residece_id == this.api.user.residence_id)) return;
+          if (!(data.event.privacity == "public" || data.residence.id == this.api.user.residence_id)) return;
           var event_index = this.api.events.findIndex((ev) => {
             return ev.id === data.event.id;
           });
@@ -302,6 +310,14 @@ export default {
             this.api.events[event_index] = data.event;
           else
             this.api.events[this.api.events.length] = data.event
+
+          if (data.event.privacity == 'private') {
+            data.event.borderColor = "red";
+          } else {
+            data.event.borderColor = "lime";
+          }
+          data.event.className = data.event.type;
+
           this.$router.app.$emit('eventChanged', data.event)
         })
         .listen('EventDeleted', (data) => {

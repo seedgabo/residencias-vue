@@ -43,21 +43,20 @@
 
                 <v-menu :close-on-content-click="false" v-model="menu_start_time_picker" transition="scale-transition" full-width :nudge-left="40" max-width="290px">
                   <v-text-field slot="activator" :label="api.trans( 'literals.start_date')" v-model="event.start_time" prepend-icon="access_time" readonly></v-text-field>
-                  <v-time-picker v-model="event.start_time" scrollable></v-time-picker>
+                  <v-time-picker v-model="event.start_time" autosave></v-time-picker>
                 </v-menu>
               </v-flex>
 
               <v-flex xs6 sm6>
                 <v-menu :close-on-content-click="true" v-model="menu_end_date_picker" transition="scale-transition" full-width :nudge-left="40" max-width="290px">
-                  <v-text-field slot="activator" :label="api.trans('literals.end_date')" v-model="event.end_date" prepend-icon="event" readonly></v-text-field>
+                  <v-text-field slot="activator" :label="api.trans( 'literals.end_date')" v-model="event.end_date" prepend-icon="event" readonly></v-text-field>
                   <v-date-picker v-model="event.end_date" scrollable></v-date-picker>
                 </v-menu>
 
                 <v-menu :close-on-content-click="false" v-model="menu_end_time_picker" transition="scale-transition" full-width :nudge-left="40" max-width="290px">
                   <v-text-field slot="activator" :label="api.trans( 'literals.end_date')" v-model="event.end_time" prepend-icon="access_time" readonly></v-text-field>
-                  <v-time-picker v-model="event.end_time" scrollable></v-time-picker>
+                  <v-time-picker v-model="event.end_time" autosave></v-time-picker>
                 </v-menu>
-
               </v-flex>
 
               <v-flex xs12 sm4>
@@ -87,6 +86,56 @@
       </v-card>
     </v-dialog>
     <!--//* END EDITOR  -->
+
+    <!--//* Visor  -->
+    <v-dialog v-model="visor" width="600px" transition="dialog-bottom-transition">
+      <v-card>
+        <v-btn icon absolute right @click="visor=false">
+          <v-icon>close</v-icon>
+        </v-btn>
+        <v-card-text>
+          <v-container fluid>
+            <v-layout wrap>
+              <v-flex xs12 sm12 class="text-xs-center">
+                <h3 class="headline">{{event.title}}</h3>
+              </v-flex>
+              <v-flex xs12 sm6 v-if="event.start">
+                <b>{{api.trans('__.date start')}}</b>: {{event.start.format('dddd, MMMM Do YYYY, h:mm:ss a')}}
+              </v-flex>
+
+              <v-flex xs12 sm6>
+                <b>{{api.trans('__.date end')}}</b>:
+                <span v-if="event.end">
+                  {{event.end.format('dddd, MMMM Do YYYY, h:mm:ss a')}}
+                </span>
+                <span v-else>
+                  <span>{{api.trans('literals.all_day')}}</span>
+                </span>
+              </v-flex>
+              <v-flex xs12 sm7>
+                <b>{{api.trans('literals.zones')}}:</b>
+                <span v-for="zone in event.zones" :key="zone.id"> {{ zone.name}},</span>
+              </v-flex>
+              <v-flex xs12 sm5 v-if="event.creator" style="vertical-align: middle; align-items: top; display: inline-flex;">
+                <img :src="event.creator.image_url" alt="" class="avatar small">
+                <span style="margin-bottom:30px">
+                  {{event.creator.name}}
+                </span>
+              </v-flex>
+              <v-flex xs12 sm3 offset-sm9 :class="(event.privacity=='public'?'green':'red')+'--text'">
+                <b>
+                  {{api.trans('__.'+ event.privacity)}}
+                </b>
+              </v-flex>
+
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <!--//* END Visor  -->
+
   </v-container>
 </template>
 
@@ -115,6 +164,7 @@ export default {
   data() {
     return {
       dialog: false,
+      visor: false,
       api: api,
       event: {},
       events: [],
@@ -156,30 +206,36 @@ export default {
         end: event.end,
         start_date: event.start.format('YYYY-MM-DD'),
         start_time: event.start.format('HH:mma'),
+        end_time: event.start.format("HH:mma"),
         privacity: event.privacity,
         visibility: event.visibility,
         color: event.color,
         type: event.type,
-        zones: window.__.pluck(event.zones, 'id'),
+        zones: event.residence_id == this.api.user.residence_id ? window.__.pluck(event.zones, 'id') : event.zones,
         allDay: event.allDay,
-        user: event.user,
-        user_id: event.user_id
+        residence_id: event.residence_id,
+        residence: event.residence,
+        creator: event.creator,
+        creator_id: event.creator_id
       }
       if (event.end) {
         this.event.end_date = event.end.format('YYYY-MM-DD')
         this.event.end_time = event.end.format('HH:mma')
       }
       else {
-        this.event.end_date = event.start.add(1, 'day').format('YYYY-MM-DD')
-        this.event.end_time = event.start.add(1, 'day').format('HH:mma')
+        this.event.end_date = event.start.clone().add(1, 'day').format('YYYY-MM-DD')
+        this.event.end_time = event.start.clone().add(1, 'day').format('HH:mma')
       }
       console.log(this.event)
       setTimeout(() => {
-        this.dialog = true
-      }, 10)
+        if (this.event.residence_id == this.api.user.residence_id)
+          this.dialog = true
+        else
+          this.visor = true
+      }, 30)
     },
     getEvents: function () {
-      this.api.get("events?limit=500&order[start]=desc&with[]=user&with[]=zones&afterEach[toCalendar]=null")
+      this.api.get("events?limit=500&order[start]=desc&with[]=creator&with[]=residence&with[]=zones&afterEach[toCalendar]=null")
         .then((response) => {
           console.log(response.data)
           this.api.events = response.data
@@ -197,14 +253,19 @@ export default {
     saveEvent: function () {
       this.event.start = moment.utc(this.event.start_date + " " + this.event.start_time, "YYYY-MM-DD HH:mma")
       this.event.end = moment.utc(this.event.end_date + " " + this.event.end_time, "YYYY-MM-DD HH:mma")
-      delete this.event._tile
-      delete this.event.start_date
-      delete this.event.start_time
-      delete this.event.end_date
-      delete this.event.end_time
-      delete this.event.user
+      this.event.creator_id = this.api.user.id
+      this.event.residence_id = this.api.user.residence_id
+      var event = JSON.parse(JSON.stringify(this.event))
+      delete event._tile
+      delete event.creator
+      delete event.residence
+      delete event.start_date
+      delete event.start_time
+      delete event.end_date
+      delete event.end_time
+
       console.log(this.event)
-      this.api.put('events/' + this.event.id, this.event)
+      this.api.put('events/' + event.id, event)
         .then((response) => {
           this.api.events.filter((ev) => {
             ev.id === response.id
