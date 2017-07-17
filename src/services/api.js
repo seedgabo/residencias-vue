@@ -5,7 +5,7 @@ var api = {
     user: {},
     residence: {},
     i18n: {},
-
+    events: [],
     setUser: function(data) {
         api.user = data.user;
         api.residence = data.residence
@@ -24,7 +24,6 @@ var api = {
     delete: function(uri) {
         return axios.delete(this.url + uri, { headers: { 'Auth-Token': this.user.token } })
     },
-
 
     trans: function(string, inputs = {}) {
         var trans = _.get(this.i18n, string);

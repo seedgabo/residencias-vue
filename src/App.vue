@@ -35,13 +35,27 @@
     </v-navigation-drawer>
     <v-toolbar prominent fixed class="blue accent-5" v-if="api.user.id" dark>
       <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <div>
-        <v-toolbar-title>
-          <img src="./assets/logo.png" class="hidden-md-and-up" alt="" style="height:55px; margin-top:5px">
-          <img src="./assets/logo-completo.png" class="hidden-sm-and-down" alt="" style="height:55px; margin-top:5px">
-        </v-toolbar-title>
-      </div>
-      <v-spacer></v-spacer>
+      <!-- <v-btn icon v-tooltip:bottom="{ html: api.trans('literals.events') }">
+                                                                              <v-icon>event</v-icon>
+                                                                            </v-btn>
+
+                                                                            <v-btn icon v-tooltip:bottom="{ html: api.trans('literals.dynamic_documents') }">
+                                                                              <v-icon>insert_drive_file</v-icon>
+                                                                            </v-btn>
+
+                                                                            <v-btn icon v-tooltip:bottom="{ html: api.trans('literals.invoices') }">
+                                                                              <v-icon>account_balance_wallet</v-icon>
+                                                                            </v-btn> -->
+
+      <v-spacer>
+        <div class="text-xs-center">
+          <v-toolbar-title>
+            <img src="./assets/logo.png" class="hidden-md-and-up logo" @click="navigate('/')">
+            <img src="./assets/logo-completo.png" class="hidden-sm-and-down logo" @click="navigate('/')">
+          </v-toolbar-title>
+        </div>
+      </v-spacer>
+
       <v-toolbar-items>
         <v-menu offset-y>
           <v-btn flat slot="activator" style="height:100%; padding:8px 0px;">
@@ -112,6 +126,7 @@ export default {
         { icon: 'home', title: 'home', url: '/' },
         { icon: 'person', title: 'profile', url: 'profile' },
         { icon: 'event', title: 'events', 'url': 'events' },
+        { icon: 'insert_drive_file', title: 'documents', 'url': 'documents' },
       ],
       api: require('./services/api.js')
     }
@@ -273,39 +288,30 @@ export default {
         */
 
         .listen('EventCreated', (data) => {
-          if (!(data.event.privacity == "public" || data.event.creator.residece_id == this.user.residence_id)) return;
+          if (!(data.event.privacity == "public" || data.event.creator.residece_id == this.api.user.residence_id)) return;
           console.log("created event:", data);
-          this.zone.run(() => {
-            this._events[this._events.length] = data.event
-          })
-          this.events.publish("events:changed", {});
+          this.api.events[this.api.events.length] = data.event
         })
         .listen('EventUpdated', (data) => {
           console.log("updated event:", data);
-          if (!(data.event.privacity == "public" || data.event.creator.residece_id == this.user.residence_id)) return;
-          var event_index = this._events.findIndex((ev) => {
+          if (!(data.event.privacity == "public" || data.event.creator.residece_id == this.api.user.residence_id)) return;
+          var event_index = this.api.events.findIndex((ev) => {
             return ev.id === data.event.id;
           });
-          this.zone.run(() => {
-            if (event_index > -1)
-              this._events[event_index] = data.event;
-          });
-          this.events.publish("events:changed", {});
-
+          if (event_index > -1)
+            this.api.events[event_index] = data.event;
+          else
+            this.api.events[this.api.events.length] = data.event
+          this.$router.app.$emit('eventChanged', data.event)
         })
         .listen('EventDeleted', (data) => {
           console.log("deleted event:", data);
-
           var event = this.visits.findIndex((visit) => {
             return event.id === data.event.id;
           });
-          this.zone.run(() => {
-            if (event >= 0) {
-              this.visits.splice(event, 1);
-            }
-          })
-          this.events.publish("events:changed", {});
-
+          if (event >= 0) {
+            this.visits.splice(event, 1);
+          }
         })
 
       this.api.Echo.private('App.Residence.' + this.api.user.residence_id)
@@ -363,5 +369,11 @@ export default {
         height 70px
   .text-capitalize
     text-transform:capitalize
-
+  .logo
+    height 55px
+    margin-top 5px
+    cursor pointer
+    transition all .4s
+    &:hover
+      height 70px
 </style>

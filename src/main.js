@@ -41,6 +41,12 @@ api.ready = new Promise(
     }
 )
 
+router.beforeEach((to, from, next) => {
+    document.title = (to.name) + " | Residencias Online"
+    next()
+})
+
+
 /* eslint-disable no-new */
 
 new Vue({
