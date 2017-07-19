@@ -36,16 +36,16 @@
     <v-toolbar prominent fixed class="blue accent-5" v-if="api.user.id" dark>
       <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
       <!-- <v-btn icon v-tooltip:bottom="{ html: api.trans('literals.events') }">
-                                                                                          <v-icon>event</v-icon>
-                                                                                        </v-btn>
+                                                                                              <v-icon>event</v-icon>
+                                                                                            </v-btn>
 
-                                                                                        <v-btn icon v-tooltip:bottom="{ html: api.trans('literals.dynamic_documents') }">
-                                                                                          <v-icon>insert_drive_file</v-icon>
-                                                                                        </v-btn>
+                                                                                            <v-btn icon v-tooltip:bottom="{ html: api.trans('literals.dynamic_documents') }">
+                                                                                              <v-icon>insert_drive_file</v-icon>
+                                                                                            </v-btn>
 
-                                                                                        <v-btn icon v-tooltip:bottom="{ html: api.trans('literals.invoices') }">
-                                                                                          <v-icon>account_balance_wallet</v-icon>
-                                                                                        </v-btn> -->
+                                                                                            <v-btn icon v-tooltip:bottom="{ html: api.trans('literals.invoices') }">
+                                                                                              <v-icon>account_balance_wallet</v-icon>
+                                                                                            </v-btn> -->
 
       <v-spacer>
         <div class="text-xs-center">
@@ -124,6 +124,7 @@ export default {
       drawer: false,
       pages: [
         { icon: 'home', title: 'home', url: '/' },
+        { icon: 'account_balance_wallet', title: 'invoices', 'url': 'invoices' },
         { icon: 'person', title: 'profile', url: 'profile' },
         { icon: 'event', title: 'events', 'url': 'events' },
         { icon: 'insert_drive_file', title: 'documents', 'url': 'documents' },

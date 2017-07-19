@@ -72,6 +72,10 @@
               </v-flex>
 
               <v-flex xs12 sm6 offset-sm3>
+                <v-text-field v-model="event.color" type="color" :label="api.trans('literals.color') " prepend-icon="brush"></v-text-field>
+              </v-flex>
+
+              <v-flex xs12 sm6>
                 <v-text-field multi-line v-model="event.description" :label="api.trans( 'literals.description') " prepend-icon="list"></v-text-field>
               </v-flex>
 

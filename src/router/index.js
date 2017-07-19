@@ -4,6 +4,7 @@ import Hello from '@/components/Hello'
 import Profile from '@/components/Profile'
 import Events from '@/components/Events'
 import Documents from '@/components/Documents'
+import Invoices from '@/components/Invoices'
 import Login from '@/components/Login'
 import Example from '@/components/Example'
 
@@ -26,6 +27,11 @@ export default new Router({
         name: 'Documents',
         component: Documents
     }, {
+        path: '/invoices',
+        name: 'Invoices',
+        component: Invoices
+    }, {
+
         path: '/login',
         name: 'Login',
         component: Login

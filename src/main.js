@@ -13,6 +13,12 @@ require('vue2-animate/dist/vue2-animate.min.css')
 
 Vue.use(Vuetify)
 Vue.use(Vue2Filters)
+const moment = require('moment')
+require('moment/locale/es')
+moment.locale('es')
+Vue.use(require('vue-moment'), {
+    moment
+})
 
 import 'fullcalendar'
 import '../node_modules/fullcalendar/dist/locale-all.js'
