@@ -26,28 +26,28 @@
           <v-card-title>
             <v-layout row wrap>
               <v-flex xs12 style="width:100%">
-                <v-text-field prepend-icon="account_circle" type="text" v-model="api.user.name" label="Name" :rules="[rules.required]"></v-text-field>
+                <v-text-field prepend-icon="account_circle" type="text" v-model="api.user.name" :label="api.trans('literals.name')" :rules="[rules.required]"></v-text-field>
               </v-flex>
               <v-flex xs12 style="width:100%">
-                <v-text-field prepend-icon="email" type="email" v-model="api.user.email" label="Email" :rules="[rules.required,rules.email]"></v-text-field>
+                <v-text-field prepend-icon="email" type="email" v-model="api.user.email" :label="api.trans('literals.email')" :rules="[rules.required,rules.email]"></v-text-field>
               </v-flex>
               <v-flex xs12 style="width:100%">
-                <v-text-field prepend-icon="card_membership" type="number" v-model="api.user.document" label="Document" :rules="[rules.document]" min="1000" max="1000000000"></v-text-field>
+                <v-text-field prepend-icon="card_membership" type="number" v-model="api.user.document" :label="api.trans('literals.document')" :rules="[rules.document]" min="1000" max="1000000000"></v-text-field>
               </v-flex>
               <v-flex xs12 style="width:100%">
-                <v-text-field prepend-icon="phone" type="number" v-model="api.user.phone_number" label="Phone"></v-text-field>
+                <v-text-field prepend-icon="phone" type="number" v-model="api.user.phone_number" :label="api.trans('literals.phone_number')"></v-text-field>
               </v-flex>
               <v-flex xs12 style="width:100%">
-                <v-select prepend-icon="wc" v-model="api.user.sex" v-bind:items="genders" label="Sex"></v-select>
+                <v-select prepend-icon="wc" v-model="api.user.sex" v-bind:items="genders" :label="api.trans('literals.sex')"></v-select>
               </v-flex>
               <v-flex xs12 style="width:100%">
                 <v-menu lazy :close-on-content-click="true" transition="scale-transition" offset-y full-width :nudge-left="40" max-width="290px">
-                  <v-text-field slot="activator" label="Picker in menu" v-model="api.user.birthday" prepend-icon="event" readonly></v-text-field>
+                  <v-text-field slot="activator" :label="api.trans('literals.birthday')" v-model="api.user.birthday" prepend-icon="event" readonly></v-text-field>
                   <v-date-picker v-model="api.user.birthday" scrollable actions>
                     <template scope="{ save, cancel }">
                       <v-card-actions>
-                        <v-btn flat primary @click.native="cancel()">Cancel</v-btn>
-                        <v-btn flat primary @click.native="save()">Save</v-btn>
+                        <v-btn flat primary @click.native="cancel()">{{api.trans('crud.cancel')}}</v-btn>
+                        <v-btn flat primary @click.native="save()">{{api.trans('crud.save')}}</v-btn>
                       </v-card-actions>
                     </template>
                   </v-date-picker>
@@ -55,7 +55,7 @@
               </v-flex>
               <v-flex xs12 class="text-xs-right">
                 <v-btn flat primary @click.native="updateUser()">
-                  Save &nbsp;
+                  {{api.trans('crud.save')}} &nbsp;
                   <v-icon primary>save</v-icon>
                 </v-btn>
               </v-flex>
@@ -93,7 +93,9 @@
               <br>
               <v-layout>
                 <v-flex class="text-xs-center">
-                  <div id="gauge"></div>
+                  <v-progress-circular v-bind:size="100" v-bind:width="15" v-bind:rotate="360" v-bind:value="100- api.residence.debt/api.residence.total*100" class="teal--text">
+                    {{ api.residence.debt }}
+                  </v-progress-circular>
                 </v-flex>
               </v-layout>
 
@@ -199,13 +201,13 @@
             <v-toolbar-title slot="extension" class="white--text">
               <v-text-field v-model="query_users" prepend-icon="search" dark class="white--text always-blank" label="Search"></v-text-field>
             </v-toolbar-title>
-            <v-btn fab small class="cyan accent-2" bottom left absolute>
+            <v-btn @click="addUser()" fab small class="cyan accent-2" bottom left absolute>
               <v-icon>add</v-icon>
             </v-btn>
           </v-toolbar>
           <v-card-text>
             <v-list>
-              <v-list-tile avatar v-for="user in filterBy(api.residence.users, query_users)" :key="user.id">
+              <v-list-tile avatar v-for="(user,index) in filterBy(api.residence.users, query_users)" :key="user.id">
                 <v-list-tile-avatar>
                   <img :src="user.image_url" alt="">
                 </v-list-tile-avatar>
@@ -213,12 +215,43 @@
                   <v-list-tile-title>{{user.name}}</v-list-tile-title>
                   <small>{{user.email}}</small>
                 </v-list-tile-content>
+                <v-list-tile-action v-if="api.residence.owner_id !== user.id && user.id !== api.user.id">
+                  <v-btn icon @click="deleteUser(user,index)">
+                    <v-icon>delete</v-icon>
+                  </v-btn>
+                </v-list-tile-action>
               </v-list-tile>
             </v-list>
           </v-card-text>
         </v-card>
       </v-flex>
       <!--//* END CARD USERS  -->
+
+      <!--//* NEW USER DIALOG  -->
+      <v-dialog v-model="new_user" persistent>
+        <v-card>
+          <v-card-title>
+            <span class="headline">{{api.trans('crud.add')}} {{api.trans('literals.user')}}</span>
+          </v-card-title>
+          <v-card-text>
+            <v-text-field v-model="user.name" :label="api.trans('literals.name')" required></v-text-field>
+
+            <v-text-field v-model="user.email" :label="api.trans('literals.email')" type="email" required></v-text-field>
+
+            <v-text-field v-model="user.document" :label="api.trans('literals.document')" type="text" required></v-text-field>
+
+            <v-text-field v-model="user.password" :label="api.trans('literals.password')" type="password" required></v-text-field>
+
+            <v-select prepend-icon="wc" v-model="user.sex" v-bind:items="genders" :label="api.trans('literals.sex')"></v-select>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn class="blue--text darken-1" flat @click.native="new_user = false">{{api.trans('crud.close')}}</v-btn>
+            <v-btn :disabled="!canAdd()" class="blue--text darken-1" flat @click.native="createUser()">{{api.trans('crud.add')}}</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+      <!--//* END NEW USER DIALOG  -->
 
       <v-snackbar :timeout="6000" success top right v-model="snackbar_success">
         {{api.trans('literals.user')}} {{api.trans('crud.updated')}}
@@ -239,17 +272,17 @@
 </template>
 
 <script>
+var api = require('../services/api.js');
 export default {
   name: 'Profile',
   mounted() {
     this.api.ready
       .then((dat) => {
-        this.drawGage()
       })
   },
   data() {
     return {
-      api: require('../services/api.js'),
+      api: api,
       genders: [
         { text: 'Male', value: 'male' },
         { text: 'Female', value: 'female' },
@@ -268,23 +301,17 @@ export default {
       editable: false,
       snackbar_success: false,
       snackbar_success_residence: false,
+      new_user: false,
+      user: {
+        name: '',
+        email: '',
+        password: '',
+        document: '',
+        sex: 'male',
+      }
     }
   },
   methods: {
-    drawGage: function () {
-
-      var g = new JustGage({
-        id: "gauge",
-        value: this.api.residence.debt,
-        min: 0,
-        donut: true,
-        symbol: '$',
-        counter: true,
-        percents: true,
-        max: this.api.residence.total,
-        title: "total debt"
-      });
-    },
     updateUser: function () {
       this.api.put('users/' + this.api.user.id,
         {
@@ -317,11 +344,42 @@ export default {
           this.api.residence.owner = owner;
           window.localStorage.setItem('residence', JSON.stringify(this.api.residence));
           this.editable = false;
-          setTimeout(() => { this.drawGage() }, 500)
         })
         .catch(console.error);
     },
-  }
+    addUser: function () {
+      this.new_user = true
+    },
+    createUser: function () {
+      this.api.post('users/create', this.user)
+        .then((response) => {
+          console.log(response)
+          this.api.residence.users.push(response.data)
+          this.new_user = false
+          this.api.user = { name: '', document: '', email: '', password: '', sex: 'male' }
+          window.localStorage.setItem('residence', JSON.stringify(this.api.residence));
+        })
+        .catch(console.error)
+    },
+    deleteUser: function (user, index) {
+      if (!confirm(api.trans('__.are you sure?'))) return
+      this.api.delete('users/' + user.id)
+        .then((response) => {
+          console.log(response.data)
+          this.api.residence.users.splice(index, 1);
+          window.localStorage.setItem('residence', JSON.stringify(this.api.residence));
+        })
+        .catch(console.error)
+    },
+    canAdd: function () {
+      var pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return this.user.name.length > 3 &&
+        this.user.document.length > 3 &&
+        this.user.email.length > 3 &&
+        pattern.test(this.user.email) &&
+        this.user.password.length > 6
+    }
+  },
 }
 </script>
 

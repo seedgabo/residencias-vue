@@ -9,6 +9,40 @@
           </v-card-text>
         </v-card>
       </v-flex>
+      <v-flex class="hidden-sm-and-down" md3>
+        <v-card>
+          <v-card-title>
+            <h3 class="headline primary--text">
+              {{api.trans('__.next events')}}
+            </h3>
+          </v-card-title>
+          <v-card-text>
+            <v-list two-line>
+              <v-list-tile v-for="event in nextEvents" v-bind:key="event.id">
+                <v-list-tile-content>
+                  <v-list-tile-title>
+                    {{event.title}}
+                  </v-list-tile-title>
+                  <v-list-tile-sub-title>
+                    {{event.start | moment('calendar') }}
+                  </v-list-tile-sub-title>
+
+                  <v-list-tile-sub-title>
+                    <small>
+                      {{ event.creator.name }}
+                    </small>
+                  </v-list-tile-sub-title>
+                </v-list-tile-content>
+                <v-list-tile-action>
+                  <v-list-tile-action-text>
+                    {{durarion(event.start,event.end)}}
+                  </v-list-tile-action-text>
+                </v-list-tile-action>
+              </v-list-tile>
+            </v-list>
+          </v-card-text>
+        </v-card>
+      </v-flex>
     </v-layout>
     <!--//* end Calendar -->
 
@@ -390,19 +424,33 @@ export default {
           this.$refs.calendar.$emit('reload-events')
       }, 100)
     },
-
     dayClick: function (day) {
       this.createEvent(day)
     },
-
     canSave: function () {
       return this.event.title && this.event.title.length > 3 &&
         this.event.start_date && this.event.start_time
+    },
+    durarion: function (start, end) {
+      return moment.duration(moment(start).diff(moment(end))).humanize()
+    }
+  },
+  computed: {
+    nextEvents: function (max = 6) {
+      var events = []
+      var now = moment()
+      for (var i = 0; i < this.api.events.length; i++) {
+        var event = this.api.events[i];
+        if (now > moment(event.end)) {
+          continue
+        }
+        events[events.length] = event
+      }
+      return events;
     }
   }
 }
 </script>
-
 
 <!-- Add"scoped" attribute to limit CSS to this component only -->
 <style>
@@ -444,8 +492,10 @@ export default {
   color: #039be5;
 }
 
-.fc-toolbar button:focus {
-  z-index: 3
+.fc-toolbar button:focus,
+.fc-toolbar .fc-state-active,
+.fc-toolbar .ui-state-active {
+  z-index: 0
 }
 
 

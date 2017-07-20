@@ -315,7 +315,7 @@ export default {
             return ev.id === data.event.id;
           });
           if (event_index >= -1) {
-            this.visits.splice(event_index, 1);
+            this.api.events.splice(event_index, 1);
             this.$router.app.$emit('eventDeleted', data.event)
           }
         })
