@@ -65,6 +65,8 @@
     <v-snackbar :timeout="4000" top right v-model="success_email">
       {{api.trans('literals.email') + " " + api.trans('literals.sent')}}
     </v-snackbar>
+
+    <v-dialog></v-dialog>
   </v-container>
 </template>
 

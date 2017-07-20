@@ -38,24 +38,24 @@
               <v-flex xs6 sm6>
                 <v-menu :close-on-content-click="true" v-model="menu_start_date_picker" transition="scale-transition" full-width :nudge-left="40" max-width="290px">
                   <v-text-field slot="activator" :label="api.trans( 'literals.start_date')" v-model="event.start_date" prepend-icon="event" readonly></v-text-field>
-                  <v-date-picker v-model="event.start_date" scrollable></v-date-picker>
+                  <v-date-picker v-model="event.start_date" locale="es" scrollable></v-date-picker>
                 </v-menu>
 
                 <v-menu :close-on-content-click="false" v-model="menu_start_time_picker" transition="scale-transition" full-width :nudge-left="40" max-width="290px">
                   <v-text-field slot="activator" :label="api.trans( 'literals.start_date')" v-model="event.start_time" prepend-icon="access_time" readonly></v-text-field>
-                  <v-time-picker v-model="event.start_time" autosave></v-time-picker>
+                  <v-time-picker v-model="event.start_time" locale="es" autosave></v-time-picker>
                 </v-menu>
               </v-flex>
 
               <v-flex xs6 sm6>
                 <v-menu :close-on-content-click="true" v-model="menu_end_date_picker" transition="scale-transition" full-width :nudge-left="40" max-width="290px">
                   <v-text-field slot="activator" :label="api.trans( 'literals.end_date')" v-model="event.end_date" prepend-icon="event" readonly></v-text-field>
-                  <v-date-picker v-model="event.end_date" scrollable></v-date-picker>
+                  <v-date-picker v-model="event.end_date" locale="es" scrollable></v-date-picker>
                 </v-menu>
 
                 <v-menu :close-on-content-click="false" v-model="menu_end_time_picker" transition="scale-transition" full-width :nudge-left="40" max-width="290px">
                   <v-text-field slot="activator" :label="api.trans( 'literals.end_date')" v-model="event.end_time" prepend-icon="access_time" readonly></v-text-field>
-                  <v-time-picker v-model="event.end_time" autosave></v-time-picker>
+                  <v-time-picker v-model="event.end_time" locale="es" autosave></v-time-picker>
                 </v-menu>
               </v-flex>
 
@@ -80,9 +80,16 @@
               </v-flex>
 
             </v-layout>
-            <v-btn fixed bottom right primary dark fab @click.native="saveEvent()">
+            <v-btn :disabled="!canSave()" v-if="event.id" v-tooltip:top="{ html: api.trans('crud.save') }" fixed bottom right primary dark fab @click.native="saveEvent()">
               <v-icon dark>save</v-icon>
-              <!-- &nbsp; {{api.trans('crud.save')}} -->
+            </v-btn>
+
+            <v-btn :disabled="!canSave()" v-else v-tooltip:top="{ html: api.trans('crud.add') }" fixed bottom right primary dark fab @click.native="saveNewEvent()">
+              <v-icon dark>add_circle</v-icon>
+            </v-btn>
+
+            <v-btn v-if="event.id" v-tooltip:top="{html: api.trans('crud.delete')}" fixed bottom style="right:80px" class="red" dark fab @click.native="deleteEvent(event)">
+              <v-icon>delete</v-icon>
             </v-btn>
           </v-container>
         </v-card-text>
@@ -140,6 +147,9 @@
     </v-dialog>
     <!--//* END Visor  -->
 
+    <v-btn fab fixed right bottom dark primary @click="createEvent()" v-tooltip:left="{html: api.trans( 'crud.add') + ' ' + api.trans( 'literals.event')}">
+      <v-icon>add</v-icon>
+    </v-btn>
   </v-container>
 </template>
 
@@ -149,13 +159,30 @@ window.moment = require('moment')
 window.__ = require('underscore')._
 moment.locale('es')
 var api = require('../services/api.js')
+function getRandomColor() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
 export default {
   name: 'Example',
   mounted() {
+    this.$router.app.$on('eventCreated', (data) => {
+      console.log("event created", data);
+      this.refreshEvents();
+    });
     this.$router.app.$on('eventChanged', (data) => {
       console.log("event changed", data);
       this.refreshEvents();
     });
+    this.$router.app.$on('eventDeleted', (data) => {
+      console.log("event deleted", data);
+      this.refreshEvents();
+    });
+
     this.api.ready
       .then(() => {
         this.getEvents()
@@ -163,7 +190,9 @@ export default {
       })
   },
   beforeDestroy() {
+    this.$router.app.$off('eventCreated')
     this.$router.app.$off('eventChanged')
+    this.$router.app.$off('eventDeleted')
   },
   data() {
     return {
@@ -177,6 +206,23 @@ export default {
         locale: 'es',
         defaultView: 'month',
         height: 'auto',
+        customButtons: {
+          addEvent: {
+            text: api.trans('crud.add') + " " + api.trans('literals.event'),
+            click: () => {
+              this.createEvent()
+            }
+          }
+        },
+        header: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'month,agendaWeek,agendaDay'
+        },
+        footer: {
+          center: 'addEvent'
+        },
+        editable: false
       },
       menu_start_date_picker: false,
       menu_start_time_picker: false,
@@ -254,6 +300,54 @@ export default {
         })
         .catch(console.error)
     },
+    createEvent: function () {
+      this.event = {
+        _title: api.trans('crud.add') + " " + api.trans('literals.event'),
+        title: '',
+        description: '',
+        start: moment().add(1, 'd'),
+        end: moment().add(2, 'd'),
+        start_date: moment().add(1, 'd').format('YYYY-MM-DD'),
+        start_time: moment().add(1, 'd').format('HH:mma'),
+        end_date: moment().add(2, 'd').format("YYYY-MM-DD"),
+        end_time: moment().add(2, 'd').format("HH:mma"),
+        privacity: 'public',
+        visibility: 'public',
+        color: getRandomColor(),
+        type: 'party',
+        zones: [],
+        allDay: false,
+        residence_id: this.api.user_residence_di,
+        creator: this.api.user.id,
+        creator_id: this.api.user.id
+      }
+      setTimeout(() => {
+
+        this.dialog = true
+      }, 200)
+
+    },
+    saveNewEvent: function () {
+      this.event.start = moment.utc(this.event.start_date + " " + this.event.start_time, "YYYY-MM-DD HH:mma")
+      this.event.end = moment.utc(this.event.end_date + " " + this.event.end_time, "YYYY-MM-DD HH:mma")
+      this.event.creator_id = this.api.user.id
+      this.event.residence_id = this.api.user.residence_id
+      var event = JSON.parse(JSON.stringify(this.event))
+      delete event._tile
+      delete event.creator
+      delete event.residence
+      delete event.start_date
+      delete event.start_time
+      delete event.end_date
+      delete event.end_time
+      console.log(this.event)
+      this.api.post('events', event)
+        .then((response) => {
+          console.log(response.data)
+          this.dialog = false;
+        })
+        .catch(console.error)
+    },
     saveEvent: function () {
       this.event.start = moment.utc(this.event.start_date + " " + this.event.start_time, "YYYY-MM-DD HH:mma")
       this.event.end = moment.utc(this.event.end_date + " " + this.event.end_time, "YYYY-MM-DD HH:mma")
@@ -279,12 +373,24 @@ export default {
         .catch(console.error)
       this.dialog = false;
     },
+    deleteEvent(event) {
+      this.api.delete('events/' + event.id)
+        .then((response) => {
+          this.dialog = false;
+        })
+        .catch(console.error)
+    },
     refreshEvents: function () {
       setTimeout(() => {
         if (this.$refs.calendar)
           this.$refs.calendar.$emit('reload-events')
       }, 100)
     },
+
+    canSave: function () {
+      return this.event.title && this.event.title.length > 3 &&
+        this.event.start_date && this.event.start_time
+    }
   }
 }
 </script>
@@ -329,6 +435,11 @@ export default {
 .fc-day-number {
   color: #039be5;
 }
+
+.fc-toolbar button:focus {
+  z-index: 3
+}
+
 
 .fc td,
 .fc th {

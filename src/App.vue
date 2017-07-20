@@ -13,7 +13,7 @@
       </v-list>
       <v-list class="pt-0" dense>
         <v-divider></v-divider>
-        <v-list-tile @click.native="navigate(page.url)" v-for="(page,i) in pages" :key="i">
+        <v-list-tile :to="page.url" v-for="(page,i) in pages" :key="i">
           <v-list-tile-action>
             <v-icon>{{ page.icon }}</v-icon>
           </v-list-tile-action>
@@ -35,18 +35,6 @@
     </v-navigation-drawer>
     <v-toolbar prominent fixed class="blue accent-5" v-if="api.user.id" dark>
       <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
-      <!-- <v-btn icon v-tooltip:bottom="{ html: api.trans('literals.events') }">
-                                                                                              <v-icon>event</v-icon>
-                                                                                            </v-btn>
-
-                                                                                            <v-btn icon v-tooltip:bottom="{ html: api.trans('literals.dynamic_documents') }">
-                                                                                              <v-icon>insert_drive_file</v-icon>
-                                                                                            </v-btn>
-
-                                                                                            <v-btn icon v-tooltip:bottom="{ html: api.trans('literals.invoices') }">
-                                                                                              <v-icon>account_balance_wallet</v-icon>
-                                                                                            </v-btn> -->
-
       <v-spacer>
         <div class="text-xs-center">
           <v-toolbar-title>
@@ -323,11 +311,12 @@ export default {
         })
         .listen('EventDeleted', (data) => {
           console.log("deleted event:", data);
-          var event = this.visits.findIndex((visit) => {
-            return event.id === data.event.id;
+          var event_index = this.api.events.findIndex((ev) => {
+            return ev.id === data.event.id;
           });
-          if (event >= 0) {
-            this.visits.splice(event, 1);
+          if (event_index >= -1) {
+            this.visits.splice(event_index, 1);
+            this.$router.app.$emit('eventDeleted', data.event)
           }
         })
 
@@ -393,4 +382,6 @@ export default {
     transition all .4s
     &:hover
       height 70px
+  .router-link-exact-active
+    background: rgba(127,127,127,.4)
 </style>
