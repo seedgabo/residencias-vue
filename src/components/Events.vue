@@ -5,7 +5,7 @@
       <v-flex style="height:90%;" xs12 sm12 md9>
         <v-card>
           <v-card-text>
-            <full-calendar ref="calendar" id="calendar" :events="api.events" :config="config" @event-selected="eventSelected"></full-calendar>
+            <full-calendar ref="calendar" id="calendar" :events="api.events" :config="config" @event-selected="eventSelected" @day-click="dayClick"></full-calendar>
           </v-card-text>
         </v-card>
       </v-flex>
@@ -300,17 +300,21 @@ export default {
         })
         .catch(console.error)
     },
-    createEvent: function () {
+    createEvent: function (start) {
+      if (!start) {
+        var start = moment().add(1, 'd')
+      }
+      var end = start.clone().add(1, 'd')
       this.event = {
         _title: api.trans('crud.add') + " " + api.trans('literals.event'),
         title: '',
         description: '',
-        start: moment().add(1, 'd'),
-        end: moment().add(2, 'd'),
-        start_date: moment().add(1, 'd').format('YYYY-MM-DD'),
-        start_time: moment().add(1, 'd').format('HH:mma'),
-        end_date: moment().add(2, 'd').format("YYYY-MM-DD"),
-        end_time: moment().add(2, 'd').format("HH:mma"),
+        start: start,
+        end: end,
+        start_date: start.format('YYYY-MM-DD'),
+        start_time: start.format('HH:mma'),
+        end_date: end.format("YYYY-MM-DD"),
+        end_time: end.format("HH:mma"),
         privacity: 'public',
         visibility: 'public',
         color: getRandomColor(),
@@ -385,6 +389,10 @@ export default {
         if (this.$refs.calendar)
           this.$refs.calendar.$emit('reload-events')
       }, 100)
+    },
+
+    dayClick: function (day) {
+      this.createEvent(day)
     },
 
     canSave: function () {
