@@ -65,14 +65,17 @@ export default {
         headers: { 'Authorization': "Basic " + btoa(this.username + ':' + this.password) }
       })
         .then((response) => {
-          console.log(response.data);
-          this.loging = false;
-          this.api.setUser(response.data)
-          window.localStorage.setItem('user', JSON.stringify(response.data.user));
-          window.localStorage.setItem('residence', JSON.stringify(response.data.residence));
-          this.getLangs();
-          this.$router.push('/');
-          this.$router.app.$emit('login', response.data)
+          this.api.ready = new Promise((resolve, reject) => {
+            console.log(response.data);
+            this.loging = false;
+            this.api.setUser(response.data)
+            window.localStorage.setItem('user', JSON.stringify(response.data.user));
+            window.localStorage.setItem('residence', JSON.stringify(response.data.residence));
+            this.getLangs();
+            resolve(response.data)
+            this.$router.push('/');
+            this.$router.app.$emit('login', response.data)
+          })
         })
         .catch((err) => {
           console.error(err);

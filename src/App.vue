@@ -95,7 +95,7 @@
 import Echo from 'laravel-echo'
 window.Pusher = require('pusher-js');
 window.io = require('socket.io-client')
-
+var api = require('./services/api.js')
 export default {
   mounted() {
     this.api.ready.then((data) => {
@@ -127,7 +127,7 @@ export default {
         { icon: 'event', title: 'events', 'url': 'events' },
         { icon: 'insert_drive_file', title: 'documents', 'url': 'documents' },
       ],
-      api: require('./services/api.js')
+      api: api
     }
   },
   methods: {
