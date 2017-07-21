@@ -61,7 +61,7 @@ export default {
   methods: {
     doLogin() {
       this.loging = true;
-      axios.get('http://localhost/residencias/public/api/login', {
+      axios.get(this.api.url + 'login', {
         headers: { 'Authorization': "Basic " + btoa(this.username + ':' + this.password) }
       })
         .then((response) => {
@@ -72,6 +72,7 @@ export default {
           window.localStorage.setItem('residence', JSON.stringify(response.data.residence));
           this.getLangs();
           this.$router.push('/');
+          this.$router.app.$emit('login', response.data)
         })
         .catch((err) => {
           console.error(err);

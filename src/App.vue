@@ -106,6 +106,16 @@ export default {
         console.error(err);
         this.navigate('/login');
       });
+    this.$router.app.$on('login', (data) => {
+      this.getData()
+      this.startEcho()
+    })
+    this.$router.app.$on('logout', (data) => {
+      this.api.user = {};
+      window.localStorage.clear();
+      this.$router.push('/login')
+      this.stopEcho()
+    })
   },
   data() {
     return {
