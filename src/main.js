@@ -8,21 +8,28 @@ import Vuetify from 'vuetify'
 import App from './App'
 import router from './router'
 import Vue2Filters from 'vue2-filters'
+import VueQuillEditor from 'vue-quill-editor'
 
 require('vue2-animate/dist/vue2-animate.min.css')
 
 Vue.use(Vuetify)
 Vue.use(Vue2Filters)
+
 const moment = require('moment')
 require('moment/locale/es')
 moment.locale('es')
 Vue.use(require('vue-moment'), {
     moment
 })
+Vue.use(VueQuillEditor)
 
 import 'fullcalendar'
 import '../node_modules/fullcalendar/dist/locale-all.js'
 Vue.use(require('vue-full-calendar'))
+
+require('chart.js');
+require('hchs-vue-charts');
+Vue.use(VueCharts);
 
 Vue.config.productionTip = false
 

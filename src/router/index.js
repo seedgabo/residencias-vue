@@ -6,6 +6,7 @@ import Events from '@/components/Events'
 import Documents from '@/components/Documents'
 import Invoices from '@/components/Invoices'
 import Login from '@/components/Login'
+import Posts from '@/components/Posts'
 import Example from '@/components/Example'
 
 Vue.use(Router)
@@ -31,7 +32,10 @@ export default new Router({
         name: 'Invoices',
         component: Invoices
     }, {
-
+        path: '/posts',
+        name: 'Posts',
+        component: Posts
+    }, {
         path: '/login',
         name: 'Login',
         component: Login
