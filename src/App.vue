@@ -45,7 +45,7 @@
       </v-spacer>
 
       <v-toolbar-items>
-        <v-menu offset-y>
+        <v-menu bottom left :position-absolutely="true">
           <v-btn flat slot="activator" style="height:100%; padding:8px 0px;">
             <img class="hidden-sm-and-down avatar small" :src="api.user.image_url">
             <span class="hidden-sm-and-down">
