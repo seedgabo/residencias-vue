@@ -22,7 +22,7 @@
                 {{post.title}}
               </h3>
             </v-card-title>
-            <v-card-text>{{post.text}}</v-card-text>
+            <v-card-text v-html="post.text.substring(0,100)"></v-card-text>
           </div>
           <v-card-actions>
             <v-btn full block flat :to="'posts'">

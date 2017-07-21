@@ -93,7 +93,7 @@
               <br>
               <v-layout>
                 <v-flex class="text-xs-center">
-                  <v-progress-circular v-bind:size="100" v-bind:width="15" v-bind:rotate="360" v-bind:value="100- api.residence.debt/api.residence.total*100" class="teal--text">
+                  <v-progress-circular v-bind:size="100" v-bind:width="15" v-bind:rotate="360" v-bind:value="api.residence.debt/api.residence.total*100" class="teal--text">
                     {{ api.residence.debt }}
                   </v-progress-circular>
                 </v-flex>
