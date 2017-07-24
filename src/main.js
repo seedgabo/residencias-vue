@@ -28,8 +28,12 @@ import '../node_modules/fullcalendar/dist/locale-all.js'
 Vue.use(require('vue-full-calendar'))
 
 import Chartkick from 'chartkick'
+Chartkick.configure({
+  language: "es"
+})
 import VueChartkick from 'vue-chartkick'
 import Chart from 'chart.js'
+// window.Highcharts = require('highcharts')
 Vue.use(VueChartkick, {
   Chartkick
 })

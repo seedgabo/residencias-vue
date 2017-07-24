@@ -38,6 +38,7 @@ module.exports =
 	data: ->
 		api: require '../services/api.js'
 		survey:{}
+		my_vote:null
 		surveys: []
 		loading:false
 		colors: ['#F44336', '#2196F3', '#4CAF50', '#FFEB3B', '#FF5722', '#E91E63', '#9C27B0', '#3F51B5', '#009688'],
@@ -63,7 +64,13 @@ module.exports =
 				[survey.response_6,__.filter(survey.surveyuser,(vote)-> vote.response==6).length]
 			]
 			@survey=survey
-
+			@getVote(survey)
+		getVote: (survey)->
+			@vote =null
+			@api.get("""votes?where[user_id]=#{@api.user.id}&survey_id=#{survey.id}""")
+			.then (resp)=>
+				console.log 'my vote', resp.data
+				@my_vote=resp.data[0]
 		vote: ()->
 			@postVote(@survey,1)
 		postVote: (survey,response)->
