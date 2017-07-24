@@ -1,29 +1,29 @@
-<template>
-  <v-container fluid>
-    <v-layout wrap>
-
-    </v-layout>
-  </v-container>
+<template lang="jade">
+	v-container(fluid="")
+		v-layout(wrap="")
+				
 </template>
 
-<script>
-const axios = require('axios')
-export default {
-  name: 'Example',
-  mounted() {
-  },
-  data() {
-    return {
-      api: require('../services/api.js'),
-    }
-  },
-  methods: {
-  }
-}
+<script lang="coffee">
+module.exports =
+	name: 'Example'
+	mounted: ()->
+		console.log @api
+		@getSurveys()
+	data: ->
+		api: require '../services/api.js'
+		surveys: []
+	methods:
+		getData: ()->
+			@api.get 'data'
+			.then (resp)=>
+				console.log 'data', resp.data
+				@surveys=resp.data
+			.catch console.error
 </script>
 
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
+<style lang="stylus" scoped>
+	
 </style>
