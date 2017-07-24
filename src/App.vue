@@ -1,5 +1,5 @@
 <template>
-	<v-app id="example-2" standalone>
+	<v-app id="example-2">
 		<v-navigation-drawer temporary v-model="drawer" overflow>
 			<v-list class="pa-0" v-if="api.user.id">
 				<v-list-tile avatar tag="div" class="primary">
@@ -33,7 +33,7 @@
 	
 			</v-list>
 		</v-navigation-drawer>
-		<v-toolbar prominent fixed class="blue accent-5" v-if="api.user.id" dark>
+		<v-toolbar prominent fixed class="primary" v-if="api.user.id" dark>
 			<v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
 			<v-spacer>
 				<div class="text-xs-center">

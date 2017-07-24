@@ -1,35 +1,39 @@
 <template>
+<div>
   <v-container>
     <v-layout wrap>
-      <v-flex xs9>
-        <v-card v-for="post in posts" class="pr-2 pt-2 mb-3" v-bind:key="post.id" hover>
-          <v-card-title>
-            <h4 class="text-xs-justify pl-4 post-title">{{post.title}}
-            </h4>
-            <v-spacer></v-spacer>
-            <template v-if="post.user_id === api.user.id">
-              <v-btn icon @click.stop="editPost(post)">
-                <v-icon>edit</v-icon>
-              </v-btn>
-              <v-btn icon @click="deletePost(post)">
-                <v-icon>delete</v-icon>
-              </v-btn>
-            </template>
-          </v-card-title>
-          <div class="by text-xs-right">
-            <span class="headline-2 mr-4" v-if="post.user">{{post.user.name}}</span>
-            <span class="grey--text">
-              {{ post.created_at | moment('from')}}
-            </span>
-          </div>
-          <div style="margin:0 auto;" class="text-xs-center" v-if="post.image_id">
-            <img :src="post.image_url" style="height:100px" alt="">
-          </div>
-          <v-card-text class="pl-5 text-xs-justify" justify-center>
-            <div v-html="post.text"></div>
-          </v-card-text>
-        </v-card>
-      </v-flex>
+		<v-flex xs12 sm9>
+			<v-card v-for="post in posts" class="pr-2 pt-2 mb-3" v-bind:key="post.id" hover>
+			<v-card-title>
+				<h4 class="text-xs-justify pl-4 post-title">{{post.title}}
+				</h4>
+				<v-spacer></v-spacer>
+				<template v-if="post.user_id === api.user.id">
+				<v-btn icon @click.stop="editPost(post)">
+					<v-icon>edit</v-icon>
+				</v-btn>
+				<v-btn icon @click="deletePost(post)">
+					<v-icon>delete</v-icon>
+				</v-btn>
+				</template>
+			</v-card-title>
+			<div class="by text-xs-right">
+				<span class="headline-2 mr-4" v-if="post.user">{{post.user.name}}</span>
+				<span class="grey--text">
+				{{ post.created_at | moment('from')}}
+				</span>
+			</div>
+			<div style="margin:0 auto;" class="text-xs-center" v-if="post.image_id">
+				<img :src="post.image_url" style="height:100px" alt="">
+			</div>
+			<v-card-text class="pl-5 text-xs-justify" justify-center>
+				<div v-html="post.text"></div>
+			</v-card-text>
+			</v-card>
+		</v-flex>
+		<v-btn fixed fab bottom right class="primary" dark @click.stop="creator=true">
+			<v-icon>add</v-icon>
+		</v-btn>
     </v-layout>
 
     <v-dialog fullscreen v-model="creator">
@@ -70,11 +74,8 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-
-    <v-btn fixed fab bottom right primary dark @click.stop="creator=true">
-      <v-icon>add</v-icon>
-    </v-btn>
   </v-container>
+</div>
 </template>
 
 <script>

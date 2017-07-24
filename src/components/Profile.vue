@@ -177,12 +177,12 @@
               {{api.trans('crud.edit')}}
             </v-btn>
             <v-spacer></v-spacer>
-            <v-btn flat class="grey--text" to="invoices">
-              <v-icon class="grey--text">account_balance_wallet</v-icon>
+            <v-btn flat class="pink--text" to="invoices">
+              <v-icon class="pink--text">account_balance_wallet</v-icon>
               {{this.api.trans('literals.invoices')}}
             </v-btn>
-            <v-btn flat class="grey--text" to="documents">
-              <v-icon class="grey--text">insert_drive_file</v-icon>
+            <v-btn flat class="pink--text" to="documents">
+              <v-icon class="pink--text">insert_drive_file</v-icon>
               {{this.api.trans('literals.dynamic_documents')}}
             </v-btn>
           </v-card-actions>
