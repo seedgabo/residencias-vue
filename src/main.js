@@ -68,6 +68,7 @@ router.beforeEach((to, from, next) => {
 })
 
 
+
 /* eslint-disable no-new */
 
 new Vue({
@@ -75,6 +76,6 @@ new Vue({
   router,
   template: '<App/>',
   components: {
-    App
+    App,
   }
 })
