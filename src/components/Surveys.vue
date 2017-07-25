@@ -107,9 +107,15 @@ module.exports =
 				@api.get """surveys/#{survey.id}"""
 				.then (resp)=>
 					console.log 'survey', resp.data
+					@updateSurvey(resp.data)
 					@selectSurvey(resp.data)
 				.catch console.error
 			.catch console.error
+		updateSurvey: (newSurvey)->
+			index= @surveys.findIndex (surv)->
+				return newSurvey.id == surv.id
+			if index>-1
+				@surveys.splice(index,1,newSurvey)
 		
 </script>
 

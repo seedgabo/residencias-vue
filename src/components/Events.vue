@@ -35,7 +35,7 @@
 								</v-list-tile-content>
 								<v-list-tile-action>
 									<v-list-tile-action-text>
-										{{durarion(event.start,event.end)}}
+										{{duration(event.start,event.end)}}
 									</v-list-tile-action-text>
 								</v-list-tile-action>
 							</v-list-tile>
@@ -256,7 +256,8 @@ export default {
 				footer: {
 					center: 'addEvent'
 				},
-				editable: false
+				editable: false,
+				select: this.createEvent
 			},
 			menu_start_date_picker: false,
 			menu_start_time_picker: false,
@@ -334,11 +335,13 @@ export default {
 				})
 				.catch(console.error)
 		},
-		createEvent: function (start) {
+		createEvent: function (start, end) {
 			if (!start) {
 				var start = moment().add(1, 'd')
 			}
-			var end = start.clone().add(1, 'd')
+			if (!end) {
+				var end = start.clone().add(1, 'd')
+			}
 			this.event = {
 				_title: api.trans('crud.add') + " " + api.trans('literals.event'),
 				title: '',
@@ -431,7 +434,7 @@ export default {
 			return this.event.title && this.event.title.length > 3 &&
 				this.event.start_date && this.event.start_time
 		},
-		durarion: function (start, end) {
+		duration: function (start, end) {
 			return moment.duration(moment(start).diff(moment(end))).humanize()
 		}
 	},
