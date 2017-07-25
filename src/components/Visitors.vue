@@ -2,9 +2,9 @@
 	v-layout(wrap)
 		v-flex(xs12)
 			v-card(dense)
-				v-card-title.primary
-					v-icon(dark) people
-					span.white--text &nbsp; {{api.trans('literals.visitors')}}
+				v-card-title
+					v-icon people
+					span &nbsp; {{api.trans('literals.visitors')}}
 					v-spacer
 					v-btn.cyan(dark fab small absolute right ,@click.stop="creator=true")
 						v-icon add
