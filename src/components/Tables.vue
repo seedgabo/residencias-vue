@@ -1,15 +1,10 @@
 <template lang="jade">
 	div
 		v-container(fluid="")
-			v-layout(wrap="")
-				div(v-show="tab==='visitors'")
-					{{api.residence.visitors}}
-				div(v-show="tab==='visits'")
-					{{api.residence.visits}}
-				div(v-show="tab==='parkings'")
-					{{api.residence.parkings}}
-				div(v-show="tab==='workers'")
-					{{api.residence.workers}}
+			visitors(v-show="tab==='visitors'")
+			div(v-show="tab==='visits'") {{api.residence.visits}}
+			div(v-show="tab==='parkings'") {{api.residence.parkings}}
+			div(v-show="tab==='workers'") {{api.residence.workers}}
 		v-bottom-nav.primary(value="true" light="", :shift="windowWidth<500")
 			v-btn(dark=""  @click.native="tab='visitors'", :value="tab==='visitors'")
 				span {{api.trans('literals.visitors')}}
@@ -26,8 +21,12 @@
 </template>
 
 <script lang="coffee">
+Visitors=require '@/components/Visitors'
+
 module.exports =
 	name: 'Tables'
+	components:
+		visitors:Visitors
 	mounted: ()->
 		window.addEventListener('resize', @handleResize)
 	beforeDestroy: ()->
@@ -49,5 +48,4 @@ module.exports =
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus" scoped>
-	
 </style>

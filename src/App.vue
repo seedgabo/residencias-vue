@@ -124,6 +124,7 @@ export default {
 				{ icon: 'home', title: 'home', url: '/' },
 				{ icon: 'account_balance_wallet', title: 'invoices', 'url': 'invoices' },
 				{ icon: 'person', title: 'profile', url: 'profile' },
+				{ icon: 'list', title: 'mis listas', url: 'tables' },
 				{ icon: 'event', title: 'events', 'url': 'events' },
 				{ icon: 'insert_drive_file', title: 'documents', 'url': 'documents' },
 				{ icon: 'pie_chart', title: 'surveys', 'url': 'surveys' },
