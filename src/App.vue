@@ -24,7 +24,7 @@
 	
 				<v-list-tile @click.native="logout()">
 					<v-list-tile-action>
-						<v-icon fa>sign-out</v-icon>
+						<v-icon>fa-sign-out</v-icon>
 					</v-list-tile-action>
 					<v-list-tile-content>
 						<v-list-tile-title>Cerrar Sesión</v-list-tile-title>
@@ -75,7 +75,7 @@
 						<v-divider></v-divider>
 						<v-list-tile @click.native="logout()">
 							<v-list-tile-avatar>
-								<v-icon fa>sign-out</v-icon>
+								<v-icon> fa-sign-out</v-icon>
 							</v-list-tile-avatar>
 							<v-list-tile-content>
 								<v-list-tile-title class="red--text">{{api.trans('literals.logout')}}</v-list-tile-title>

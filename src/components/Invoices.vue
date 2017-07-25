@@ -3,7 +3,7 @@
 		<v-layout wrap>
 			<v-flex xs12 center>
 				<h2 class="headline text-xs-center" primary>
-					<v-icon fa>files-o</v-icon>
+					<v-icon>fa-files-o</v-icon>
 					&nbsp; {{api.trans('literals.invoices')}}
 				</h2>
 			</v-flex>
@@ -47,10 +47,10 @@
 										<v-icon class="primary--text">credit_card</v-icon>
 									</v-btn>
 									<v-btn v-if="props.item.receipts.length!==0 " v-tooltip:bottom="{ html: (api.trans('literals.download') +  ' ' + api.trans('literals.receipt')) }" icon :href="api.url + 'receipt/'+ props.item.receipts[0].id +'/pdf?token='+ api.user.token" target="receipt" @click.stop="null">
-										<v-icon class="green--text" fa>file-text-o</v-icon>
+										<v-icon class="green--text">fa-file-text-o</v-icon>
 									</v-btn>
 									<v-btn v-tooltip:bottom="{ html: api.trans('literals.download') }" icon :href="api.url + 'invoice/'+ props.item.id +'/pdf?token='+ api.user.token" target="invoice" @click.stop="null">
-										<v-icon class="red--text" fa>file-pdf-o</v-icon>
+										<v-icon class="red--text">fa-file-pdf-o</v-icon>
 									</v-btn>
 									<v-btn icon v-tooltip:bottom="{ html: api.trans('__.send email') }" small @click.stop="sendMailInvoice(props.item)">
 										<v-icon class="">email</v-icon>
@@ -115,7 +115,7 @@
 								<v-icon>credit_card</v-icon>
 							</v-btn>
 							<v-btn :href="api.url + 'invoice/'+ invoice.id +'/pdf?token='+ api.user.token" target="invoice" fab dark small class="red" style="right:5px" v-tooltip:left="{html:api.trans('__.print as pdf')}">
-								<v-icon fa>file-pdf-o</v-icon>
+								<v-icon>fa-file-pdf-o</v-icon>
 							</v-btn>
 							<v-btn @click="sendMailInvoice(invoice)" fab dark small class="indigo" style="right:5px" v-tooltip:left="{html:api.trans('__.send by email')}">
 								<v-icon>mail</v-icon>
