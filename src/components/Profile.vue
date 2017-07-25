@@ -3,7 +3,7 @@
 	
 		<v-layout wrap>
 			<!--//* CARD PROFILE  -->
-			<v-flex xs12 sm6 md4>
+			<v-flex xs12 sm6 md4 class="mt-3">
 				<v-card>
 					<v-card-media src=" https://ak2.picdn.net/shutterstock/videos/23151772/thumb/1.jpg " height="150px" class="white--text">
 						<v-container fill-height fluid>
@@ -67,7 +67,7 @@
 			<!--//* END CARD PROFILE  -->
 	
 			<!--//* CARD RESIDENCE  -->
-			<v-flex xs12 sm6 md4>
+			<v-flex xs12 sm6 md4 class="mt-3">
 				<v-card>
 					<v-toolbar class="text-xs-center primary white--text">
 						<v-icon dark>home</v-icon>
@@ -192,7 +192,7 @@
 			<!--//* END CARD RESIDENCE  -->
 	
 			<!--//* CARD USERS  -->
-			<v-flex xs12 sm6 md4>
+			<v-flex xs12 sm6 md4 class="mt-3">
 				<v-card>
 					<v-toolbar class="primary white--text" extended>
 						<v-icon dark>people</v-icon>

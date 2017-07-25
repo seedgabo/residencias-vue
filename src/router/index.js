@@ -8,6 +8,7 @@ import Invoices from '@/components/Invoices'
 import Login from '@/components/Login'
 import Posts from '@/components/Posts'
 import Surveys from '@/components/Surveys'
+import Tables from '@/components/Tables'
 import Example from '@/components/Example'
 
 Vue.use(Router)
@@ -41,7 +42,12 @@ export default new Router({
     name: 'Surveys',
     component: Surveys
   }, {
+    path: '/tables',
+    name: 'Tables',
+    component: Tables
+  }, {
     path: '/login',
+
     name: 'Login',
     component: Login
   }, {
