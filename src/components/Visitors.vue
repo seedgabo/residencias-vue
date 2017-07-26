@@ -62,7 +62,6 @@ module.exports =
     api: api
     creator: false
     visitor:{ sex:'male'}
-    placeholder:"""<i class="material-icons">add_a_photo</i>"""
     genders: [ { text: api.trans('literals.male'), value: 'male' }, { text: api.trans('literals.female'), value: 'female' }]
   methods:
     getVisitors: ()->
