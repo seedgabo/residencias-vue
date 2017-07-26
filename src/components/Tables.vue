@@ -1,6 +1,6 @@
 <template lang="jade">
 	div
-		v-container(fluid="")
+		v-container()
 			visitors(v-show="tab==='visitors'")
 			div(v-show="tab==='visits'") {{api.residence.visits}}
 			div(v-show="tab==='parkings'") {{api.residence.parkings}}

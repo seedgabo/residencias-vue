@@ -38,6 +38,8 @@ Vue.use(VueChartkick, {
   Chartkick
 })
 
+import Croppa from 'vue-croppa'
+Vue.use(Croppa)
 
 Vue.config.productionTip = false
 
