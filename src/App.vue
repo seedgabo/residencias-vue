@@ -226,6 +226,72 @@ export default {
 					}
 				})
 
+
+				.listen('VehicleCreated', (data) => {
+					console.log("created vehicle:", data);
+					if (data.vehicle.residence_id != this.api.residence.id) return;
+					var vehicle = this.api.residence.vehicles[this.api.residence.vehicles.length] = data.vehicle;
+					if (data.image)
+						vehicle.image = data.image;
+				})
+				.listen('VehicleUpdated', (data) => {
+					console.log("updated vehicle:", data);
+					if (data.vehicle.residence_id !== api.residence.id) return;
+					var vehicle_index = this.api.residence.vehicles.findIndex((vehicle) => {
+						return vehicle.id === data.vehicle.id;
+					});
+					if (vehicle_index > -1)
+						var vehicle = this.api.residence.vehicles[vehicle_index] = data.vehicle;
+					else {
+						var vehicle = this.api.residence.vehicles[this.api.residence.vehicles.length] = data.vehicle;
+					}
+					if (data.image) {
+						vehicle.image = data.image;
+					}
+				})
+				.listen('VehicleDeleted', (data) => {
+					console.log("deleted vehicle:", data);
+					var vehicle = this.api.residence.vehicles.findIndex((vehicle) => {
+						return vehicle.id === data.vehicle.id;
+					});
+					if (vehicle > -1) {
+						this.api.residence.vehicles.splice(vehicle, 1);
+					}
+				})
+
+
+				.listen('WorkerCreated', (data) => {
+					console.log("created worker:", data);
+					if (data.worker.residence_id != this.api.residence.id) return;
+					var worker = this.api.residence.workers[this.api.residence.workers.length] = data.worker;
+					if (data.image)
+						worker.image = data.image;
+				})
+				.listen('WorkerUpdated', (data) => {
+					console.log("updated worker:", data);
+					if (data.worker.residence_id !== api.residence.id) return;
+					var worker_index = this.api.residence.workers.findIndex((worker) => {
+						return worker.id === data.worker.id;
+					});
+					if (worker_index > -1)
+						var worker = this.api.residence.workers[worker_index] = data.worker;
+					else {
+						var worker = this.api.residence.workers[this.api.residence.workers.length] = data.worker;
+					}
+					if (data.image) {
+						worker.image = data.image;
+					}
+				})
+				.listen('WorkerDeleted', (data) => {
+					console.log("deleted worker:", data);
+					var worker = this.api.residence.workers.findIndex((worker) => {
+						return worker.id === data.worker.id;
+					});
+					if (worker > -1) {
+						this.api.residence.workers.splice(worker, 1);
+					}
+				})
+
 				/*
 				.listen('VisitCreated', (data) => {
 					if (data.visitor.residence_id != this.residence.id) return;
