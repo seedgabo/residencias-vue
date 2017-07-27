@@ -1,5 +1,6 @@
 <template lang="jade">
 v-layout(wrap)
+  input(type="file" ref="inputImage" style="display:none;", @change="fileUploaded" accept="image/*")
   v-flex(xs12)
     v-card(dense)
       v-card-title
@@ -11,9 +12,9 @@ v-layout(wrap)
       v-card-text
         v-list(dense)
           v-list-tile(v-for="visitor in api.residence.visitors", :key="visitor.id", avatar="")
-            div.mr-2
-              croppa(v-if="loaded", :canvas-color="'white'",:width="45", :height="45", :show-remove-button="true" ,  :remove-button-size="15", :disable-drag-to-move="true",@file-choose="(file)=>{handleCroppaFileChoose(file,visitor)}", placeholder="📷")
-                img(v-if="visitor.image_id", :src="api.url+'images/'+visitor.image_id+'/encode'" slot="initial")
+            v-list-tile-avatar(@click="askFile(visitor)")
+              img.large(v-if="visitor.image_id", :src="visitor.image_url")
+              v-icon.primary.white--text(v-else) add_a_photo
             v-list-tile-content
               v-list-tile-title {{visitor.name}}
             v-btn.hidden-xs-only(icon, @click.stop="editVisitor(visitor)")
@@ -52,6 +53,10 @@ v-layout(wrap)
         v-btn(v-if="!visitor.id" flat primary @click="createVisitor()") {{api.trans('crud.add')}}
         v-btn(v-else flat primary @click="updateVisitor(visitor)") {{api.trans('crud.save')}}
         v-btn(@click="creator=false" flat primary) {{api.trans('crud.cancel')}}
+  v-snackbar(:timeout="1500", bottom v-model="imageUploaded")
+    {{ api.trans('__.image uploaded') }}
+    v-btn.pink--text(flat, @click.native="snackbar=false" icon)
+      v-icon close 
 </template>
 
 <script lang="coffee">
@@ -64,6 +69,7 @@ module.exports =
     api: api
     creator: false
     loaded:false
+    imageUploaded: false
     visitor:{ sex:'male'}
     genders: [ { text: api.trans('literals.male'), value: 'male' }, { text: api.trans('literals.female'), value: 'female' }]
   methods:
@@ -96,13 +102,20 @@ module.exports =
       @api.delete """visitors/#{visitor.id}"""
       .then (resp)=>
         console.log resp.data
-    handleCroppaFileChoose: (file,visitor)->
+    askFile: (visitor)->
+      @visitor=visitor
+      @$refs.inputImage.click()
+    fileUploaded: (evt)->
+      return if !evt.target.files[0]?
       reader= new FileReader()
-      reader.readAsDataURL file, "UTF-8"
+      reader.readAsDataURL evt.target.files[0], "UTF-8"
       reader.onload= (evt)=>
-        @api.upload('visitor',visitor.id,evt.target.result)
+        @api.upload('visitor',@visitor.id,evt.target.result)
         .then (resp)=>
           console.log resp.data
+          @visitor.image_url = resp.data.image.url
+          @visitor.image_id = resp.data.image.id
+          @imageUploaded=true
         .catch console.error
 </script>
 
