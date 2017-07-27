@@ -10,7 +10,7 @@ v-layout(wrap)
         v-btn.pink(dark fab small absolute right, @click.stop="visitor={ sex:'male'};creator=true")
           v-icon add
       v-card-text
-        v-list(dense)
+        v-list(dense two-line)
           v-list-tile(v-for="visitor in api.residence.visitors", :key="visitor.id", avatar="")
             v-list-tile-avatar(@click="askFile(visitor)")
               img.large(v-if="visitor.image_id", :src="visitor.image_url")
@@ -122,11 +122,4 @@ module.exports =
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus">
-@import '~vue-croppa/dist/vue-croppa.css'
-.croppa-container
-  border-radius 50%
-.avatar-image
-  height 70px
-  width 70px
-  border-radius 50%
 </style>
