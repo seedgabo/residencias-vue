@@ -16,7 +16,8 @@ v-layout(wrap)
               img.large(v-if="visitor.image_id", :src="visitor.image_url")
               v-icon.primary.white--text(v-else) add_a_photo
             v-list-tile-content
-              v-list-tile-title {{visitor.name}}
+              v-list-tile-title.body-2 {{visitor.name}}
+              v-list-tile-sub-title.caption {{visitor.document}}
             v-btn.hidden-xs-only(icon, @click.stop="editVisitor(visitor)")
               v-icon edit
             v-btn.hidden-xs-only(icon, @click.native="deleteVisitor(visitor)")
@@ -122,4 +123,7 @@ module.exports =
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus">
+.avatar img.large
+  height 46px !important
+ 	width 46px !important
 </style>
