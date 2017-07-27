@@ -12,7 +12,8 @@ v-layout(wrap)
         v-list(dense)
           v-list-tile(v-for="visitor in api.residence.visitors", :key="visitor.id", avatar="")
             div.mr-2
-              croppa(:canvas-color="'white'",:width="45", :height="45", :show-remove-button="true" ,  :remove-button-size="15", :disable-drag-to-move="true", :initial-image="visitor.img_url",@file-choose="(file)=>{handleCroppaFileChoose(file,visitor)}", placeholder="📷")
+              croppa(v-if="loaded", :canvas-color="'white'",:width="45", :height="45", :show-remove-button="true" ,  :remove-button-size="15", :disable-drag-to-move="true",@file-choose="(file)=>{handleCroppaFileChoose(file,visitor)}", placeholder="📷")
+                img(v-if="visitor.image_id", :src="api.url+'images/'+visitor.image_id+'/encode'" slot="initial")
             v-list-tile-content
               v-list-tile-title {{visitor.name}}
             v-btn.hidden-xs-only(icon, @click.stop="editVisitor(visitor)")
@@ -40,7 +41,8 @@ v-layout(wrap)
         v-spacer
         v-btn(small icon @click="creator=false")
           v-icon close
-      v-card-text
+      v-card-text.text-xs-center
+        img.avatar-image(v-if="visitor.image_url",:src="api.url+'images/'+visitor.image_id+'/encode'")
         v-text-field(v-model='visitor.name', :label="api.trans('literals.name')" prepend-icon="person")
         v-text-field(v-model='visitor.document', :label="api.trans('literals.document')" prepend-icon="card_membership")
         v-select(prepend-icon="wc" v-model="visitor.sex",:items="genders",:label="api.trans('literals.sex')")
@@ -61,6 +63,7 @@ module.exports =
   data: ->
     api: api
     creator: false
+    loaded:false
     visitor:{ sex:'male'}
     genders: [ { text: api.trans('literals.male'), value: 'male' }, { text: api.trans('literals.female'), value: 'female' }]
   methods:
@@ -69,6 +72,7 @@ module.exports =
       .then (resp)=>
         console.log 'visitors', resp.data
         @api.residence.visitors=resp.data
+        @loaded=true
       .catch console.error
     createVisitor: ()->
       @visitor.residence_id = @api.user.residence_id
@@ -95,15 +99,21 @@ module.exports =
     handleCroppaFileChoose: (file,visitor)->
       reader= new FileReader()
       reader.readAsDataURL file, "UTF-8"
-      reader.onload= (evt)->
-        console.log visitor
-      
+      reader.onload= (evt)=>
+        @api.upload('visitor',visitor.id,evt.target.result)
+        .then (resp)=>
+          console.log resp.data
+        .catch console.error
 </script>
 
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="stylus" scoped>
+<style lang="stylus">
 @import '~vue-croppa/dist/vue-croppa.css'
 .croppa-container
+  border-radius 50%
+.avatar-image
+  height 70px
+  width 70px
   border-radius 50%
 </style>

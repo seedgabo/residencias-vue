@@ -1,6 +1,7 @@
 const axios = require('axios')
 var api = {
     url: 'http://residenciasonline.com/residencias/public/api/',
+    // url: 'http://localhost/residencias/public/api/',
     name: 'Residencias Online',
     user: {},
     residence: {},
@@ -23,6 +24,9 @@ var api = {
     },
     delete: function(uri) {
         return axios.delete(this.url + uri, { headers: { 'Auth-Token': this.user.token } })
+    },
+    upload: function(resource, id, data) {
+        return axios.post(this.url + 'images/upload/' + resource + "/" + id, { image: data }, { headers: { 'Auth-Token': this.user.token } })
     },
 
     trans: function(string, inputs = {}) {
