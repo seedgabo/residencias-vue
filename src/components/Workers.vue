@@ -10,7 +10,7 @@ v-layout(wrap)
         v-btn.pink(dark fab small absolute right, @click.stop="worker={name:'',document:'',phone_number:'',schedule_id:''};creator=true")
           v-icon add
       v-card-text
-        v-list(dense two-line)
+        v-list(dense three-line)
           v-list-tile(v-for="worker in api.residence.workers", :key="worker.id", avatar="")
             v-list-tile-avatar(@click="askFile(worker)")
               img.large(v-if="worker.image_id", :src="worker.image_url")
@@ -18,6 +18,7 @@ v-layout(wrap)
             v-list-tile-content
               v-list-tile-title.body-2 {{worker.name}}
               v-list-tile-sub-title.caption {{worker.document}}
+              v-list-tile-sub-title.caption {{worker.work}}
             v-btn.hidden-xs-only(icon, @click.stop="editworker(worker)")
               v-icon edit
             v-btn.hidden-xs-only(icon, @click.native="deleteworker(worker)")
@@ -46,8 +47,9 @@ v-layout(wrap)
       v-card-text.text-xs-center(style="height:300px")
         img.avatar-image(v-if="worker.image_id",:src="worker.image_url")
         v-text-field(v-model='worker.name', :label="api.trans('literals.name')" prepend-icon="person")
-        v-text-field(v-model='worker.document', :label="api.trans('literals.document')" prepend-icon="membership_card")
+        v-text-field(v-model='worker.document', :label="api.trans('literals.document')" prepend-icon="card_membership")
         v-text-field(v-model='worker.phone_number', :label="api.trans('literals.phone_number')" prepend-icon="phone")
+        v-text-field(v-model='worker.work', :label="api.trans('literals.work')" prepend-icon="work", :placeholder="api.trans('__.domestico')")
       v-divider
       v-card-actions
         v-btn(:disabled="!canSave()" v-if="!worker.id" flat primary @click="createWorker()") {{api.trans('crud.add')}}
@@ -64,7 +66,7 @@ api=require '../services/api.js'
 module.exports =
   name: 'workers'
   mounted: ()->
-    @getworkers()
+    @getWorkers()
   data: ->
     api: api
     creator: false

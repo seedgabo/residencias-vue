@@ -3,7 +3,7 @@
 		v-container()
 			visitors(v-show="tab==='visitors'")
 			vehicles(v-show="tab==='vehicles'")
-			div(v-show="tab==='parkings'") {{api.residence.parkings}}
+			parkings(v-show="tab==='parkings'")
 			workers(v-show="tab==='workers'")
 		v-bottom-nav.primary(value="true" light="", :shift="windowWidth<500")
 			v-btn(dark=""  @click.native="tab='visitors'", :value="tab==='visitors'")
@@ -24,13 +24,15 @@
 Visitors=require '@/components/Visitors'
 Vehicles=require '@/components/Vehicles'
 Workers=require '@/components/Workers'
+Parkings=require '@/components/Parkings'
 
 module.exports =
 	name: 'Tables'
 	components:
 		visitors:Visitors
 		vehicles:Vehicles
-		workers:workers
+		workers:Workers
+		parkings:Parkings
 	mounted: ()->
 		window.addEventListener('resize', @handleResize)
 	beforeDestroy: ()->
