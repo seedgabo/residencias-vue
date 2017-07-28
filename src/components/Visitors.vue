@@ -16,6 +16,7 @@ v-layout(wrap)
                 img(v-if="visitor.image_id", :src="api.url+'images/'+visitor.image_id+'/encode'" slot="initial")
             v-list-tile-content
               v-list-tile-title {{visitor.name}}
+              v-list-tile-subtitle {{visitor.document}}
             v-btn.hidden-xs-only(icon, @click.stop="editVisitor(visitor)")
               v-icon edit
             v-btn.hidden-xs-only(icon, @click.native="deleteVisitor(visitor)")
