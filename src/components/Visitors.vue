@@ -16,13 +16,8 @@ v-layout(wrap)
               img.large(v-if="visitor.image_id", :src="visitor.image_url")
               v-icon.primary.white--text(v-else) add_a_photo
             v-list-tile-content
-<<<<<<< HEAD
-              v-list-tile-title {{visitor.name}}
-              v-list-tile-subtitle {{visitor.document}}
-=======
               v-list-tile-title.body-2 {{visitor.name}}
               v-list-tile-sub-title.caption {{visitor.document}}
->>>>>>> 3d52203c1e49a928f86878d7885163421916d27d
             v-btn.hidden-xs-only(icon, @click.stop="editVisitor(visitor)")
               v-icon edit
             v-btn.hidden-xs-only(icon, @click.native="deleteVisitor(visitor)")
@@ -62,7 +57,7 @@ v-layout(wrap)
   v-snackbar(:timeout="1500", bottom v-model="imageUploaded")
     {{ api.trans('__.image uploaded') }}
     v-btn.pink--text(flat, @click.native="snackbar=false" icon)
-      v-icon close 
+      v-icon close
 </template>
 
 <script lang="coffee">
