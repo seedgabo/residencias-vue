@@ -2,16 +2,16 @@
 	div
 		v-container()
 			visitors(v-show="tab==='visitors'")
-			div(v-show="tab==='visits'") {{api.residence.visits}}
-			div(v-show="tab==='parkings'") {{api.residence.parkings}}
-			div(v-show="tab==='workers'") {{api.residence.workers}}
+			vehicles(v-show="tab==='vehicles'")
+			parkings(v-show="tab==='parkings'")
+			workers(v-show="tab==='workers'")
 		v-bottom-nav.primary(value="true" light="", :shift="windowWidth<500")
 			v-btn(dark=""  @click.native="tab='visitors'", :value="tab==='visitors'")
 				span {{api.trans('literals.visitors')}}
 				v-icon people
-			v-btn(dark=""  @click.native="tab='visits'", :value="tab==='visits'")
-				span {{api.trans('literals.visits')}}
-				v-icon history
+			v-btn(dark=""  @click.native="tab='vehicles'", :value="tab==='vehicles'")
+				span {{api.trans('literals.vehicles')}}
+				v-icon directions_car
 			v-btn(dark=""  @click.native="tab='parkings'", :value="tab==='parkings'")
 				span {{api.trans('literals.parkings')}}
 				v-icon local_parking
@@ -22,11 +22,17 @@
 
 <script lang="coffee">
 Visitors=require '@/components/Visitors'
+Vehicles=require '@/components/Vehicles'
+Workers=require '@/components/Workers'
+Parkings=require '@/components/Parkings'
 
 module.exports =
 	name: 'Tables'
 	components:
 		visitors:Visitors
+		vehicles:Vehicles
+		workers:Workers
+		parkings:Parkings
 	mounted: ()->
 		window.addEventListener('resize', @handleResize)
 	beforeDestroy: ()->

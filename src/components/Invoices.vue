@@ -1,8 +1,8 @@
 <template>
-	<v-container>
+	<v-container fluid="">
 		<v-layout wrap>
 			<v-flex xs12 center>
-				<h2 class="headline text-xs-center" primary>
+				<h2 class=" headline text-xs-center " primary>
 					<v-icon>fa-files-o</v-icon>
 					&nbsp; {{api.trans('literals.invoices')}}
 				</h2>
@@ -11,14 +11,14 @@
 				<v-card>
 					<v-card-title>
 						<v-layout wrap align-center>
-							<v-flex xs12 class="text-xs-center">
+							<v-flex xs12 class="text-xs-center ">
 								<span>
 									{{api.trans('literals.percent')}}:
 								</span>
 							</v-flex>
-							<v-flex xs12 class="text-xs-center">
-								<v-progress-circular v-bind:size="70" v-bind:width="10" v-bind:rotate="-90" v-bind:value=" total>0 ? debt/total*100: 0" class="teal--text">
-									{{(debt/total*100).toFixed(2)}}%
+							<v-flex xs12 class="text-xs-center ">
+								<v-progress-circular v-bind:size="70 " v-bind:width="10 " v-bind:rotate="-90 " v-bind:value=" total>
+			0 ? debt/total*100: 0" class="teal--text"> {{(debt/total*100).toFixed(2)}}%
 								</v-progress-circular>
 							</v-flex>
 						</v-layout>
