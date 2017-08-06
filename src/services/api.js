@@ -1,7 +1,7 @@
 const axios = require('axios')
 var api = {
-    // url: 'http://residenciasonline.com/residencias/public/api/',
-    url: 'http://localhost/residencias/public/api/',
+    url: 'http://residenciasonline.com/residencias/public/api/',
+    // url: 'http://localhost/residencias/public/api/',
     name: 'Residencias Online',
     user: {},
     residence: {},
