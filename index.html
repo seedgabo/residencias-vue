@@ -26,8 +26,21 @@
             welcomeNotification: {
                 disable: true
             },
-            httpPermissionRequest: {
-                enable: false
+            promptOptions: {
+                /* Change bold title, limited to 30 characters */
+                siteName: 'Residentes Online',
+                /* Subtitle, limited to 90 characters */
+                actionMessage: "Desea Enviarte Notificaciones",
+                /* Example notification title */
+                exampleNotificationTitle: 'Gracias!',
+                /* Example notification message */
+                exampleNotificationMessage: 'Ahora recibiras notificaciones de tu conjunto',
+                /* Text below example notification, limited to 50 characters */
+                // exampleNotificationCaption: 'You can unsubscribe anytime',
+                /* Accept button text, limited to 15 characters */
+                acceptButtonText: "Permitir",
+                /* Cancel button text, limited to 15 characters */
+                cancelButtonText: "Cancelar"
             }
         }]);
     </script>
