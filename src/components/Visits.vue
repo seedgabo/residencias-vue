@@ -54,7 +54,7 @@ module.exports =
 				@visits=resp.data
 			.catch console.error
 		addVisit:()->
-			@api.post('visit/',@visit)
+			@api.post('visits',@visit)
 			.then (resp)=>
 				@visits= [resp.data].concat @visits
 				@adding=false

@@ -96,6 +96,37 @@
       <v-btn flat class="white--text" @click.native="visitConfirmToast = false">Close</v-btn>
     </v-snackbar>
 
+    <v-dialog persistent v-model="newVisitModal" width="400px">
+      <v-card>
+        <v-toolbar flat>
+          <v-toolbar-title>{{api.trans('__.you have a new visit')}}</v-toolbar-title>
+        </v-toolbar>
+        <v-card-text>
+          <p>
+            <b>{{api.trans('literals.visitor')}} </b>
+            <span v-if="visitor">{{visitor.name}}</span>
+          </p>
+          <p>
+            <b>{{api.trans('literals.status')}}</b>
+            <span v-if="visit">{{api.trans('literals.'+visit.status)}}</span>
+          </p>
+          <p v-if="visit && visit.note">
+            <b>{{api.trans('literals.note')}}</b>
+            <span> {{visit.note}}</span>
+          </p>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn primary @click="visitConfirmed('approved')">
+            {{api.trans('literals.confirm')}}
+          </v-btn>
+          <v-btn danger @click="visitConfirmed('rejected')">
+            {{api.trans('literals.reject')}}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
   </v-app>
 </template>
 
@@ -142,6 +173,8 @@ export default {
       visitConfirmToast: false,
       newVisitModal: false,
       visitor: null,
+      visit: null,
+      audio: null,
       api: api,
     }
   },
@@ -157,15 +190,26 @@ export default {
     newVisit(data) {
       this.visitor = data.visitor;
       this.visitConfirmToast = true;
-      var audio = new Audio('./static/sounds/beep.mp3');
-      audio.play();
+      this.audio = new Audio('./static/sounds/beep.mp3');
+      this.audio.play();
     },
     visitConfirm(data) {
       this.visitor = data.visitor;
+      this.visit = data.visit;
       this.newVisitModal = true;
-      var audio = new Audio('./static/sounds/beep.mp3');
-      audio.play();
-    }
+      this.audio = new Audio('./static/sounds/notifications.mp3');
+      this.audio.play();
+    },
+    visitConfirmed(response) {
+      if (this.audio)
+        this.audio.pause()
+      this.api.post(`visits/${this.visit.id}/visitApprove`, { status: response })
+        .then((resp) => {
+          console.log(resp);
+        })
+        .catch(console.error)
+      this.newVisitModal = false;
+    },
     startEcho() {
       if (this.api.Echo) {
         console.warn('already started Echo');
@@ -318,26 +362,36 @@ export default {
         })
 
 
-        .listen('visitCreated', (data) => {
-          if (data.residence.id != this.api.user.residence_id) return;
+        .listen('VisitCreated', (data) => {
           console.log("created visit:", data);
+          if (data.visit.residence_id != this.api.user.residence_id) return;
           this.api.residence.visits = [data.visit].concat(this.api.residence.visits)
           this.$router.app.$emit('visitCreated', data.visit)
-          this.newVisit(data);
+          if (data.visit.status === 'approved')
+            this.newVisit(data);
         })
-        .listen('visitUpdated', (data) => {
+        .listen('VisitUpdated', (data) => {
           console.log("updated visit:", data);
-          if (data.residence.id != this.api.user.residence_id) return;
+          if (data.visit.residence_id != this.api.user.residence_id) return;
           var visit_index = this.api.residence.visits.findIndex((ev) => {
             return ev.id === data.visit.id;
           });
-          if (visit_index > -1)
+
+          if (visit_index > -1) {
+            if (this.api.residence.visits[visit_index].status !== 'approved' && data.visit.status === 'approved')
+              this.newVisit(data);
             this.api.residence.visits = [data.visit].concat(this.api.residence.visits)
-          else
+
+          }
+          else {
+            if (data.visit.status === 'approved')
+              this.newVisit(data);
             this.api.residence.visits[this.api.residence.visits.length] = data.visit
+          }
           this.$router.app.$emit('visitUpdated', data.visit)
+
         })
-        .listen('visitDeleted', (data) => {
+        .listen('VisitDeleted', (data) => {
           console.log("deleted visit:", data);
           var visit_index = this.api.residence.visits.findIndex((ev) => {
             return ev.id === data.visit.id;
