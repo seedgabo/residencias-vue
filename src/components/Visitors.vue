@@ -11,7 +11,7 @@ v-layout(wrap)
           v-icon add
       v-card-text
         v-list(dense two-line)
-          v-list-tile(v-for="visitor in api.residence.visitors", :key="visitor.id", avatar="")
+          v-list-tile(v-for="visitor in api.residence.visitors", :key="visitor.id", avatar="", v-on:click="clickVisitor(visitor)" v-bind:class="selected==visitor.id?'primary':''")
             v-list-tile-avatar(@click="askFile(visitor)")
               img.large(v-if="visitor.image_id", :src="visitor.image_url")
               v-icon.primary.white--text(v-else) add_a_photo
@@ -27,11 +27,11 @@ v-layout(wrap)
                 v-btn(icon slot="activator")
                   v-icon more_vert
                 v-list
-                  v-list-tile(@click.native="editVisitor(visitor)")
+                  v-list-tile(@click.stop.native="editVisitor(visitor)")
                     v-list-tile-avatar
                       v-icon edit
                     v-list-tile-title {{api.trans('crud.edit')}}
-                  v-list-tile(@click.native="deleteVisitor(visitor)")
+                  v-list-tile(@click.stop.native="deleteVisitor(visitor)")
                     v-list-tile-avatar
                       v-icon delete
                     v-list-tile-title {{api.trans('crud.delete')}}
@@ -73,7 +73,16 @@ module.exports =
     imageUploaded: false
     visitor:{ sex:'male'}
     genders: [ { text: api.trans('literals.male'), value: 'male' }, { text: api.trans('literals.female'), value: 'female' }]
+    selected:null
   methods:
+    clickVisitor: (visitor)->
+      if @selectable
+        if @selected==visitor.id
+          @selected=null
+          @$emit 'visitorSelected', {visitor:null}
+        else
+          @selected= visitor.id
+          @$emit 'visitorSelected', {visitor:visitor}
     getVisitors: ()->
       @api.get """visitors?where[residence_id]=#{api.user.residence_id}"""
       .then (resp)=>
@@ -118,12 +127,16 @@ module.exports =
           @visitor.image_id = resp.data.image.id
           @imageUploaded=true
         .catch console.error
+  props:
+    selectable: {type:Boolean, default:false}
 </script>
 
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="stylus">
+<style lang="stylus" scoped>
 .avatar img.large
   height 46px !important
  	width 46px !important
+.selected
+  background: #AAA
 </style>

@@ -1,0 +1,83 @@
+<template lang="jade">
+div
+	v-card
+		v-toolbar.primary(dark)
+			v-icon.white--text list
+			v-toolbar-title {{api.trans('literals.visits')}}
+			v-spacer
+			v-btn(outline v-if="adder", @click.stop="adding=true")
+				v-icon add
+				span {{ api.trans('crud.add') }} {{ api.trans('literals.visit') }}
+		v-card-text
+			v-list(two-line)
+				v-list-tile(v-for="visit in visitsFilter", :key="visit.id" avatar v-if="visit.visitor")
+					v-list-tile-avatar(v-if="visit.visitor && visit.visitor.image")
+						img(:src="visit.visitor.image.url")
+					v-list-tile-content
+						v-list-tile-title(v-if="visit.visitor") {{visit.visitor.name}}
+						v-list-tile-sub-title {{visit.created_at | moment('from')}}
+	v-dialog(v-model="adding" width="400px")
+		v-card
+			v-toolbar(flat dark)
+				v-toolbar-title {{api.trans('crud.add')}} {{api.trans('literals.visit')}}
+				v-spacer
+				v-btn(icon): v-icon close
+			v-card-text
+				v-layout
+					v-flex
+						v-select(v-bind:items="api.residence.visitors" v-model="visit.visitor_id", :label="api.trans('literals.visitor')" single-line bottom item-text="name" item-value="id" prepend-icon="person")
+			v-card-actions
+				v-spacer
+				v-btn(flat primary, :disabled="!canAddVisit()", @click="addVisit()") {{api.trans('crud.add')}}
+				v-btn(flat, @click="adding=false") {{api.trans('crud.cancel')}}
+
+
+</template>
+
+<script lang="coffee">
+api=require '../services/api.js'
+module.exports =
+	name: 'Visits'
+	mounted: ()->
+		console.log @api
+		@getData()
+	data: ->
+		api: api
+		visits:[]
+		visit:{visitor_id:null,residence_id:api.residence.id,status:'approved'}
+		adding:false
+	methods:
+		getData:()->
+			@api.get 'visits?with[]=visitor&with[]=visitor.image&where[residence_id]='+@api.user.residence_id+"take=500&order[created_at]=desc"
+			.then (resp)=>
+				# console.log 'data', resp.data
+				@visits=resp.data
+			.catch console.error
+		addVisit:()->
+			@api.post('visit/',@visit)
+			.then (resp)=>
+				@visits= [resp.data].concat @visits
+				@adding=false
+				@visit={visitor_id:null,residence_id:api.residence.id,status:'approved'}
+			.catch console.error
+		canAddVisit: ()->
+			@visit.visitor_id>0
+	computed:
+		visitsFilter:()->
+			if @filters.visitor==null
+				return @visits
+			return @visits.filter (v)=>
+				return v.visitor?.id==@filters.visitor.id
+	props:
+		filters:
+			default:()->{visitor:null}
+		adder:
+			type:Boolean
+			default:true
+</script>
+
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style lang="stylus" scoped>
+
+</style>

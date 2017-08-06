@@ -7,48 +7,48 @@
     <title>Residencias Online</title>
     <link rel="shortcut icon" type="image/png" href="http://residenciasonline.com/residencias/public/img/icon.png" />
     <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet" type="text/css">
-    <script src="https://use.fontawesome.com/f85940f474.js"></script>
-    <script src="https://apis.google.com/js/api:client.js"></script>
     <link rel="stylesheet" href="./static/animate.min.css">
-    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async='async'></script>
-    <script>
-        var OneSignal = window.OneSignal || [];
-        OneSignal.push(["init", {
-            appId: "ebf07feb-3c76-4639-8c87-b1e7a2e9ddd8",
-            autoRegister: true,
-            /* Set to true to automatically prompt visitors */
-            httpPermissionRequest: {
-                enable: false
-            },
-            notifyButton: {
-                enable: false /* Set to false to hide */
-            },
-            welcomeNotification: {
-                disable: true
-            },
-            promptOptions: {
-                /* Change bold title, limited to 30 characters */
-                siteName: 'Residentes Online',
-                /* Subtitle, limited to 90 characters */
-                actionMessage: "Desea Enviarte Notificaciones",
-                /* Example notification title */
-                exampleNotificationTitle: 'Gracias!',
-                /* Example notification message */
-                exampleNotificationMessage: 'Ahora recibiras notificaciones de tu conjunto',
-                /* Text below example notification, limited to 50 characters */
-                exampleNotificationCaption: 'You can unsubscribe anytime',
-                /* Accept button text, limited to 15 characters */
-                acceptButtonText: "Permitir",
-                /* Cancel button text, limited to 15 characters */
-                cancelButtonText: "Cancelar"
-            }
-        }]);
-    </script>
+    <script src="https://use.fontawesome.com/f85940f474.js"></script>
 </head>
 
 <body>
     <div id="app"></div>
     <!-- built files will be auto injected -->
 </body>
+<script src="https://apis.google.com/js/api:client.js"></script>
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async='async'></script>
+<script>
+    var OneSignal = window.OneSignal || [];
+    OneSignal.push(["init", {
+        appId: "ebf07feb-3c76-4639-8c87-b1e7a2e9ddd8",
+        autoRegister: true,
+        /* Set to true to automatically prompt visitors */
+        httpPermissionRequest: {
+            enable: false
+        },
+        notifyButton: {
+            enable: false /* Set to false to hide */
+        },
+        welcomeNotification: {
+            disable: true
+        },
+        promptOptions: {
+            /* Change bold title, limited to 30 characters */
+            siteName: 'Residentes Online',
+            /* Subtitle, limited to 90 characters */
+            actionMessage: "Desea Enviarte Notificaciones",
+            /* Example notification title */
+            exampleNotificationTitle: 'Gracias!',
+            /* Example notification message */
+            exampleNotificationMessage: 'Ahora recibiras notificaciones de tu conjunto',
+            /* Text below example notification, limited to 50 characters */
+            exampleNotificationCaption: 'You can unsubscribe anytime',
+            /* Accept button text, limited to 15 characters */
+            acceptButtonText: "Permitir",
+            /* Cancel button text, limited to 15 characters */
+            cancelButtonText: "Cancelar"
+        }
+    }]);
+</script>
 
 </html>

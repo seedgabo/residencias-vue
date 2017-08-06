@@ -176,7 +176,7 @@ module.exports=
 				return
 	data: ->
 		api: api
-		genders: [ { text: 'Male', value: 'male' }, { text: 'Female', value: 'female' }, ]
+		genders: [ { text: api.trans('literals.male'), value: 'male' }, { text: api.trans('literals.female'), value: 'female' }, ]
 		rules:{
 			required: (value) => !!value || 'Required.',
 			email: (value) =>
@@ -195,7 +195,7 @@ module.exports=
 		new_user: false
 		user: { name: '', email: '', password: '', document: '', sex: 'male', }
 		toImage: {}
-	methods: 
+	methods:
 		updateUser: ()->
 			@api.put('users/' + this.api.user.id,
 				{
@@ -222,7 +222,7 @@ module.exports=
 					@snackbar_success_residence = true
 					owner=@api.residence.users.find (user)=>
 						user.id == @api.residence.owner_id
-					
+
 					@api.residence.owner=owner
 					window.localStorage.setItem('residence', JSON.stringify(@api.residence))
 					@editable = false
@@ -239,7 +239,7 @@ module.exports=
 					window.localStorage.setItem('residence', JSON.stringify(@api.residence));
 				.catch(console.error)
 		deleteUser: (user, index)->
-			return if (!confirm(api.trans('__.are you sure?'))) 
+			return if (!confirm(api.trans('__.are you sure?')))
 			@api.delete('users/' + user.id)
 				.then (response) =>
 					console.log(response.data)
