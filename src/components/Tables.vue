@@ -5,7 +5,7 @@
 			vehicles(v-show="tab==='vehicles'")
 			parkings(v-show="tab==='parkings'")
 			workers(v-show="tab==='workers'")
-		v-bottom-nav.primary(value="true" light="", :shift="windowWidth<500")
+		v-bottom-nav.purple(value="true" light="", :shift="windowWidth<500")
 			v-btn(dark=""  @click.native="tab='visitors'", :value="tab==='visitors'")
 				span {{api.trans('literals.visitors')}}
 				v-icon people

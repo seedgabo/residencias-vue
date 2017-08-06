@@ -16,6 +16,8 @@ div
 					v-list-tile-content
 						v-list-tile-title(v-if="visit.visitor") {{visit.visitor.name}}
 						v-list-tile-sub-title {{visit.created_at | moment('from')}}
+					v-list-tile-action(:class="(visit.status==='approved'? 'green':'red') +'--text'")
+						small {{api.trans('literals.'+visit.status)}}
 	v-dialog(v-model="adding" width="400px")
 		v-card
 			v-toolbar(flat dark)
@@ -41,6 +43,16 @@ module.exports =
 	mounted: ()->
 		console.log @api
 		@getData()
+		@$router.app.$on 'visitCreated',(data)=>
+			@getData()
+		@$router.app.$on 'visitChanged',(data)=>
+			@getData()
+		@$router.app.$on 'visitDeleted',(data)=>
+			@getData()
+	beforeDestroy: ->
+		@$router.app.$off('visitCreated')
+		@$router.app.$off('visitCreated')
+		@$router.app.$off('visitCreated')
 	data: ->
 		api: api
 		visits:[]
@@ -48,7 +60,7 @@ module.exports =
 		adding:false
 	methods:
 		getData:()->
-			@api.get 'visits?with[]=visitor&with[]=visitor.image&where[residence_id]='+@api.user.residence_id+"take=500&order[created_at]=desc"
+			@api.get 'visits?with[]=visitor&with[]=visitor.image&where[residence_id]='+@api.user.residence_id+"limit=500&order[created_at]=desc"
 			.then (resp)=>
 				# console.log 'data', resp.data
 				@visits=resp.data
