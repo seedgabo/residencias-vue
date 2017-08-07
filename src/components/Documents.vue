@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-layout wrap>
-      <v-flex sm12 md6>
+      <v-flex xs12 sm12 md6 lg6>
         <v-card>
           <v-toolbar class="primary" dark>
             <v-icon dark>insert_drive_file</v-icon>
@@ -24,7 +24,7 @@
           <!-- </v-card-text> -->
         </v-card>
       </v-flex>
-      <v-flex sm12 md6>
+      <v-flex xs12 sm12 md6 lg6>
         <v-card>
           <v-card-text style="height:480px">
             <iframe :src="document.url" frameborder="0" style="width:100%;height:450px"></iframe>

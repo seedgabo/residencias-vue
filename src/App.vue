@@ -93,7 +93,7 @@
       <span v-if="visitor">
         {{api.trans('__.visit confirmed',{visit:api.trans('literals.visit') ,visitor:visitor.name})}}
       </span>
-      <v-btn flat class="white--text" @click.native="visitConfirmToast = false">Close</v-btn>
+      <v-btn flat class="white--text" @click.native="visitConfirmToast = false">X</v-btn>
     </v-snackbar>
 
     <v-dialog persistent v-model="newVisitModal" width="400px">
