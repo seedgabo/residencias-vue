@@ -161,7 +161,7 @@ v-container(fluid='')
 				v-icon close
 		v-snackbar(:timeout='6000', success='', top='', right='', v-model='snackbar_success_residence')
 			| {{api.trans('literals.residence')}} {{api.trans('crud.updated')}}
-			v-btn(dark='', icon='', @click.native='snackbar_success = false')
+			v-btn(dark='', icon='', @click.native='snackbar_success_residence = false')
 				v-icon close
 
 </template>

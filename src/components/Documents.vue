@@ -27,7 +27,7 @@
       <v-flex xs12 sm12 md6 lg6>
         <v-card>
           <v-card-text style="height:480px">
-            <iframe :src="document.url" frameborder="0" style="width:100%;height:450px"></iframe>
+            <iframe :src="document.url + '?token='+api.user.token" frameborder="0" style="width:100%;height:450px"></iframe>
           </v-card-text>
         </v-card>
       </v-flex>

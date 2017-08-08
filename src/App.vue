@@ -1,5 +1,5 @@
 <template>
-  <v-app id="example-2">
+  <v-app id="example-2" :dark="false">
     <v-navigation-drawer temporary v-model="drawer" overflow>
       <v-list class="pa-0" v-if="api.user.id">
         <v-list-tile avatar tag="div" class="primary">
@@ -55,7 +55,7 @@
             <v-icon class="hidden-md-and-up white--text" style="margin: 8px 0px; ">more_vert</v-icon>
           </v-btn>
           <v-list>
-            <v-list-tile avatar :href="api.url + '../admin'">
+            <v-list-tile avatar :href="api.url + '../admin'" v-if="api.user.admin===1">
               <v-list-tile-avatar>
                 <v-icon>lock</v-icon>
               </v-list-tile-avatar>

@@ -21,11 +21,19 @@
               <div v-html="post.text"></div>
             </v-card-text>
             <v-divider></v-divider>
+
             <v-card-text class="by text-xs-right">
-              <span class="headline-2 mr-4" v-if="post.user">{{post.user.name}}</span>
-              <span class="grey--text">
-                {{ post.created_at | moment('from')}}
-              </span>
+              <v-layout>
+                <v-flex xs6 class="text-xs-left">
+                  <v-chip class="primary white--text" v-for="tag in post.tags" v-if="post.tags && tag.name.length>0" :bind="tag.id">{{tag.name}}</v-chip>
+                </v-flex>
+                <v-flex xs6>
+                  <span class="headline-2 mr-4" v-if="post.user">{{post.user.name}}</span>
+                  <span class="grey--text">
+                    {{ post.created_at | moment('from')}}
+                  </span>
+                </v-flex>
+              </v-layout>
             </v-card-text>
             <div style="margin:0 auto;" class="text-xs-center" v-if="post.image_id">
               <img :src="post.image_url" style="height:100px" alt="">
@@ -100,7 +108,7 @@ export default {
   },
   methods: {
     getPosts: function () {
-      this.api.get('posts?limit=100&order[created_at]=desc&with[]=user&with[]=image')
+      this.api.get('posts?limit=100&order[created_at]=desc&with[]=user&with[]=image&with[]=tags')
         .then((resp) => {
           console.log(resp.data)
           this.posts = resp.data
