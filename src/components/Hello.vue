@@ -31,7 +31,7 @@ div
         v-card-actions
           v-btn(full='', block='', flat='', :to="'posts'")
             | {{api.trans('literals.view_resource')}} {{api.trans('literals.more')}}
-    v-flex.mt-3(xs12 ="" sm4="" order-xs1="" order-sm2="")
+    v-flex.mt-3(xs12 ="" sm4="" order-xs1="" order-sm2="", v-if="api.residence")
       v-card.elevation-5
         v-card-text
           div.title.text-xs-center.primary--text {{api.residence.name}}
