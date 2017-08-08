@@ -36,21 +36,21 @@ div
         v-card-text
           div.title.text-xs-center.primary--text {{api.residence.name}}
         v-card-text
-          v-layout
+          v-layout(@click="$router.push('profile')", :ripple="{class:'success--text'}", style="cursor:pointer")
             v-flex(xs1)
               v-icon.primary--text person
             v-flex(xs5)
               b &nbsp;&nbsp;{{api.trans('literals.owner')}}:
             v-flex.text-xs-right(xs6)
               span {{api.residence.owner.name}}
-          v-layout.mt-3
+          v-layout.mt-3(@click="$router.push('profile')", :ripple="{class:'success--text'}", style="cursor:pointer")
             v-flex(xs1)
               v-icon.large.warning--text fa-bar-chart
             v-flex(xs5)
               b &nbsp;&nbsp;{{api.trans('literals.status')}}:
             v-flex.text-xs-right(xs6)
               span {{api.trans('literals.'+api.residence.status)}}
-          v-layout.mt-3
+          v-layout.mt-3(@click="$router.push('invoices')", :ripple="{class:'success--text'}", style="cursor:pointer")
             v-flex(xs1)
               v-icon.large.green--text fa-money
             v-flex(xs5)
@@ -63,7 +63,7 @@ div
           span  {{api.trans('__.next events')}}
         v-card-text
           v-list(three-line="")
-            v-list-tile.event-item(v-for="event in next_events", :key="event.id", :style="'border-color:'+event.color")
+            v-list-tile.event-item(v-for="event in next_events", :key="event.id", :style="'border-color:'+event.color",@click="$router.push('events')")
               v-list-tile-content
                 v-list-tile-title {{event.title}}
                 v-list-tile-sub-title {{api.trans('__.'+ event.type)}} -
