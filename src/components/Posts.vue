@@ -21,11 +21,11 @@
               <div v-html="post.text"></div>
             </v-card-text>
             <v-divider></v-divider>
-
+  
             <v-card-text class="by text-xs-right">
               <v-layout>
                 <v-flex xs6 class="text-xs-left">
-                  <v-chip class="primary white--text" v-for="tag in post.tags" v-if="post.tags && tag.name.length>0" :bind="tag.id">{{tag.name}}</v-chip>
+                  <v-chip class="primary white--text" v-for="tag in post.tags" v-if="post.tags && tag.name.length>0" v-bind:key="tag.id">{{tag.name}}</v-chip>
                 </v-flex>
                 <v-flex xs6>
                   <span class="headline-2 mr-4" v-if="post.user">{{post.user.name}}</span>
@@ -44,7 +44,7 @@
           <v-icon>add</v-icon>
         </v-btn>
       </v-layout>
-
+  
       <v-dialog fullscreen v-model="creator">
         <v-toolbar class="indigo" dark>
           <v-toolbar-title>
@@ -61,7 +61,7 @@
               <v-text-field v-model="post.title" :label="api.trans('literals.title')"></v-text-field>
               <quill-editor v-model="post.text" ref="myQuillEditor" :options="editorOption">
               </quill-editor>
-
+  
               <!-- <span v-html="post.text"></span> -->
               <v-flex class="text-xs-right">
                 <v-spacer></v-spacer>
@@ -69,12 +69,12 @@
                   <v-icon dark>save</v-icon>
                   &nbsp; {{api.trans('crud.save')}}
                 </v-btn>
-
+  
                 <v-btn primary v-else @click="updatePost(post)">
                   <v-icon dark>save</v-icon>
                   &nbsp; {{api.trans('crud.save')}}
                 </v-btn>
-
+  
                 <v-btn flat @click="creator=false">
                   {{api.trans('crud.cancel')}}
                 </v-btn>

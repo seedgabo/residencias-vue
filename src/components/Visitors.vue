@@ -55,7 +55,7 @@ v-layout(wrap)
         v-btn(v-else flat primary @click="updateVisitor(visitor)") {{api.trans('crud.save')}}
         v-btn(@click="creator=false" flat primary) {{api.trans('crud.cancel')}}
   v-snackbar(:timeout="1500", bottom v-model="imageUploaded")
-    {{ api.trans('__.image uploaded') }}
+    span {{ api.trans('__.image uploaded') }}
     v-btn.pink--text(flat, @click.native="snackbar=false" icon)
       v-icon close
 </template>
