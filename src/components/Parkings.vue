@@ -16,7 +16,7 @@ v-layout(wrap)
               v-list-tile-sub-title.body-1(:class="(parking.status==='available'?'green':'red')+'--text'") {{ api.trans('literals.'+parking.status)}}
 
   v-snackbar(:timeout="1500", bottom v-model="imageUploaded")
-    {{ api.trans('__.image uploaded') }}
+    span {{ api.trans('__.image uploaded') }}
     v-btn.pink--text(flat, @click.native="snackbar=false" icon)
       v-icon close
 </template>
