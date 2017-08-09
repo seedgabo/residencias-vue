@@ -36,21 +36,21 @@ div
         v-card-text
           div.title.text-xs-center.primary--text {{api.residence.name}}
         v-card-text
-          v-layout(@click="$router.push('profile')", :ripple="{class:'success--text'}", style="cursor:pointer")
+          v-layout(@click="$router.push('profile')", ripple, style="cursor:pointer")
             v-flex(xs1)
               v-icon.primary--text person
             v-flex(xs5)
               b &nbsp;&nbsp;{{api.trans('literals.owner')}}:
             v-flex.text-xs-right(xs6)
               span {{api.residence.owner.name}}
-          v-layout.mt-3(@click="$router.push('profile')", :ripple="{class:'success--text'}", style="cursor:pointer")
+          v-layout.mt-3(@click="$router.push('profile')", ripple, style="cursor:pointer")
             v-flex(xs1)
               v-icon.large.warning--text fa-bar-chart
             v-flex(xs5)
               b &nbsp;&nbsp;{{api.trans('literals.status')}}:
             v-flex.text-xs-right(xs6)
               span {{api.trans('literals.'+api.residence.status)}}
-          v-layout.mt-3(@click="$router.push('invoices')", :ripple="{class:'success--text'}", style="cursor:pointer")
+          v-layout.mt-3(@click="$router.push('invoices')", ripple, style="cursor:pointer")
             v-flex(xs1)
               v-icon.large.green--text fa-money
             v-flex(xs5)
