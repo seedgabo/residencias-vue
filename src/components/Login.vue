@@ -41,7 +41,7 @@ module.exports =
 	name: 'login'
 	data: ->
 		api: require '../services/api.js'
-		username:'seedgabo@gmail.com '
+		username:''
 		password:''
 		e1:true
 		loging:false
@@ -131,15 +131,15 @@ module.exports =
 <style scoped>
 .login-page,
 body {
-	background: #fff;
-	margin-top: 0px;
-	height: 100vh;
-	width: 100vw;
-	background-image: url(https://s-media-cache-ak0.pinimg.com/originals/d2/b8/fc/d2b8fc669367ac5eac78f9f2d4186913.png);
-	background-size: cover;
+  background: #fff;
+  margin-top: 0px;
+  height: 100vh;
+  width: 100vw;
+  background-image: url(https://s-media-cache-ak0.pinimg.com/originals/d2/b8/fc/d2b8fc669367ac5eac78f9f2d4186913.png);
+  background-size: cover;
 }
 
 .delay {
-	animation-delay: 1s;
+  animation-delay: 1s;
 }
 </style>
