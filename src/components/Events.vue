@@ -26,7 +26,7 @@
                   <v-list-tile-sub-title>
                     {{event.start | moment('calendar') }}
                   </v-list-tile-sub-title>
-
+  
                   <v-list-tile-sub-title>
                     <small>
                       {{ event.creator.name }}
@@ -45,7 +45,7 @@
       </v-flex>
     </v-layout>
     <!--//* end Calendar -->
-
+  
     <!--//* EDITOR  -->
     <v-dialog v-model="dialog" fullscreen transition="dialog-bottom-transition">
       <v-card>
@@ -68,60 +68,60 @@
                 <v-text-field v-model="event.title" :label="api.trans( 'literals.title') " prepend-icon="title "></v-text-field>
               </v-flex>
               <v-flex sm3 class="hidden-xs-only"></v-flex>
-
+  
               <v-flex xs6 sm6>
                 <v-menu :close-on-content-click="true" v-model="menu_start_date_picker" transition="scale-transition" full-width :nudge-left="40" max-width="290px">
                   <v-text-field slot="activator" :label="api.trans( 'literals.start_date')" v-model="event.start_date" prepend-icon="event" readonly></v-text-field>
                   <v-date-picker v-model="event.start_date" locale="es" scrollable></v-date-picker>
                 </v-menu>
-
+  
                 <v-menu :close-on-content-click="false" v-model="menu_start_time_picker" transition="scale-transition" full-width :nudge-left="40" max-width="290px">
                   <v-text-field slot="activator" :label="api.trans( 'literals.start_date')" v-model="event.start_time" prepend-icon="access_time" readonly></v-text-field>
                   <v-time-picker v-model="event.start_time" locale="es" autosave></v-time-picker>
                 </v-menu>
               </v-flex>
-
+  
               <v-flex xs6 sm6>
                 <v-menu :close-on-content-click="true" v-model="menu_end_date_picker" transition="scale-transition" full-width :nudge-left="40" max-width="290px">
                   <v-text-field slot="activator" :label="api.trans( 'literals.end_date')" v-model="event.end_date" prepend-icon="event" readonly></v-text-field>
                   <v-date-picker v-model="event.end_date" locale="es" scrollable></v-date-picker>
                 </v-menu>
-
+  
                 <v-menu :close-on-content-click="false" v-model="menu_end_time_picker" transition="scale-transition" full-width :nudge-left="40" max-width="290px">
                   <v-text-field slot="activator" :label="api.trans( 'literals.end_date')" v-model="event.end_time" prepend-icon="access_time" readonly></v-text-field>
                   <v-time-picker v-model="event.end_time" locale="es" autosave></v-time-picker>
                 </v-menu>
               </v-flex>
-
+  
               <v-flex xs12 sm4>
                 <v-select prepend-icon="lock" v-bind:items="privacities" v-model="event.privacity " :label="api.trans('literals.privacity')" autocomplete></v-select>
               </v-flex>
-
+  
               <v-flex xs12 sm4>
                 <v-select prepend-icon="nature_people" v-bind:items="types" v-model="event.type " :label="api.trans('literals.type')" autocomplete></v-select>
               </v-flex>
-
+  
               <v-flex xs12 sm4>
                 <v-select prepend-icon="place" v-bind:items="zones" item-text="name" item-value="id" v-model="event.zones" :label="api.trans('literals.zones')" multiple></v-select>
               </v-flex>
-
+  
               <v-flex xs12 sm6 offset-sm3>
                 <v-text-field v-model="event.color" type="color" :label="api.trans('literals.color') " prepend-icon="brush"></v-text-field>
               </v-flex>
-
+  
               <v-flex xs12 sm6>
                 <v-text-field multi-line v-model="event.description" :label="api.trans( 'literals.description') " prepend-icon="list"></v-text-field>
               </v-flex>
-
+  
             </v-layout>
             <v-btn :disabled="!canSave()" v-if="event.id" v-tooltip:top="{ html: api.trans('crud.save') }" fixed bottom right primary dark fab @click.native="saveEvent()">
               <v-icon dark>save</v-icon>
             </v-btn>
-
+  
             <v-btn :disabled="!canSave()" v-else v-tooltip:top="{ html: api.trans('crud.add') }" fixed bottom right primary dark fab @click.native="saveNewEvent()">
               <v-icon dark>add_circle</v-icon>
             </v-btn>
-
+  
             <v-btn v-if="event.id" v-tooltip:top="{html: api.trans('crud.delete')}" fixed bottom style="right:80px" class="red" dark fab @click.native="deleteEvent(event)">
               <v-icon>delete</v-icon>
             </v-btn>
@@ -131,7 +131,7 @@
       </v-card>
     </v-dialog>
     <!--//* END EDITOR  -->
-
+  
     <!--//* Visor  -->
     <v-dialog v-model="visor" width="600px" transition="dialog-bottom-transition">
       <v-card>
@@ -147,7 +147,7 @@
               <v-flex xs12 sm6 v-if="event.start">
                 <b>{{api.trans('__.date start')}}</b>: {{event.start.format('dddd, MMMM Do YYYY, h:mm:ss a')}}
               </v-flex>
-
+  
               <v-flex xs12 sm6>
                 <b>{{api.trans('__.date end')}}</b>:
                 <span v-if="event.end">
@@ -172,7 +172,7 @@
                   {{api.trans('__.'+ event.privacity)}}
                 </b>
               </v-flex>
-
+  
             </v-layout>
           </v-container>
         </v-card-text>
@@ -180,7 +180,7 @@
       </v-card>
     </v-dialog>
     <!--//* END Visor  -->
-
+  
     <v-btn fab fixed right bottom dark primary @click="createEvent()" v-tooltip:left="{html: api.trans( 'crud.add') + ' ' + api.trans( 'literals.event')}">
       <v-icon>add</v-icon>
     </v-btn>
@@ -202,7 +202,7 @@ function getRandomColor() {
   return color;
 }
 export default {
-  name: 'Example',
+  name: 'Events',
   mounted() {
     this.$router.app.$on('eventCreated', (data) => {
       console.log("event created", data);
@@ -216,7 +216,6 @@ export default {
       console.log("event deleted", data);
       this.refreshEvents();
     });
-
     this.api.ready
       .then(() => {
         this.getEvents()
@@ -283,6 +282,9 @@ export default {
   methods: {
     eventSelected: function (event, jsEv, view) {
       event.start = moment(event.start)
+      if (event.end) {
+        event.end = moment(event.end)
+      }
       this.event = {
         id: event.id,
         _title: event.title,
@@ -326,6 +328,11 @@ export default {
         .then((response) => {
           console.log(response.data)
           this.api.events = response.data
+          if (this.$route.query.event_id) {
+            var selected = this.api.events.find((ev) => { return ev.id == this.$route.query.event_id })
+            if (selected)
+              this.eventSelected(selected);
+          }
         })
         .catch(console.error)
     },

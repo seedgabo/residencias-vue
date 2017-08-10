@@ -63,7 +63,7 @@ div
           span  {{api.trans('__.next events')}}
         v-card-text
           v-list(three-line="")
-            v-list-tile.event-item(v-for="event in next_events", :key="event.id", :style="'border-color:'+event.color",@click="$router.push('events')")
+            v-list-tile.event-item(v-for="event in next_events", :key="event.id", :style="'border-color:'+event.color",@click="$router.push('events?event_id='+event.id)")
               v-list-tile-content
                 v-list-tile-title {{event.title}}
                 v-list-tile-sub-title {{api.trans('__.'+ event.type)}} -

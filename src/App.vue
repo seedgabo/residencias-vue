@@ -7,7 +7,7 @@
             <img :src="api.user.image_url" />
           </v-list-tile-avatar>
           <v-list-tile-content>
-            <v-list-tile-title class="white--text">{{ api.user.name }}</v-list-tile-title>
+            <v-list-tile-title v-if="api.user" class="white--text">{{ api.user.name }}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -21,7 +21,7 @@
             <v-list-tile-title class="text-capitalize">{{ api.trans('literals.'+page.title) }}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-
+  
         <v-list-tile @click.native="logout()">
           <v-list-tile-action>
             <v-icon>fa-sign-out</v-icon>
@@ -30,7 +30,7 @@
             <v-list-tile-title>Cerrar Sesión</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-
+  
       </v-list>
     </v-navigation-drawer>
     <v-toolbar prominent fixed class="primary" v-if="api.user.id" dark>
@@ -43,7 +43,7 @@
           </v-toolbar-title>
         </div>
       </v-spacer>
-
+  
       <v-toolbar-items>
         <v-menu bottom left :position-absolutely="true">
           <v-btn flat slot="activator" style="height:100%; padding:8px 0px;">
@@ -63,7 +63,7 @@
                 <v-list-tile-title class="orange--text">Admin</v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
-
+  
             <v-list-tile avatar to="profile">
               <v-list-tile-avatar>
                 <v-icon>person</v-icon>
@@ -88,14 +88,14 @@
     <main>
       <router-view></router-view>
     </main>
-
+  
     <v-snackbar :timeout="timeout" success top right v-model="visitConfirmToast">
       <span v-if="visitor">
         {{api.trans('__.visit confirmed',{visit:api.trans('literals.visit') ,visitor:visitor.name})}}
       </span>
       <v-btn flat class="white--text" @click.native="visitConfirmToast = false">X</v-btn>
     </v-snackbar>
-
+  
     <v-dialog persistent v-model="newVisitModal" width="400px">
       <v-card>
         <v-toolbar flat>
@@ -126,7 +126,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
+  
   </v-app>
 </template>
 
