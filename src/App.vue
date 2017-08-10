@@ -262,6 +262,19 @@ export default {
           }
         })
 
+        .listen('SurveyCreated', (data) => {
+          console.log("survey created:", data);
+          this.$router.app.$emit('surveyUpdated', data.survey)
+        })
+        .listen('SurveyUpdated', (data) => {
+          console.log("survey udpated:", data);
+          this.$router.app.$emit('surveyUpdated', data.survey)
+        })
+        .listen('SurveyDeleted', (data) => {
+          console.log("survey deleted:", data);
+          this.$router.app.$emit('surveyUpdated', data.survey)
+        })
+
 
         .listen('VisitorCreated', (data) => {
           console.log("created visitor:", data);

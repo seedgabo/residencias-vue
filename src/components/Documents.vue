@@ -1,38 +1,28 @@
-<template>
-  <v-container>
-    <v-layout wrap>
-      <v-flex xs12 sm12 md6 lg6>
-        <v-card>
-          <v-toolbar class="primary" dark>
-            <v-icon dark>insert_drive_file</v-icon>
-            <v-toolbar-title>
-              {{api.trans('literals.dynamic_documents')}}
-            </v-toolbar-title>
-          </v-toolbar>
-          <!-- <v-card-text> -->
-          <v-list two-line>
-            <v-list-tile v-for="document in documents" :key="document.id" @click.native="selectDocument(document)">
-              <v-list-tile-action>
-                <v-icon fa class="red--text">file-pdf-o</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>{{document.title}}</v-list-tile-title>
-                <small>{{document.description}}</small>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
-          <!-- </v-card-text> -->
-        </v-card>
-      </v-flex>
-      <v-flex xs12 sm12 md6 lg6>
-        <v-card>
-          <v-card-text style="height:480px">
-            <iframe v-if="document && document.url" :src="document.url + '?token='+api.user.token" frameborder="0" style="width:100%;height:450px"></iframe>
-          </v-card-text>
-        </v-card>
-      </v-flex>
-    </v-layout>
-  </v-container>
+<template lang="jade">
+v-container
+  v-layout(wrap='')
+    v-flex(xs12='', sm12='', md6='', lg6='')
+      v-card
+        v-toolbar.primary(dark='')
+          v-icon(dark='') insert_drive_file
+          v-toolbar-title
+            | {{api.trans('literals.dynamic_documents')}}
+        // <v-card-text>
+        v-list(two-line='')
+          v-list-tile(v-for='document in documents', :key='document.id')
+            v-list-tile-action(@click.native='selectDocument(document)')
+              v-icon.red--text(fa='') file-pdf-o
+            v-list-tile-content(@click.native='selectDocument(document)')
+              v-list-tile-title {{document.title}}
+              small {{document.description}}
+            v-list-tile-action
+              v-btn(small='', icon='', :href="document.url + '/api?token='+api.user.token", target='document')
+                v-icon.red--text file_download
+        // </v-card-text>
+    v-flex(xs12='', sm12='', md6='', lg6='')
+      v-card
+        v-card-text(style='height:480px')
+          iframe(v-if='document && document.url', :src="document.url + '/api?token='+api.user.token", frameborder='0', style='width:100%;height:450px')
 </template>
 
 <script>

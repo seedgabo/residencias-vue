@@ -1,45 +1,48 @@
 <template lang="jade">
-	v-container(fluid="")
-		v-layout(wrap="")
-			v-flex.text-xs-center(xs12="" sm6="")
-				v-progress-circular.primary--text(indeterminate="" v-bind:size="50" v-if="loading")
-				v-card.elevation-0(v-else)
-					v-list(subheader="")
-						v-subheader(inset="")  
-							span   &nbsp; {{api.trans('literals.surveys')}}
-							v-spacer
-						v-list-tile(avatar="" v-for="survey in surveys", :key="survey.id" @click="selectSurvey(survey)")
-							v-list-tile-avatar(v-tooltip:right="{html: api.trans('literals.votes')}")
-								v-icon(v-badge="{value: survey.surveyuser.length}") pie_chart
-							v-list-tile-content
-								v-list-tile-title {{survey.title}}
-								v-list-tile-sub-title {{survey.question}}
-							v-list-tile-action(v-tooltip:left="{html: api.trans('literals.close_time')}")
-								small {{survey.close_time | moment('from')}}
-			v-flex.text-xs-center(xs12="" sm6="")
-				transition(name="zoomin" enter-active-class="animated slideInRight" leave-active-class="animated slideOutRight" mode="out-in", :duration="{ enter: 500, leave:500 }")
-					v-card.elevation-0(v-if="!voting" key="normal")
-						div(v-if="survey.id")
-							v-card-title 
-								h3.headline.primary--text {{survey.question}}
-							v-card-text
-								<pie-chart :data="data" :colors="colors" :discrete="true" :label="api.trans('literas.votes')" :library="{animation: {duration:700}}" :download="true"></pie-chart>
-								v-btn(success="" @click.stop="voting=true")
-									v-icon(dark="") thumbs_up_down
-									span &nbsp; {{api.trans('literals.vote')}}
-					v-card.elevation-0(v-else key="edit")
-						v-card-title {{survey.question}}
-						v-divider
+v-container(fluid="")
+	v-layout(wrap="")
+		v-flex.text-xs-center(xs12="" sm6="")
+			v-progress-circular.primary--text(indeterminate="" v-bind:size="50" v-if="loading")
+			v-card.elevation-0(v-else)
+				v-list(subheader="")
+					v-subheader(inset="")  
+						span   &nbsp; {{api.trans('literals.surveys')}}
+						v-spacer
+					v-list-tile(avatar="" v-for="survey in surveys", :key="survey.id" @click="selectSurvey(survey)")
+						v-list-tile-avatar(v-tooltip:right="{html: api.trans('literals.votes')}")
+							v-icon(v-badge="{value: survey.surveyuser.length}") pie_chart
+						v-list-tile-content
+							v-list-tile-title {{survey.title}}
+							v-list-tile-sub-title {{survey.question}}
+						v-list-tile-action(v-tooltip:left="{html: api.trans('literals.close_time')}")
+							small {{survey.close_time | moment('from')}}
+		v-flex.text-xs-center(xs12="" sm6="")
+			transition(name="zoomin" enter-active-class="animated slideInRight" leave-active-class="animated slideOutRight" mode="out-in", :duration="{ enter: 500, leave:500 }")
+				v-card.elevation-0(v-if="!voting" key="normal")
+					div(v-if="survey.id")
+						v-card-title 
+							h3.headline.primary--text {{survey.question}}
 						v-card-text
-							v-radio(:label="survey.response_1", value="1" v-model="response")
-							v-radio(:label="survey.response_2", value="2" v-model="response")
-							v-radio(:label="survey.response_3", value="3" v-model="response")
-							v-radio(:label="survey.response_4", value="4" v-model="response")
-							v-radio(:label="survey.response_5", value="5" v-model="response")
-							v-radio(:label="survey.response_6", value="6" v-model="response")
-						v-card-actions
-							v-btn.primary--text.darken-1(flat="" @click.native="voting=false") {{ api.trans('crud.cancel') }}
-							v-btn.primary--text.darken-1(flat="" @click.native="postVote(survey,response)") {{ api.trans('crud.save') }}
+							<pie-chart :data="data" :colors="colors" :discrete="true" :label="api.trans('literas.votes')" :library="{animation: {duration:700}}" :download="true"></pie-chart>
+							div.text-capitalize(v-if="my_vote")
+								b {{ api.trans('__.my vote') }}:
+								span {{survey['response_'+my_vote.response]}}
+							v-btn(success="" @click.stop="voting=true;selectResponse()")
+								v-icon(dark="") thumbs_up_down
+								span &nbsp; {{api.trans('literals.vote')}}
+				v-card.elevation-0(v-else key="edit")
+					v-card-title {{survey.question}}
+					v-divider
+					v-card-text
+						v-radio(:label="survey.response_1", :value="1" v-model="response")
+						v-radio(:label="survey.response_2", :value="2" v-model="response")
+						v-radio(:label="survey.response_3", :value="3" v-model="response")
+						v-radio(:label="survey.response_4", :value="4" v-model="response")
+						v-radio(:label="survey.response_5", :value="5" v-model="response")
+						v-radio(:label="survey.response_6", :value="6" v-model="response")
+					v-card-actions
+						v-btn.primary--text.darken-1(flat="" @click.native="voting=false") {{ api.trans('crud.cancel') }}
+						v-btn.primary--text.darken-1(flat="" @click.native="postVote(survey,response)") {{ api.trans('crud.save') }}
 </template>
 
 <script lang="coffee">
@@ -49,6 +52,13 @@ module.exports =
 	mounted: ()->
 		console.log @api
 		@getSurveys()
+		@$router.app.$on 'surveyUpdated',(survey)=>
+			@getSurveys()
+			@updateSurvey(survey)
+			if survey.id == @survey.id
+				@selectSurvey(survey)
+	beforeDestroy: ()->
+		@$router.app.$off('surveyUpdated')
 	data: ->
 		api: require '../services/api.js'
 		survey:{}
@@ -90,13 +100,15 @@ module.exports =
 			@survey=survey
 			@voting=false
 			@getVote(survey)
+		selectResponse: ()->
+			@response= @my_vote?.response
 		getVote: (survey)->
 			@vote =null
 			@api.get("""votes?where[user_id]=#{@api.user.id}&survey_id=#{survey.id}""")
 			.then (resp)=>
 				console.log 'my vote', resp.data
 				@my_vote=resp.data[0]
-				@response=resp.data[0]?.response
+				@response=@my_vote?.response
 
 		postVote: (survey,response)->
 			@api.post('votes',{response:response, user_id: @api.user.id, survey_id: survey.id})
