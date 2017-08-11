@@ -252,6 +252,9 @@ export default {
         }
 
       });
+      window.Echo = this.api.Echo
+      window.socket = this.api.Echo.connector.socket
+
       this.api.Echo.private('Application')
 
 

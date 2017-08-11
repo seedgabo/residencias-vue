@@ -11,13 +11,13 @@ v-container
         v-list(two-line='')
           v-list-tile(v-for='document in documents', :key='document.id')
             v-list-tile-action(@click.native='selectDocument(document)')
-              v-icon.red--text(fa='') file-pdf-o
+              v-icon.accent--text() fa-file-pdf-o
             v-list-tile-content(@click.native='selectDocument(document)')
               v-list-tile-title {{document.title}}
               small {{document.description}}
             v-list-tile-action
               v-btn(small='', icon='', :href="document.url + '/api?token='+api.user.token", target='document')
-                v-icon.red--text file_download
+                v-icon.accent--text file_download
         // </v-card-text>
     v-flex(xs12='', sm12='', md6='', lg6='')
       v-card

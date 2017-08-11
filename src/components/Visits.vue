@@ -7,7 +7,7 @@ div
 			v-spacer
 			v-btn(outline v-if="adder", @click.stop="adding=true")
 				v-icon add
-				span {{ api.trans('crud.add') }} {{ api.trans('literals.visit') }}
+				span {{ api.trans('crud.add') }}
 		v-card-text
 			v-list(two-line)
 				v-list-tile(v-for="visit in visitsFilter", :key="visit.id" avatar v-if="visit.visitor")
