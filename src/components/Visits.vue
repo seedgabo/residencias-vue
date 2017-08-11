@@ -103,7 +103,7 @@ module.exports =
 			@api.get 'visits?with[]=visitor&with[]=visitor.image&where[residence_id]='+@api.user.residence_id+"limit=500&order[created_at]=desc"
 			.then (resp)=>
 				# console.log 'data', resp.data
-				@visits=@api.residence.visits=resp.data
+				@api.visits=resp.data
 			.catch console.error
 		addVisit:()->
 			@api.post('visits',@visit)
@@ -123,8 +123,8 @@ module.exports =
 	computed:
 		visitsFilter:()->
 			if @filters.visitor==null
-				return @visits
-			return @visits.filter (v)=>
+				return @api.visits
+			return @api.visits.filter (v)=>
 				return v.visitor?.id==@filters.visitor.id
 	props:
 		filters:

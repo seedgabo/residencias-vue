@@ -20,6 +20,11 @@
           <v-list-tile-content>
             <v-list-tile-title class="text-capitalize">{{ api.trans('literals.'+page.title) }}</v-list-tile-title>
           </v-list-tile-content>
+          <v-list-tile-action v-if="page.title==='visitas'" v-tooltip:right="{html:api.trans('literals.waiting for confirmation')}">
+            <v-chip class="accent white--text green--after" v-badge:notifications.icon.overlap>
+              {{waitingConfirmation()}}
+            </v-chip>
+          </v-list-tile-action>
         </v-list-tile>
   
         <v-list-tile @click.native="logout()">
@@ -140,6 +145,7 @@ export default {
     this.api.ready.then((data) => {
       this.getData()
       this.startEcho()
+      setTimeout(this.getVisits, 3000)
     })
       .catch((err) => {
         console.error(err);
@@ -148,6 +154,8 @@ export default {
     this.$router.app.$on('login', (data) => {
       this.getData()
       this.startEcho()
+      setTimeout(this.getVisits, 3000)
+
     })
     this.$router.app.$on('logout', (data) => {
       this.api.user = {};
@@ -192,6 +200,21 @@ export default {
       this.visitConfirmToast = true;
       this.audio = new Audio('./static/sounds/beep.mp3');
       this.audio.play();
+    },
+    getVisits() {
+      this.api.get('visits?with[]=visitor&with[]=visitor.image&where[residence_id]=' + this.api.user.residence_id + "limit=500&order[created_at]=desc")
+        .then((resp) => {
+          this.api.visits = resp.data;
+        })
+        .catch(console.error)
+    },
+    waitingConfirmation() {
+      var count = 0
+      this.api.visits.forEach((visit) => {
+        if (visit.status === 'waiting for confirmation')
+          count++
+      });
+      return count
     },
     visitConfirm(data) {
       this.visitor = data.visitor;
@@ -378,7 +401,7 @@ export default {
         .listen('VisitCreated', (data) => {
           console.log("created visit:", data);
           if (data.visit.residence_id != this.api.user.residence_id) return;
-          this.api.residence.visits = [data.visit].concat(this.api.residence.visits)
+          this.api.visits = [data.visit].concat(this.api.visits)
           this.$router.app.$emit('visitCreated', data.visit)
           if (data.visit.status === 'approved')
             this.newVisit(data);
@@ -386,31 +409,31 @@ export default {
         .listen('VisitUpdated', (data) => {
           console.log("updated visit:", data);
           if (data.visit.residence_id != this.api.user.residence_id) return;
-          var visit_index = this.api.residence.visits.findIndex((ev) => {
+          var visit_index = this.api.visits.findIndex((ev) => {
             return ev.id === data.visit.id;
           });
 
           if (visit_index > -1) {
-            if (this.api.residence.visits[visit_index].status !== 'approved' && data.visit.status === 'approved')
+            if (this.api.visits[visit_index].status !== 'approved' && data.visit.status === 'approved')
               this.newVisit(data);
-            this.api.residence.visits = [data.visit].concat(this.api.residence.visits)
+            this.api.visits = [data.visit].concat(this.api.visits)
 
           }
           else {
             if (data.visit.status === 'approved')
               this.newVisit(data);
-            this.api.residence.visits[this.api.residence.visits.length] = data.visit
+            this.api.visits[this.api.visits.length] = data.visit
           }
           this.$router.app.$emit('visitUpdated', data.visit)
 
         })
         .listen('VisitDeleted', (data) => {
           console.log("deleted visit:", data);
-          var visit_index = this.api.residence.visits.findIndex((ev) => {
+          var visit_index = this.api.visits.findIndex((ev) => {
             return ev.id === data.visit.id;
           });
           if (visit_index >= -1) {
-            this.api.residence.visits.splice(visit_index, 1);
+            this.api.visits.splice(visit_index, 1);
             this.$router.app.$emit('visitDeleted', data.visit)
           }
         })
