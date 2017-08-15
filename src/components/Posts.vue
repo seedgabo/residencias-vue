@@ -111,6 +111,9 @@ export default {
         .then((resp) => {
           console.log(resp.data)
           this.posts = resp.data
+          if (this.$route.query.create) {
+            this.newPost()
+          }
         })
         .catch((error) => {
           console.error(error)
