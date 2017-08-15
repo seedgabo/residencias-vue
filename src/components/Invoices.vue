@@ -241,7 +241,7 @@ export default {
     },
     reportPayment(invoice) {
       this.proccesingPayment = true
-      this.api.post(`invoices/${invoice.id}/Payment`)
+      this.api.post(`invoices/${invoice.id}/Payment`, this.payment)
         .then((response) => {
           console.log(response.data)
           this.see_dialog = false

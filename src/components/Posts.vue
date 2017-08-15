@@ -17,11 +17,13 @@
                 </v-btn>
               </template>
             </v-card-title>
+            <div style="margin:0 auto;" class="text-xs-center" v-if="post.image">
+              <img :src="post.image.url" style="height:100px" alt="">
+            </div>
             <v-card-text class="pl-5 text-xs-justify" justify-center>
               <div v-html="post.text"></div>
             </v-card-text>
             <v-divider></v-divider>
-  
             <v-card-text class="by text-xs-right">
               <v-layout>
                 <v-flex xs6 class="text-xs-left">
@@ -35,9 +37,6 @@
                 </v-flex>
               </v-layout>
             </v-card-text>
-            <div style="margin:0 auto;" class="text-xs-center" v-if="post.image_id">
-              <img :src="post.image_url" style="height:100px" alt="">
-            </div>
           </v-card>
         </v-flex>
         <v-btn fixed fab bottom right class="primary" dark @click.stop="creator=true">
