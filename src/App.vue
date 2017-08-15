@@ -39,7 +39,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-toolbar prominent fixed class="primary" v-if="api.user.id" dark>
-      <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
+      <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-spacer>
         <div class="text-xs-center">
           <v-toolbar-title>
