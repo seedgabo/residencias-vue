@@ -10,9 +10,9 @@ v-container
         // <v-card-text>
         v-list(two-line='')
           v-list-tile(v-for='document in documents', :key='document.id')
-            v-list-tile-action(@click.native='selectDocument(document)')
+            v-list-tile-action(@click='selectDocument(document)')
               v-icon.accent--text() fa-file-pdf-o
-            v-list-tile-content(@click.native='selectDocument(document)')
+            v-list-tile-content(@click='selectDocument(document)')
               v-list-tile-title {{document.title}}
               small {{document.description}}
             v-list-tile-action
@@ -22,7 +22,7 @@ v-container
     v-flex(xs12='', sm12='', md6='', lg6='')
       v-card
         v-card-text(style='height:480px')
-          iframe(v-if='document && document.url', :src="document.url + '/api?token='+api.user.token", frameborder='0', style='width:100%;height:450px')
+          iframe(v-if='document && document.url', :src="document.url + '/api?token='+ api.user.token", frameborder='0', style='width:100%;height:450px')
 </template>
 
 <script>
@@ -53,6 +53,7 @@ export default {
     },
     selectDocument: function (document) {
       this.document = document
+      console.log(document)
     }
   }
 }

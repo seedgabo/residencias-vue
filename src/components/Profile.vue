@@ -235,8 +235,7 @@ module.exports=
 					console.log(response)
 					@api.residence.users.push(response.data)
 					@new_user = false
-					@api.user = { name: '', document: '', email: '', password: '', sex: 'male' }
-					window.localStorage.setItem('residence', JSON.stringify(@api.residence));
+					@user = { name: '', document: '', email: '', password: '', sex: 'male' }
 				.catch(console.error)
 		deleteUser: (user, index)->
 			return if (!confirm(api.trans('__.are you sure?')))
