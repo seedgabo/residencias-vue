@@ -1,100 +1,68 @@
-<template>
-  <div>
-    <v-container>
-      <v-layout wrap>
-        <v-flex xs12 sm9 offset-sm1>
-          <v-card v-for="post in posts" class="pr-2 pt-2 mb-3" v-bind:key="post.id" hover>
-            <v-card-title>
-              <h4 class="text-xs-justify pl-4 post-title">{{post.title}}
-              </h4>
-              <v-spacer></v-spacer>
-              <template v-if="post.user_id === api.user.id">
-                <v-btn icon @click.stop="editPost(post)">
-                  <v-icon>edit</v-icon>
-                </v-btn>
-                <v-btn icon @click="deletePost(post)">
-                  <v-icon>delete</v-icon>
-                </v-btn>
-              </template>
-            </v-card-title>
-            <div style="margin:0 auto;" class="text-xs-center" v-if="post.image">
-              <img :src="post.image.url" style="height:100px" alt="">
-            </div>
-            <v-card-text class="pl-5 text-xs-justify" justify-center>
-              <div v-html="post.text"></div>
-            </v-card-text>
-            <v-divider></v-divider>
-            <v-card-text class="by text-xs-right">
-              <v-layout>
-                <v-flex xs6 class="text-xs-left">
-                  <v-chip class="primary white--text" v-for="tag in post.tags" v-if="post.tags && tag.name.length>0" v-bind:key="tag.id">{{tag.name}}</v-chip>
-                </v-flex>
-                <v-flex xs6>
-                  <span class="headline-2 mr-4" v-if="post.user">{{post.user.name}}</span>
-                  <span class="grey--text">
-                    {{ post.created_at | moment('from')}}
-                  </span>
-                </v-flex>
-              </v-layout>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-        <v-btn fixed fab bottom right class="primary" dark @click.stop="creator=true">
-          <v-icon>add</v-icon>
-        </v-btn>
-      </v-layout>
-  
-      <v-dialog fullscreen v-model="creator">
-        <v-toolbar class="indigo" dark>
-          <v-toolbar-title>
-            {{api.trans('crud.add')}} {{api.trans('literals.post')}}
-          </v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-btn icon @click="creator=false">
-            <v-icon>close</v-icon>
-          </v-btn>
-        </v-toolbar>
-        <v-card>
-          <v-card-text>
-            <v-container>
-              <v-text-field v-model="post.title" :label="api.trans('literals.title')"></v-text-field>
-              <quill-editor v-model="post.text" ref="myQuillEditor" :options="editorOption">
-              </quill-editor>
-  
-              <!-- <span v-html="post.text"></span> -->
-              <v-flex class="text-xs-right">
-                <v-spacer></v-spacer>
-                <v-btn primary v-if="!post.id" @click="createPost()">
-                  <v-icon dark>save</v-icon>
-                  &nbsp; {{api.trans('crud.save')}}
-                </v-btn>
-  
-                <v-btn primary v-else @click="updatePost(post)">
-                  <v-icon dark>save</v-icon>
-                  &nbsp; {{api.trans('crud.save')}}
-                </v-btn>
-  
-                <v-btn flat @click="creator=false">
-                  {{api.trans('crud.cancel')}}
-                </v-btn>
-              </v-flex>
-            </v-container>
-          </v-card-text>
-        </v-card>
-      </v-dialog>
-    </v-container>
-  </div>
+<template lang="jade">
+div
+  input(type="file" ref="inputImage" style="display:none;", @change="fileUploaded" accept="image/*")
+  v-container
+    v-layout(wrap='')
+      v-flex(xs12='', sm9='', offset-sm1='')
+        v-card.pr-2.pt-2.mb-3(v-for='post in posts', v-bind:key='post.id', hover='')
+          v-card-title
+            h4.text-xs-justify.pl-4.post-title
+              | {{post.title}}
+            v-spacer
+            template(v-if='post.user_id === api.user.id')
+              v-btn(icon='', @click.stop='editPost(post)')
+                v-icon edit
+              v-btn(icon='', @click='deletePost(post)')
+                v-icon delete
+          .text-xs-center(style='margin:0 auto;', v-if='post.image')
+            img(:src='post.image.url', style='height:100px', alt='')
+          v-card-text.pl-5.text-xs-justify(justify-center='')
+            div(v-html='post.text')
+          v-divider
+          v-card-text.by.text-xs-right
+            v-layout
+              v-flex.text-xs-left(xs6='')
+                v-chip.primary.white--text(v-for='tag in post.tags', v-if='post.tags && tag.name.length>0', v-bind:key='tag.id') {{tag.name}}
+              v-flex(xs6='')
+                span.headline-2.mr-4(v-if='post.user') {{post.user.name}}
+                span.grey--text
+                  | {{ post.created_at | moment('from')}}
+      v-btn.primary(fixed='', fab='', bottom='', right='', dark='', @click.stop='creator=true')
+        v-icon add
+    v-dialog(fullscreen='', v-model='creator')
+      v-toolbar.indigo(dark='')
+        v-toolbar-title
+          | {{api.trans('crud.add')}} {{api.trans('literals.post')}}
+        v-spacer
+        v-btn(icon='', @click='creator=false')
+          v-icon close
+      v-card
+        v-card-text
+          v-container
+            v-text-field(v-model='post.title', :label="api.trans('literals.title')")
+            quill-editor(v-model='post.text', ref='myQuillEditor', :options='editorOption')
+            input(type="file" ref="")
+            v-btn.grey(block large)
+              v-icon(dark) camera_alt     
+            v-flex.text-xs-right
+              v-spacer
+              v-btn(primary='', v-if='!post.id', @click='createPost()')
+                v-icon(dark='') save
+                |  {{api.trans('crud.save')}}
+              v-btn(primary='', v-else='', @click='updatePost(post)')
+                v-icon(dark='') save
+                |  {{api.trans('crud.save')}}
+              v-btn(flat='', @click='creator=false')
+                |  {{api.trans('crud.cancel')}}
 </template>
 
-<script>
-var api = require('../services/api.js')
-export default {
+<script lang="coffee">
+api = require('../services/api.js')
+module.exports =
   name: 'Posts',
-  mounted() {
+  mounted: ()->
     this.getPosts()
-  },
-  data() {
-    return {
+  data: ->
       api: api,
       creator: false,
       posts: [],
@@ -102,11 +70,10 @@ export default {
         title: '',
         text: ''
       },
+      post_image: null,
       editorOption: {}
-    }
-  },
   methods: {
-    getPosts: function () {
+    getPosts:()->
       this.api.get('posts?limit=100&order[created_at]=desc&with[]=user&with[]=image&with[]=tags')
         .then((resp) => {
           console.log(resp.data)
@@ -118,16 +85,15 @@ export default {
         .catch((error) => {
           console.error(error)
         })
-    },
-    newPost: function () {
+    newPost: ()->
       this.post = {
         user_id: api.user.id,
         title: '',
         text: ''
       }
+      this.post_image = null
       this.creator = true;
-    },
-    createPost: function () {
+    createPost:()->
       this.post.user_id = api.user.id
       this.api.post('posts', this.post)
         .then((response) => {
@@ -135,38 +101,28 @@ export default {
           this.getPosts()
         })
         .catch(console.error)
-    },
-    editPost: function (post) {
+    editPost: (post)->
       this.post = post
       this.creator = true;
-    },
-    updatePost: function (post) {
-      this.post = JSON.parse(JSON.stringify(post))
-      delete this.post.residence
-      delete this.post.user
-      delete this.post.image
-      delete this.post.image_url
-
-      this.post.user_id = api.user.id
-      this.api.put('posts/' + this.post.id, this.post)
-        .then((response) => {
-          this.creator = false
-          this.getPosts()
-        })
+    updatePost: (post)->
+      @post = JSON.parse(JSON.stringify(post))
+      delete @post.residence
+      delete @post.user
+      delete @post.image
+      delete @post.image_url
+      @post.user_id = api.user.id
+      @api.put('posts/' + @post.id, @post)
+        .then (response)=>
+          @creator = false
+          @getPosts()
+        .catch console.error
+    deletePost: (post)->
+      return if (!confirm(api.trans('__.are you sure'))) 
+      @api.delete('posts/' + post.id)
+        .then (response)=>
+          @creator = false
+          @getPosts()
         .catch(console.error)
-    },
-    deletePost: function (post) {
-      if (!confirm(api.trans('__.are you sure'))) return
-      this.api.delete('posts/' + post.id)
-        .then((response) => {
-          this.creator = false
-          this.getPosts()
-        })
-        .catch(console.error)
-    }
-
-  }
-}
 </script>
 
 
