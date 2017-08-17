@@ -1,6 +1,5 @@
 <template lang="jade">
 div
-  input(type="file" ref="inputImage" style="display:none;", @change="fileUploaded" accept="image/*")
   v-container
     v-layout(wrap='')
       v-flex(xs12='', sm9='', offset-sm1='')
@@ -27,7 +26,7 @@ div
                 span.headline-2.mr-4(v-if='post.user') {{post.user.name}}
                 span.grey--text
                   | {{ post.created_at | moment('from')}}
-      v-btn.primary(fixed='', fab='', bottom='', right='', dark='', @click.stop='creator=true')
+      v-btn.primary(fixed='', fab='', bottom='', right='', dark='', @click.stop='newPost()')
         v-icon add
     v-dialog(fullscreen='', v-model='creator')
       v-toolbar.indigo(dark='')
@@ -41,15 +40,17 @@ div
           v-container
             v-text-field(v-model='post.title', :label="api.trans('literals.title')")
             quill-editor(v-model='post.text', ref='myQuillEditor', :options='editorOption')
-            input(type="file" ref="")
-            v-btn.grey(block large)
-              v-icon(dark) camera_alt     
+            input(type="file" ref="inputImage" style="display:none;", @change="fileUploaded" accept="image/*")
+            div.text-center
+              img(:src="post_image", v-if="!!post_image" style="max-width:240px; margin: 0 auto;")
+            v-btn.grey(block large, @click.stop="askFile()")
+              v-icon(dark) camera_alt
             v-flex.text-xs-right
               v-spacer
-              v-btn(primary='', v-if='!post.id', @click='createPost()')
+              v-btn(primary='', v-if='!post.id', @click='createPost()', :disabled="!canSave()", :loading="uploading")
                 v-icon(dark='') save
                 |  {{api.trans('crud.save')}}
-              v-btn(primary='', v-else='', @click='updatePost(post)')
+              v-btn(primary='', v-else='', @click='updatePost(post)', :disabled="!canSave()")
                 v-icon(dark='') save
                 |  {{api.trans('crud.save')}}
               v-btn(flat='', @click='creator=false')
@@ -57,11 +58,11 @@ div
 </template>
 
 <script lang="coffee">
-api = require('../services/api.js')
+api = require '../services/api.js'
 module.exports =
   name: 'Posts',
   mounted: ()->
-    this.getPosts()
+    @getPosts()
   data: ->
       api: api,
       creator: false,
@@ -72,57 +73,73 @@ module.exports =
       },
       post_image: null,
       editorOption: {}
-  methods: {
+      uploading:false
+  methods:
     getPosts:()->
-      this.api.get('posts?limit=100&order[created_at]=desc&with[]=user&with[]=image&with[]=tags')
-        .then((resp) => {
-          console.log(resp.data)
-          this.posts = resp.data
-          if (this.$route.query.create) {
+      @api.get('posts?limit=100&order[created_at]=desc&with[]=user&with[]=image&with[]=tags')
+        .then (resp)=>
+          console.log resp.data
+          @posts = resp.data
+          if @$route.query.create
             this.newPost()
-          }
-        })
-        .catch((error) => {
-          console.error(error)
-        })
+        .catch (error)=>
+          console.error error
     newPost: ()->
-      this.post = {
-        user_id: api.user.id,
-        title: '',
+      @post=
+        user_id: api.user.id
+        title: ''
         text: ''
-      }
-      this.post_image = null
-      this.creator = true;
+      @post_image = null
+      @creator = true
+    askFile: ()->
+      @$refs.inputImage.click()
+    fileUploaded: (evt)->
+      return if !evt.target.files[0]?
+      reader= new FileReader()
+      reader.readAsDataURL evt.target.files[0], "UTF-8"
+      reader.onload= (evt)=>
+        @post_image=evt.target.result
     createPost:()->
-      this.post.user_id = api.user.id
-      this.api.post('posts', this.post)
-        .then((response) => {
-          this.creator = false
-          this.getPosts()
-        })
-        .catch(console.error)
+      @post.user_id = api.user.id
+      @uploading=true
+      @api.post('posts', @post)
+      .then (response)=>
+        if @post_image?
+          @api.upload('post',response.data.id,@post_image)
+          .then (resp)=>
+            @creator = false
+            @uploading = false
+            @getPosts()
+          .catch console.error
+        else
+          @creator = false
+          @uploading = false
+          @getPosts()
+      .catch console.error
+    canSave: ()->
+      @post.title?.length > 3 && @post.text?.length>3
     editPost: (post)->
-      this.post = post
-      this.creator = true;
+      @post = post
+      @creator = true;
     updatePost: (post)->
-      @post = JSON.parse(JSON.stringify(post))
+      @post = JSON.parse JSON.stringify(post)
       delete @post.residence
       delete @post.user
       delete @post.image
       delete @post.image_url
-      @post.user_id = api.user.id
+      @post.user_id = @api.user.id
       @api.put('posts/' + @post.id, @post)
         .then (response)=>
           @creator = false
           @getPosts()
         .catch console.error
     deletePost: (post)->
-      return if (!confirm(api.trans('__.are you sure'))) 
-      @api.delete('posts/' + post.id)
+      return if  !confirm api.trans('__.are you sure')
+      @api.delete 'posts/'+post.id
         .then (response)=>
           @creator = false
           @getPosts()
-        .catch(console.error)
+        .catch console.error
 </script>
 
 
