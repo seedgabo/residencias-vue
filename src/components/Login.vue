@@ -9,7 +9,7 @@
 			v-flex
 				v-card.login-card.mt-5(hover='', raised='')
 					v-card-title(primary-title='')
-						.text-center(style='width:100%')
+						.text-center(style='width:100%' v-if="!forgot") 
 							h4.headline
 								| Login
 							v-text-field(name='username', v-model='username', label='username', prepend-icon='account_circle')
@@ -25,6 +25,14 @@
 									v-icon.red--text fa-google-plus-square
 									span.red--text
 										| Google
+							v-btn(flat="", @click="forgot=true") Olvido la contraseña
+						.text-center(v-else)
+							h4.headline Recuperar Cuenta
+							v-text-field(name='username', v-model='username', label='username', prepend-icon='account_circle')
+							v-btn(@click.native='recover(username)', :loading='loging', primary='', block='', v-bind:disabled='username.length <4')
+								| Recuperar
+							v-btn(flat="", @click="forgot=false") Volver a login
+											
 			v-flex.hidden-xs
 	v-dialog(v-model="error")
 		v-card
@@ -33,6 +41,13 @@
 			v-card-actions
 				v-spacer
 				v-btn(flat primary dark, @click="error=false") {{api.trans('literals.ok')}}
+	v-dialog(v-model="recover_dialog")
+		v-card
+			v-card-title.subheader Listo!
+			v-card-text: p Le hemos enviado un email de recuperación
+			v-card-actions
+				v-spacer
+				v-btn(flat primary dark, @click="recover_dialog=false") {{api.trans('literals.ok')}}
 </template>
 
 <script lang="coffee">
@@ -46,7 +61,9 @@ module.exports =
 		e1:true
 		loging:false
 		error:false
+		recover_dialog:false
 		errorText: "Error"
+		forgot: false
 		fbSignInParams:
 			scope: 'email,public_profile,user_birthday'
 			return_scopes: true
@@ -72,6 +89,14 @@ module.exports =
 			.catch (err) =>
 				console.error err
 				@onError(err)
+		recover: (email)->
+			axios.post(@api.url+ 'forgot-password',{email : email})
+			.then (response)=>
+				console.log response.data
+				@recover_dialog=true
+			.catch (err)=>
+				@onError(err)
+				console.error err
 		getLangs: ()->
 			@api.get('lang')
 				.then (response) =>
@@ -131,15 +156,15 @@ module.exports =
 <style scoped>
 .login-page,
 body {
-  background: #fff;
-  margin-top: 0px;
-  height: 100vh;
-  width: 100vw;
-  background-image: url(https://s-media-cache-ak0.pinimg.com/originals/d2/b8/fc/d2b8fc669367ac5eac78f9f2d4186913.png);
-  background-size: cover;
+	background: #fff;
+	margin-top: 0px;
+	height: 100vh;
+	width: 100vw;
+	background-image: url(https://s-media-cache-ak0.pinimg.com/originals/d2/b8/fc/d2b8fc669367ac5eac78f9f2d4186913.png);
+	background-size: cover;
 }
 
 .delay {
-  animation-delay: 1s;
+	animation-delay: 1s;
 }
 </style>
