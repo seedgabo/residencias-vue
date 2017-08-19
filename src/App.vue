@@ -26,7 +26,7 @@
             </v-chip>
           </v-list-tile-action>
         </v-list-tile>
-  
+
         <v-list-tile @click.native="logout()">
           <v-list-tile-action>
             <v-icon>fa-sign-out</v-icon>
@@ -35,7 +35,7 @@
             <v-list-tile-title>Cerrar Sesión</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-  
+
       </v-list>
     </v-navigation-drawer>
     <v-toolbar prominent fixed class="primary" v-if="api.user.id" dark>
@@ -48,7 +48,7 @@
           </v-toolbar-title>
         </div>
       </v-spacer>
-  
+
       <v-toolbar-items>
         <v-menu bottom left :position-absolutely="true">
           <v-btn flat slot="activator" style="height:100%; padding:8px 0px;">
@@ -68,7 +68,7 @@
                 <v-list-tile-title class="orange--text">Admin</v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
-  
+
             <v-list-tile avatar to="profile">
               <v-list-tile-avatar>
                 <v-icon>person</v-icon>
@@ -93,14 +93,14 @@
     <main>
       <router-view></router-view>
     </main>
-  
+
     <v-snackbar :timeout="timeout" success top right v-model="visitConfirmToast">
       <span v-if="visitor">
         {{api.trans('__.visit confirmed',{visit:api.trans('literals.visit') ,visitor:visitor.name})}}
       </span>
       <v-btn flat class="white--text" @click.native="visitConfirmToast = false">X</v-btn>
     </v-snackbar>
-  
+
     <v-dialog persistent v-model="newVisitModal" width="400px">
       <v-card>
         <v-toolbar flat>
@@ -131,7 +131,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  
+
   </v-app>
 </template>
 
@@ -404,6 +404,8 @@ export default {
         .listen('VisitCreated', (data) => {
           console.log("created visit:", data);
           if (data.visit.residence_id != this.api.user.residence_id) return;
+          data.visit.visitor = data.visitor
+          data.visit.visitors = data.visitors
           this.api.visits = [data.visit].concat(this.api.visits)
           this.$router.app.$emit('visitCreated', data.visit)
           if (data.visit.status === 'approved')
@@ -415,7 +417,8 @@ export default {
           var visit_index = this.api.visits.findIndex((ev) => {
             return ev.id === data.visit.id;
           });
-
+          data.visit.visitor = data.visitor
+          data.visit.visitors = data.visitors
           if (visit_index > -1) {
             if (this.api.visits[visit_index].status !== 'approved' && data.visit.status === 'approved')
               this.newVisit(data);
@@ -490,6 +493,8 @@ export default {
       this.api.Echo.private('App.Residence.' + this.api.user.residence_id)
         .listen('VisitConfirm', (data) => {
           console.log("VisitConfirm: ", data);
+          data.visit.visitor = data.visitor
+          data.visit.visitors = data.visitors
           this.visitConfirm(data);
           this.$router.app.$emit('VisitConfirm', data)
         })

@@ -37,39 +37,45 @@ div
           v-icon close
       v-card
         v-card-text
-          v-container
-            v-text-field(v-model='post.title', :label="api.trans('literals.title')")
-            quill-editor(v-model='post.text', ref='myQuillEditor', :options='editorOption')
-            input(type="file" ref="inputImage" style="display:none;", @change="fileUploaded" accept="image/*")
-            div.text-center
-              img(:src="post_image", v-if="!!post_image" style="max-width:240px; margin: 0 auto;")
-            v-btn.grey(block large, @click.stop="askFile()")
-              v-icon(dark) camera_alt
-            v-flex.text-xs-right
-              v-spacer
-              v-btn(primary='', v-if='!post.id', @click='createPost()', :disabled="!canSave()", :loading="uploading")
-                v-icon(dark='') save
-                |  {{api.trans('crud.save')}}
-              v-btn(primary='', v-else='', @click='updatePost(post)', :disabled="!canSave()")
-                v-icon(dark='') save
-                |  {{api.trans('crud.save')}}
-              v-btn(flat='', @click='creator=false')
-                |  {{api.trans('crud.cancel')}}
+          v-container()
+            v-layout()
+              v-flex(xs12="")
+                v-text-field(v-model='post.title', :label="api.trans('literals.title')")
+                quill-editor(v-model='post.text', ref='myQuillEditor', :options='editorOption')
+                input(type="file" ref="inputImage" style="display:none;", @change="fileUploaded" accept="image/*")
+                div.text-center
+                  img(:src="post_image", v-if="!!post_image" style="max-width:240px; margin: 0 auto;")
+                v-btn.grey.lighten-2(block large, @click.stop="askFile()")
+                  v-icon() camera_alt
+                v-select(:label="api.trans('literals.tags')", v-bind:items='tags', v-model='post.tags', item-text='name', item-value='id', multiple='', chips='', max-height='auto', autocomplete='')
+                v-flex.text-xs-right
+                  v-spacer
+                  v-btn(primary='', v-if='!post.id', @click='createPost()', :disabled="!canSave()", :loading="uploading")
+                    v-icon(dark='') save
+                    |  {{api.trans('crud.save')}}
+                  v-btn(primary='', v-else='', @click='updatePost(post)', :disabled="!canSave()")
+                    v-icon(dark='') save
+                    |  {{api.trans('crud.save')}}
+                  v-btn(flat='', @click='creator=false')
+                    |  {{api.trans('crud.cancel')}}
 </template>
 
 <script lang="coffee">
 api = require '../services/api.js'
 module.exports =
   name: 'Posts',
+
   mounted: ()->
     @getPosts()
   data: ->
       api: api,
       creator: false,
-      posts: [],
+      posts: []
+      tags: []
       post: {
-        title: '',
+        title: ''
         text: ''
+        tags: []
       },
       post_image: null,
       editorOption: {}
@@ -84,11 +90,17 @@ module.exports =
             this.newPost()
         .catch (error)=>
           console.error error
+      @api.get('tags')
+        .then (resp)=>
+          console.log resp.data
+          @tags = resp.data
+        .catch console.error
     newPost: ()->
       @post=
         user_id: api.user.id
         title: ''
         text: ''
+        tags: []
       @post_image = null
       @creator = true
     askFile: ()->
@@ -144,6 +156,5 @@ module.exports =
 
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-
+<style lang="stylus" scoped>
 </style>

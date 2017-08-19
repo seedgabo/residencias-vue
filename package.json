@@ -24,6 +24,7 @@
     "pusher-js": "^4.1.0",
     "socket.io": "^2.0.3",
     "underscore": "^1.8.3",
+    "v-autocomplete": "^1.4.1",
     "vue": "^2.4.2",
     "vue-avatar": "^2.0.0",
     "vue-chartkick": "^0.2.0",
