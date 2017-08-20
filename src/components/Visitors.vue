@@ -7,11 +7,16 @@ v-layout(wrap)
         v-icon people
         span &nbsp; {{api.trans('literals.visitors')}}
         v-spacer
-        v-btn.pink(dark fab small absolute right, @click.stop="visitor={ sex:'male'};creator=true")
+        v-btn.pink(dark fab small absolute right, @click.stop="visitor={ sex:'male'};creator=true" v-if="selecteds.length  ===  0")
           v-icon add
+        v-btn(primary v-else, @click.stop="visit=true")
+          v-icon(dark) add_circle
+          {{api.trans('crud.add') }} {{api.trans('literals.visit')}} {{ api.trans('literals.multiple') }}
       v-card-text
         v-list(dense two-line)
-          v-list-tile(v-for="visitor in api.residence.visitors", :key="visitor.id", avatar="", v-on:click="clickVisitor(visitor)" v-bind:class="selected==visitor.id?'primary':''")
+          v-list-tile(v-for="visitor in api.residence.visitors", :key="visitor.id", avatar="", v-on:click="clickVisitor(visitor)" xv-bind:class="selected==visitor.id?'primary':''")
+            v-list-tile-action
+              v-checkbox(v-model="visitor.selected", @click.stop="clickVisitor(visitor)")
             v-list-tile-avatar(@click="askFile(visitor)")
               img.large(v-if="visitor.image_id", :src="visitor.image_url")
               v-icon.primary.white--text(v-else) add_a_photo
@@ -35,7 +40,19 @@ v-layout(wrap)
                     v-list-tile-avatar
                       v-icon delete
                     v-list-tile-title {{api.trans('crud.delete')}}
-
+  v-dialog(v-model="visit" width="400px")
+    v-card
+      v-card-title.primary.white--text.headline {{api.trans('crud.add')}} {{api.trans('literals.visit')}}
+        v-spacer
+        v-btn(icon dark, @click="visit=false"): v-icon close
+      v-card-text
+        v-chip(v-for="person in selecteds" key="person.id")
+          v-avatar: img(:src="person.image_url")
+          span {{person.name}}
+      v-card-actions
+        v-spacer
+        v-btn(primary flat, @click="addVisit()") {{api.trans('literals.generate')}}
+        v-btn(flat, @click="visit=false") {{api.trans('crud.close')}}
   v-dialog(v-model="creator")
     v-card
       v-card-title
@@ -70,19 +87,20 @@ module.exports =
     api: api
     creator: false
     loaded:false
+    visit:false
     imageUploaded: false
     visitor:{ sex:'male'}
     genders: [ { text: api.trans('literals.male'), value: 'male' }, { text: api.trans('literals.female'), value: 'female' }]
     selected:null
+    selecteds: []
   methods:
     clickVisitor: (visitor)->
-      if @selectable
-        if @selected==visitor.id
-          @selected=null
-          @$emit 'visitorSelected', {visitor:null}
-        else
-          @selected= visitor.id
-          @$emit 'visitorSelected', {visitor:visitor}
+      if visitor.selected
+        @selecteds.splice @selecteds.indexOf(visitor),1
+        @$set(visitor,'selected',false)
+      else
+        @selecteds.push visitor
+        @$set(visitor,'selected',true)
     getVisitors: ()->
       @api.get """visitors?where[residence_id]=#{api.user.residence_id}"""
       .then (resp)=>
@@ -112,6 +130,16 @@ module.exports =
       @api.delete """visitors/#{visitor.id}"""
       .then (resp)=>
         console.log resp.data
+    addVisit: ()->
+      visitors=[]
+      @selecteds.forEach (v)-> visitors.push v.id
+      @api.post('visits',{user_id: @api.user.id,residence_id:@api.residence.id,visitors:visitors, visitor_id:visitors[0]})
+      .then (resp)=>
+        console.log resp.data
+        @visit=false
+        @selecteds = []
+        @visitors.forEach (v)-> v.selected = false
+      .catch console.erorr
     askFile: (visitor)->
       @visitor=visitor
       @$refs.inputImage.click()

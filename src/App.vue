@@ -145,7 +145,7 @@ export default {
     this.api.ready.then((data) => {
       this.getData()
       this.startEcho()
-      setTimeout(this.getVisits, 3000)
+      // setTimeout(this.getVisits, 3000)
     })
       .catch((err) => {
         console.error(err);
@@ -202,7 +202,7 @@ export default {
       this.audio.play();
     },
     getVisits() {
-      this.api.get('visits?with[]=visitor&with[]=visitor.image&where[residence_id]=' + this.api.user.residence_id + "limit=500&order[created_at]=desc")
+      this.api.get('visits?with[]=visitor&with[]=visitors&where[residence_id]=' + this.api.user.residence_id + "limit=500&order[created_at]=desc")
         .then((resp) => {
           this.api.visits = resp.data;
         })
