@@ -17,6 +17,7 @@ div
             v-list-tile-title(v-if="visit.visitor") {{visit.visitor.name}}
               span(v-if="visit.visitors && visit.visitors.length>1")  {{api.trans('__.and others')}} {{visit.visitors.length-1}}
             v-list-tile-sub-title {{visit.created_at | moment('from')}}
+            v-list-tile-sub-title(v--if="visit.user") {{visit.user.name }}
           v-list-tile-action(:class="(visit.status==='approved'? 'green':'red') +'--text'")
             small {{api.trans('literals.'+visit.status)}}
   v-dialog(v-model="adding" width="400px")
