@@ -108,7 +108,7 @@ module.exports =
       @selected=visit
       @see_visit=true
     getData:()->
-      @api.get 'visits?with[]=visitor&with[]=visitors&where[residence_id]='+@api.user.residence_id+"limit=500&order[created_at]=desc"
+      @api.get 'visits?with[]=user&with[]=vehicle&with[]=visitor&with[]=visitors&where[residence_id]='+@api.user.residence_id+"limit=500&order[created_at]=desc"
       .then (resp)=>
         # console.log 'data', resp.data
         @api.visits=resp.data
