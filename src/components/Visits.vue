@@ -29,6 +29,7 @@ div
         v-layout
           v-flex
             v-select(v-bind:items="api.residence.visitors" v-model="visit.visitor_id", :label="api.trans('literals.visitor')" single-line bottom item-text="name" item-value="id" prepend-icon="person")
+            v-text-field(v-model='visit.note', :label="api.trans('literals.notes')" prepend-icon="paragraph")
       v-card-actions
         v-spacer
         v-btn(flat primary, :disabled="!canAddVisit()", @click="addVisit()") {{api.trans('crud.add')}}
@@ -96,7 +97,7 @@ module.exports =
   data: ->
     api: api
     visits:[]
-    visit:{visitor_id:null,residence_id:api.residence.id,status:'approved'}
+    visit:{visitor_id:null,residence_id:api.residence.id,status:'approved',note:""}
     adding:false
     see_visit:false
     selected:{}
@@ -116,7 +117,7 @@ module.exports =
       .then (resp)=>
         @visits= [resp.data].concat @visits
         @adding=false
-        @visit={visitor_id:null,residence_id:api.residence.id,status:'approved'}
+        @visit={visitor_id:null,residence_id:api.residence.id,status:'approved',note:""}
       .catch console.error
     canAddVisit: ()->
       @visit.visitor_id>0

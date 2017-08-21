@@ -49,6 +49,7 @@ v-layout(wrap)
         v-chip(v-for="person in selecteds" key="person.id")
           v-avatar: img(:src="person.image_url")
           span {{person.name}}
+         v-text-field(v-model='note', :label="api.trans('literals.notes')" prepend-icon="paragraph")
       v-card-actions
         v-spacer
         v-btn(primary flat, @click="addVisit()") {{api.trans('literals.generate')}}
@@ -93,6 +94,7 @@ module.exports =
     genders: [ { text: api.trans('literals.male'), value: 'male' }, { text: api.trans('literals.female'), value: 'female' }]
     selected:null
     selecteds: []
+    note: ""
   methods:
     clickVisitor: (visitor)->
       if visitor.selected
@@ -133,11 +135,12 @@ module.exports =
     addVisit: ()->
       visitors=[]
       @selecteds.forEach (v)-> visitors.push v.id
-      @api.post('visits',{user_id: @api.user.id,residence_id:@api.residence.id,visitors:visitors, visitor_id:visitors[0]})
+      @api.post('visits',{user_id: @api.user.id,residence_id:@api.residence.id,visitors:visitors, visitor_id:visitors[0],note:@note})
       .then (resp)=>
         console.log resp.data
         @visit=false
         @selecteds = []
+        @note=""
         @visitors.forEach (v)-> v.selected = false
       .catch console.erorr
     askFile: (visitor)->
