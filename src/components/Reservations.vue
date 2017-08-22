@@ -75,14 +75,14 @@
 		v-dialog(v-model="view_reservation" fullscreen)
 			v-card(v-if="zone && interval")
 				v-toolbar.purple(dark)
-					v-toolbar-title.title {{ api.trans('literals.reservation') }} {{ zone.name }}
+					v-toolbar-title.title {{api.trans('literals.view_resource')}} {{ api.trans('literals.reservation') }} {{ zone.name }}
 					v-spacer
-					v-btn(icon, @click="reservation_dialog=false"): v-icon close
+					v-btn(icon, @click="view_reservation=false"): v-icon close
 				v-card-text
 					{{ interval }}
 				v-card-actions
 					v-spacer
-					v-btn(flat, @click="reservation_dialog=false") {{api.trans('crud.close')}}
+					v-btn(flat, @click="view_reservation=false") {{api.trans('crud.close')}}
 		v-snackbar(:timeout="3000", top right, v-model="saved")
 			span {{api.trans('literals.reservation')}} {{api.trans('crud.created')}}
 		
