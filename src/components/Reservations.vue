@@ -72,8 +72,20 @@
 					v-spacer
 					v-btn(primary, @click="postReservations(interval,quotas)") {{api.trans('literals.reservate')}}
 					v-btn(flat, @click="reservation_dialog=false") {{api.trans('crud.cancel')}}
+		v-dialog(v-model="view_reservation" fullscreen)
+			v-card(v-if="zone && interval")
+				v-toolbar.purple(dark)
+					v-toolbar-title.title {{ api.trans('literals.reservation') }} {{ zone.name }}
+					v-spacer
+					v-btn(icon, @click="reservation_dialog=false"): v-icon close
+				v-card-text
+					{{ interval }}
+				v-card-actions
+					v-spacer
+					v-btn(flat, @click="reservation_dialog=false") {{api.trans('crud.close')}}
 		v-snackbar(:timeout="3000", top right, v-model="saved")
 			span {{api.trans('literals.reservation')}} {{api.trans('crud.created')}}
+		
 
 </template>
 
@@ -94,6 +106,7 @@ module.exports =
 		zone: null
 		interval: null
 		reservation_dialog:false
+		view_reservation:false
 		saved:false
 		mode: 'zones'
 		reservations:[]
@@ -153,7 +166,11 @@ module.exports =
 			.catch console.error
 		reservate: (interval)->
 			@interval= interval
+			if interval.reserved
+				return @view_reservation= true
 			@reservation_dialog= true
+		viewReservation: (interval)->
+			console.log interval
 		postReservations:(interval,quotas)->
 			date = moment.utc(@date)
 			@api.post('reservations',
