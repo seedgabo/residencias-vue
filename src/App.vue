@@ -175,6 +175,7 @@ export default {
         { icon: 'people', title: 'visitas', url: 'visits' },
         { icon: 'event', title: 'events', 'url': 'events' },
         { icon: 'insert_drive_file', title: 'documentos', 'url': 'documents' },
+        { icon: 'event_available', title: 'Reservaciones', 'url': 'reservations' },
         { icon: 'pie_chart', title: 'surveys', 'url': 'surveys' },
       ],
       timeout: 15 * 60 * 1000,

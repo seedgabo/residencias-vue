@@ -5,20 +5,21 @@
 </template>
 
 <script lang="coffee">
+api = require '../services/api.js'
 module.exports =
 	name: 'Example'
 	mounted: ()->
 		console.log @api
-		@getSurveys()
+		@getData()
 	data: ->
-		api: require '../services/api.js'
-		surveys: []
+		api: api
+		data: []
 	methods:
 		getData: ()->
 			@api.get 'data'
 			.then (resp)=>
 				console.log 'data', resp.data
-				@surveys=resp.data
+				@data=resp.data
 			.catch console.error
 </script>
 
