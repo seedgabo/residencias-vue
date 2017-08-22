@@ -49,18 +49,31 @@
 								span {{api.trans('literals.schedules')}}
 								v-spacer
 								v-btn(icon, @click="cancel()"): v-icon close
-							v-list-tile(v-for="interval in options")
-
+							v-list-tile(v-for="interval in options", @click.stop="reservate(interval)")
 								v-list-tile-avatar
 									v-icon(large, :class="interval.reserved?'primary--text':interval.available>0?'green--text':'red--text'") {{ interval.reserved ?'check':interval.available>0?'event_available': 'event_busy'}}
-								
 								v-list-tile-content
 									v-list-tile-title {{ interval.time | moment('hh:mm A')}}
+										small  | {{ zone.price | currency }}
 									template(v-if="!interval.reserved")
 										v-list-tile-sub-title(v-if="interval.limit_user == 0") {{api.trans('__.cupos ilimitados')}}
 										v-list-tile-sub-title(v-else) {{interval.available}}
 									template(v-else)
 										v-list-tile-sub-title {{api.trans('__.you have a reservation')}}
+		v-dialog(v-model="reservation_dialog" fullscreen)
+			v-card(v-if="zone && interval")
+				v-toolbar.primary(dark)
+					v-toolbar-title.title {{ api.trans('literals.reservation') }} {{ zone.name }}
+					v-spacer
+					v-btn(icon, @click="reservation_dialog=false"): v-icon close
+				v-card-text
+					v-text-field(v-model="quotas" type="number", value="1", min="1", max="interval.available", :label="api.trans('literals.quota')")
+				v-card-actions
+					v-spacer
+					v-btn(primary, @click="postReservations(interval,quotas)") {{api.trans('literals.reservate')}}
+					v-btn(flat, @click="reservation_dialog=false") {{api.trans('crud.cancel')}}
+		v-snackbar(:timeout="3000", top right, v-model="saved")
+			span {{api.trans('literals.reservation')}} {{api.trans('crud.created')}}
 
 </template>
 
@@ -77,7 +90,11 @@ module.exports =
 		api: api
 		date: new Date()
 		zones: []
+		quotas:1
 		zone: null
+		interval: null
+		reservation_dialog:false
+		saved:false
 		mode: 'zones'
 		reservations:[]
 		collection:{}
@@ -133,6 +150,23 @@ module.exports =
 					console.log(@collection[ref])
 				@mode= 'reservation'
 				@loading=false
+			.catch console.error
+		reservate: (interval)->
+			@interval= interval
+			@reservation_dialog= true
+		postReservations:(interval,quotas)->
+			date = moment.utc(@date)
+			@api.post('reservations',
+				zone_id: @zone.id
+				user_id: @api.user.id
+				quotas: quotas
+				start: date.format('YYYY-MM-DD') + ' ' + interval.time.format('HH:mm')
+				end:  date.format('YYYY-MM-DD') + ' ' + interval.time.clone().add(@zone.interval, 'm').format('HH:mm'))
+			.then (data)=>
+				console.log data
+				@cancel()
+				@reservation_dialog=false
+				@saved=true
 			.catch console.error
 </script>
 
