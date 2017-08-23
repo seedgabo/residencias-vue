@@ -1,42 +1,44 @@
 <template lang="jade">
 	v-container()
 		v-layout(wrap="")
-			v-flex(xs12="" sm12="" md6="" offset-md3="")
+			v-flex(xs12="" sm12="" md8="" offset-md2="")
 				v-progress-linear(v-if="loading" v-bind:indeterminate="true")
 				transition(name='fadeLeft', enter-active-class='animated zoomIn', leave-active-class='animated zoomOut', mode='out-in', :duration='{ enter: 200, leave:200 }')
 					//- List of Zones
-					v-card(v-for="zone in zones" v-if="mode=='zones'" key="zones")
-						v-card-media.white--text(height="150px", :src="zone.image_url")
-							v-container(fill-height fluid)
-								v-layout(fill-height)
-									v-flex(xs12="" align-end flexbox)
-										span.headline {{zone.name}}
-						v-card-title 
-							div
-								p 
-									v-icon.green--text(large) nature
-									span  &nbsp; {{zone.name}}
-								p(v-if="zone.description")
-									v-icon.orange--text(large) event_note
-									span  &nbsp; {{zone.description}}
-								p
-									v-icon.primary--text(large) attach_money
-									span &nbsp;
-										b {{api.trans('literals.price')}}:
-										span(v-if="zone.price != 0") &nbsp; {{zone.price | currency}}
-										span(v-if="zone.price == 0") &nbsp; {{api.trans('literals.free')}}
-								p
-									v-icon.pink--text(large) schedule
-									span &nbsp;
-										b {{api.trans('literals.schedule')}}:
-										span &nbsp; {{[zone.start, ['HH:mm'] ]| moment('hh:mm A')}}
-										span(v-if="zone.end")  - {{[ zone.end, ['HH:mm'] ] | moment('hh:mm A')}}
-						v-card-actions
-							v-spacer
-							v-btn.orange--text(flat large, @click="select(zone)") {{ api.trans('literals.reservate') }}
+					v-layout(key="zones" v-if="mode=='zones'"  wrap="")
+						v-flex(xs12="" sm12="" md6="" v-for="zone in zones", :key="zone.id")
+							v-card.mt-3()
+								v-card-media.white--text(height="150px", :src="zone.image_url")
+									v-container(fill-height fluid)
+										v-layout(fill-height)
+											v-flex(xs12="" align-end flexbox)
+												span.headline {{zone.name}}
+								v-card-title 
+									div
+										p 
+											v-icon.green--text(large) nature
+											span  &nbsp; {{zone.name}}
+										p(v-if="zone.description")
+											v-icon.orange--text(large) event_note
+											span  &nbsp; {{zone.description}}
+										p
+											v-icon.primary--text(large) attach_money
+											span &nbsp;
+												b {{api.trans('literals.price')}}:
+												span(v-if="zone.price != 0") &nbsp; {{zone.price | currency}}
+												span(v-if="zone.price == 0") &nbsp; {{api.trans('literals.free')}}
+										p
+											v-icon.pink--text(large) schedule
+											span &nbsp;
+												b {{api.trans('literals.schedule')}}:
+												span &nbsp; {{[zone.start, ['HH:mm'] ]| moment('hh:mm A')}}
+												span(v-if="zone.end")  - {{[ zone.end, ['HH:mm'] ] | moment('hh:mm A')}}
+								v-card-actions
+									v-spacer
+									v-btn.orange--text(flat large, @click="select(zone)") {{ api.trans('literals.reservate') }}
 					div(v-else-if="mode=='picker'" key="picker")
-						v-date-picker.hidden-sm-and-down(v-model="date" landscape)
-						v-date-picker.hidden-md-and-up(v-model="date")
+						v-date-picker.hidden-sm-and-down(v-model="date", :allowed-dates="allowed" landscape :first-day-of-week="1" locale="es-sp")
+						v-date-picker.hidden-md-and-up(v-model="date", :allowed-dates="allowed", :first-day-of-week="1" locale="es-sp")
 						div
 							v-spacer
 							v-btn(flat primary @click.native="cancel()" large) {{ api.trans('crud.cancel') }}
@@ -108,10 +110,13 @@ module.exports =
 		reservation_dialog:false
 		view_reservation:false
 		saved:false
+		min: moment.utc().startOf('day').toDate()
+		max: moment.utc().startOf('day').add(1,'year').toDate()
 		mode: 'zones'
 		reservations:[]
 		collection:{}
 		options:[]
+		allowed:[]
 	methods:
 		getData: ()->
 			@loading=true
@@ -126,7 +131,8 @@ module.exports =
 		select: (zone)->
 			@mode= 'picker'
 			@zone= zone
-			console.log zone
+			@allowed= @getAvailableDays zone.days
+			console.log @allowed
 		choose: ()->
 			console.log @date
 			@renderOptions(@date)
@@ -185,6 +191,34 @@ module.exports =
 				@reservation_dialog=false
 				@saved=true
 			.catch console.error
+		getAvailableDays: (availables_days) ->
+			dates = []
+			availables_days.forEach (day) =>
+				dates = dates.concat(@getDaysBetweenDates(@min, @max, day))
+				return
+			dates
+		getDaysBetweenDates:(start, end, dayName) ->
+			result = []
+			days = 
+				sun: 0
+				mon: 1
+				tue: 2
+				wed: 3
+				thu: 4
+				fri: 5
+				sat: 6
+			day = days[dayName.toLowerCase().substr(0, 3)]
+			# Copy start date
+			current = moment.utc(start).toDate()
+			# Shift to next of required days
+			current.setDate current.getUTCDate() + (day - current.getUTCDate() + 7) % 7
+			# While less than end date, add dates to result array
+			while current < new Date(end)
+				aux = moment(new Date(+current))
+				result.push moment.utc([aux.year(),aux.month(),aux.date()]).toDate()
+				current.setDate current.getDate() + 7
+			result
+			
 </script>
 
 
