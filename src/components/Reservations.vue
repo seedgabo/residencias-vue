@@ -75,15 +75,49 @@
 					v-btn(primary, @click="postReservations(interval,quotas)") {{api.trans('literals.reservate')}}
 					v-btn(flat, @click="reservation_dialog=false") {{api.trans('crud.cancel')}}
 		v-dialog(v-model="view_reservation" fullscreen)
-			v-card(v-if="zone && interval")
+			v-card(v-if="zone && interval && interval.reserved")
 				v-toolbar.purple(dark)
 					v-toolbar-title.title {{api.trans('literals.view_resource')}} {{ api.trans('literals.reservation') }} {{ zone.name }}
 					v-spacer
 					v-btn(icon, @click="view_reservation=false"): v-icon close
 				v-card-text
-					{{ interval }}
+					v-list
+						v-divider
+						v-list-tile
+							v-list-tile-content
+								v-list-tile-title 
+									b  {{api.trans('literals.reservation')}} #
+									span {{interval.reservation.id}}
+						v-divider
+						v-list-tile
+							v-list-tile-content
+								v-list-tile-title 
+									b  {{api.trans('literals.quotas')}} 
+									span {{interval.reservation.quotas}}
+						v-divider
+						v-list-tile
+							v-list-tile-content
+								v-list-tile-title 
+									b  {{api.trans('literals.amount')}} 
+									span {{interval.reservation.quotas * zone.price | currency}}
+						v-divider
+					v-list
+						v-list-tile
+							v-list-tile-content
+								v-list-tile-title 
+									b.text-capitalize  {{api.trans('literals.start')}}:  
+									span.text-capitalize {{ interval.reservation.start | moment('calendar') }}
+						v-divider
+						v-list-tile
+							v-list-tile-content
+								v-list-tile-title 
+									b.text-capitalize  {{ api.trans('literals.end') }}:  
+									span.text-capitalize {{ interval.reservation.end | moment('calendar') }}
+						v-divider
 				v-card-actions
 					v-spacer
+					v-btn.danger(light disabled) 
+						span {{api.trans('crud.cancel')}} {{api.trans('literals.reservation')}}
 					v-btn(flat, @click="view_reservation=false") {{api.trans('crud.close')}}
 		v-snackbar(:timeout="3000", top right, v-model="saved")
 			span {{api.trans('literals.reservation')}} {{api.trans('crud.created')}}
@@ -155,7 +189,7 @@ module.exports =
 					time = time.add(@zone.interval, 'm')
 					break unless(time <= end)
 				@getReservations()
-		getReservations:()->
+		getReservations: ()->
 			date = moment.utc(@date)
 			@.api.get("reservations?where[zone_id]=#{@zone.id}&whereDateBetween[start]=#{date.format("YYYY-MM-DD")},#{date.clone().add(1, 'd').format("YYYY-MM-DD")}")
 			.then (resp)=>
@@ -166,17 +200,15 @@ module.exports =
 					if reservation.user_id == @api.user.id
 						@$set(@collection[ref], 'reserved',true)
 						@$set(@collection[ref], 'reservation',reservation)
-					console.log(@collection[ref])
 				@mode= 'reservation'
 				@loading=false
 			.catch console.error
 		reservate: (interval)->
 			@interval= interval
-			if interval.reserved
+			console.log @interval
+			if interval.reserved?
 				return @view_reservation= true
 			@reservation_dialog= true
-		viewReservation: (interval)->
-			console.log interval
 		postReservations:(interval,quotas)->
 			date = moment.utc(@date)
 			@api.post('reservations',
