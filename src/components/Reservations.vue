@@ -182,6 +182,10 @@ module.exports =
 			@collections = {}
 			time = moment(@zone.start, 'HH:mm')
 			end = moment(@zone.end, 'HH:mm')
+			if @zone.start == null
+				time = moment().startOf('day')
+			if @zone.end == null
+				end = moment().startOf('day').add(23,'hours')
 			console.log time, end
 			if time < end and @zone.interval > 0
 				loop
