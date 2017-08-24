@@ -7,7 +7,7 @@
 					//- List of Zones
 					v-layout(key="zones" v-if="mode=='zones'"  wrap="")
 						v-flex(xs12="" sm12="" md6="" v-for="zone in zones", :key="zone.id")
-							v-card.mt-3()
+							v-card.mt-3
 								v-card-media.white--text(height="150px", :src="zone.image_url")
 									v-container(fill-height fluid)
 										v-layout(fill-height)
@@ -31,8 +31,13 @@
 											v-icon.pink--text(large) schedule
 											span &nbsp;
 												b {{api.trans('literals.schedule')}}:
-												span &nbsp; {{[zone.start, ['HH:mm'] ]| moment('hh:mm A')}}
+												span &nbsp; {{[zone.start, ['HH:mm'] ]| moment('hh:mm A') }}
 												span(v-if="zone.end")  - {{[ zone.end, ['HH:mm'] ] | moment('hh:mm A')}}
+										p
+											v-icon.cyan--text(large) event
+											span &nbsp;
+												b {{ api.trans('date.days')}}: 
+												span(v-for="day in zone.days") {{ api.trans('date.'+day) }} &nbsp;
 								v-card-actions
 									v-spacer
 									v-btn.orange--text(flat large, @click="select(zone)") {{ api.trans('literals.reservate') }}
@@ -105,13 +110,13 @@
 						v-list-tile
 							v-list-tile-content
 								v-list-tile-title 
-									b.text-capitalize  {{api.trans('literals.start')}}:  
+									b.text-capitalize {{api.trans('literals.start')}}:  
 									span.text-capitalize {{ interval.reservation.start | moment('calendar') }}
 						v-divider
 						v-list-tile
 							v-list-tile-content
 								v-list-tile-title 
-									b.text-capitalize  {{ api.trans('literals.end') }}:  
+									b.text-capitalize {{ api.trans('literals.end') }}:  
 									span.text-capitalize {{ interval.reservation.end | moment('calendar') }}
 						v-divider
 				v-card-actions
