@@ -1,133 +1,134 @@
 <template lang="jade">
-	v-container()
-		v-layout(wrap="")
-			v-flex(xs12="" sm12="" md8="" offset-md2="")
-				v-progress-linear(v-if="loading" v-bind:indeterminate="true")
-				transition(name='fadeLeft', enter-active-class='animated zoomIn', leave-active-class='animated zoomOut', mode='out-in', :duration='{ enter: 200, leave:200 }')
-					//- List of Zones
-					v-layout(key="zones" v-if="mode=='zones'"  wrap="")
-						v-flex(xs12="" sm12="" md6="" v-for="zone in zones", :key="zone.id")
-							v-card.mt-3
-								v-card-media.white--text(height="150px", :src="zone.image_url")
-									v-container(fill-height fluid)
-										v-layout(fill-height)
-											v-flex(xs12="" align-end flexbox)
-												span.headline {{zone.name}}
-								v-card-title 
-									div
-										p 
-											v-icon.green--text(large) nature
-											span  &nbsp; {{zone.name}}
-										p(v-if="zone.description")
-											v-icon.orange--text(large) event_note
-											span  &nbsp; {{zone.description}}
-										p
-											v-icon.primary--text(large) attach_money
-											span &nbsp;
-												b {{api.trans('literals.price')}}:
-												span(v-if="zone.price != 0") &nbsp; {{zone.price | currency}}
-												span(v-if="zone.price == 0") &nbsp; {{api.trans('literals.free')}}
-										p
-											v-icon.pink--text(large) schedule
-											span &nbsp;
-												b {{api.trans('literals.schedule')}}:
-												span &nbsp; {{[zone.start, ['HH:mm'] ]| moment('hh:mm A') }}
-												span(v-if="zone.end")  - {{[ zone.end, ['HH:mm'] ] | moment('hh:mm A')}}
-										p
-											v-icon.cyan--text(large) event
-											span &nbsp;
-												b {{ api.trans('date.days')}}: 
-												span(v-for="day in zone.days") {{ api.trans('date.'+day) }} &nbsp;
-								v-card-actions
-									v-spacer
-									v-btn.orange--text(flat large, @click="select(zone)") {{ api.trans('literals.reservate') }}
-					div(v-else-if="mode=='picker'" key="picker")
-						v-date-picker.hidden-sm-and-down(v-model="date", :allowed-dates="allowed" landscape :first-day-of-week="1" locale="es-sp")
-						v-date-picker.hidden-md-and-up(v-model="date", :allowed-dates="allowed", :first-day-of-week="1" locale="es-sp")
-						div
-							v-spacer
-							v-btn(flat primary @click.native="cancel()" large) {{ api.trans('crud.cancel') }}
-							v-btn(flat primary @click.native="choose()" large) {{ api.trans('literals.choose') }}
-					v-card(v-else-if="mode=='reservation'" key="reservation")
-						v-list(subheader two-line)
-							v-subheader
-								v-btn(icon, @click="mode='picker'")
-									v-icon arrow_back 
-								span {{api.trans('literals.schedules')}}
+v-container()
+	v-layout(wrap="")
+		v-flex(xs12="" sm12="" md8="" offset-md2="")
+			v-progress-linear(v-if="loading" v-bind:indeterminate="true")
+			transition(name='fadeLeft', enter-active-class='animated zoomIn', leave-active-class='animated zoomOut', mode='out-in', :duration='{ enter: 200, leave:200 }')
+				//- List of Zones
+				v-layout(key="zones" v-if="mode=='zones'"  wrap="")
+					v-flex(xs12="" sm12="" md6="" v-for="zone in zones", :key="zone.id")
+						v-card.mt-3
+							v-card-media.white--text(height="150px", :src="zone.image_url")
+								v-container(fill-height fluid)
+									v-layout(fill-height)
+										v-flex(xs12="" align-end flexbox)
+											span.headline {{zone.name}}
+							v-card-title 
+								div
+									p 
+										v-icon.green--text(large) nature
+										span  &nbsp; {{zone.name}}
+									p(v-if="zone.description")
+										v-icon.orange--text(large) event_note
+										span  &nbsp; {{zone.description}}
+									p
+										v-icon.primary--text(large) attach_money
+										span &nbsp;
+											b {{api.trans('literals.price')}}:
+											span(v-if="zone.price != 0") &nbsp; {{zone.price | currency}}
+											span(v-if="zone.price == 0") &nbsp; {{api.trans('literals.free')}}
+									p
+										v-icon.pink--text(large) schedule
+										span &nbsp;
+											b {{api.trans('literals.schedule')}}:
+											span(v-if="zone.start") &nbsp; {{[zone.start, ['HH:mm'] ]| moment('hh:mm A') }}
+											span(v-else) &nbsp; {{ api.trans('literals.all_day') }}
+											span(v-if="zone.end")  - {{[ zone.end, ['HH:mm'] ] | moment('hh:mm A')}}
+										br
+										small {{api.trans('literals.every')}} {{humanize(zone.interval)}} 
+									p
+										v-icon.cyan--text(large) event
+										span &nbsp;
+											b {{ api.trans('date.days')}}: 
+											span(v-for="day in zone.days") {{ api.trans('date.'+day) }} &nbsp;
+							v-card-actions
 								v-spacer
-								v-btn(icon, @click="cancel()"): v-icon close
-							v-list-tile(v-for="interval in options", @click.stop="reservate(interval)")
-								v-list-tile-avatar
-									v-icon(large, :class="interval.reserved?'primary--text':interval.available>0?'green--text':'red--text'") {{ interval.reserved ?'check':interval.available>0?'event_available': 'event_busy'}}
-								v-list-tile-content
-									v-list-tile-title {{ interval.time | moment('hh:mm A')}}
-										small  | {{ zone.price | currency }}
-									template(v-if="!interval.reserved")
-										v-list-tile-sub-title(v-if="interval.limit_user == 0") {{api.trans('__.cupos ilimitados')}}
-										v-list-tile-sub-title(v-else) {{interval.available}}
-									template(v-else)
-										v-list-tile-sub-title {{api.trans('__.you have a reservation')}}
-		v-dialog(v-model="reservation_dialog" fullscreen)
-			v-card(v-if="zone && interval")
-				v-toolbar.primary(dark)
-					v-toolbar-title.title {{ api.trans('literals.reservation') }} {{ zone.name }}
-					v-spacer
-					v-btn(icon, @click="reservation_dialog=false"): v-icon close
-				v-card-text
-					v-text-field(v-model="quotas" type="number", value="1", min="1", max="interval.available", :label="api.trans('literals.quota')")
-				v-card-actions
-					v-spacer
-					v-btn(primary, @click="postReservations(interval,quotas)") {{api.trans('literals.reservate')}}
-					v-btn(flat, @click="reservation_dialog=false") {{api.trans('crud.cancel')}}
-		v-dialog(v-model="view_reservation" fullscreen)
-			v-card(v-if="zone && interval && interval.reserved")
-				v-toolbar.purple(dark)
-					v-toolbar-title.title {{api.trans('literals.view_resource')}} {{ api.trans('literals.reservation') }} {{ zone.name }}
-					v-spacer
-					v-btn(icon, @click="view_reservation=false"): v-icon close
-				v-card-text
-					v-list
-						v-divider
-						v-list-tile
+								v-btn.orange--text(flat large, @click="select(zone)") {{ api.trans('literals.reservate') }}
+				div(v-else-if="mode=='picker'" key="picker")
+					v-date-picker.hidden-sm-and-down(v-model="date", :allowed-dates="allowed" landscape :first-day-of-week="1" locale="es-sp")
+					v-date-picker.hidden-md-and-up(v-model="date", :allowed-dates="allowed", :first-day-of-week="1" locale="es-sp")
+					div
+						v-spacer
+						v-btn(flat primary @click.native="cancel()" large) {{ api.trans('crud.cancel') }}
+						v-btn(flat primary @click.native="choose()" large) {{ api.trans('literals.choose') }}
+				v-card(v-else-if="mode=='reservation'" key="reservation")
+					v-list(subheader two-line)
+						v-subheader
+							v-btn(icon, @click="mode='picker'")
+								v-icon arrow_back 
+							span {{api.trans('literals.schedules')}}
+							v-spacer
+							v-btn(icon, @click="cancel()"): v-icon close
+						v-list-tile(v-for="interval in options", @click.stop="reservate(interval)")
+							v-list-tile-avatar
+								v-icon(large, :class="interval.reserved?'primary--text':interval.available>0?'green--text':'red--text'") {{ interval.reserved ?'check':interval.available>0?'event_available': 'event_busy'}}
 							v-list-tile-content
-								v-list-tile-title 
-									b  {{api.trans('literals.reservation')}} #
-									span {{interval.reservation.id}}
-						v-divider
-						v-list-tile
-							v-list-tile-content
-								v-list-tile-title 
-									b  {{api.trans('literals.quotas')}} 
-									span {{interval.reservation.quotas}}
-						v-divider
-						v-list-tile
-							v-list-tile-content
-								v-list-tile-title 
-									b  {{api.trans('literals.amount')}} 
-									span {{interval.reservation.quotas * zone.price | currency}}
-						v-divider
-					v-list
-						v-list-tile
-							v-list-tile-content
-								v-list-tile-title 
-									b.text-capitalize {{api.trans('literals.start')}}:  
-									span.text-capitalize {{ interval.reservation.start | moment('calendar') }}
-						v-divider
-						v-list-tile
-							v-list-tile-content
-								v-list-tile-title 
-									b.text-capitalize {{ api.trans('literals.end') }}:  
-									span.text-capitalize {{ interval.reservation.end | moment('calendar') }}
-						v-divider
-				v-card-actions
-					v-spacer
-					v-btn.danger(light disabled) 
-						span {{api.trans('crud.cancel')}} {{api.trans('literals.reservation')}}
-					v-btn(flat, @click="view_reservation=false") {{api.trans('crud.close')}}
-		v-snackbar(:timeout="3000", top right, v-model="saved")
-			span {{api.trans('literals.reservation')}} {{api.trans('crud.created')}}
-		
-
+								v-list-tile-title {{ interval.time | moment('hh:mm A')}}
+									small  | {{ zone.price | currency }}
+								template(v-if="!interval.reserved")
+									v-list-tile-sub-title(v-if="interval.limit_user == 0") {{api.trans('__.cupos ilimitados')}}
+									v-list-tile-sub-title(v-else) {{interval.available}}
+								template(v-else)
+									v-list-tile-sub-title {{api.trans('__.you have a reservation')}}
+	v-dialog(v-model="reservation_dialog" fullscreen)
+		v-card(v-if="zone && interval")
+			v-toolbar.primary(dark)
+				v-toolbar-title.title {{ api.trans('literals.reservation') }} {{ zone.name }}
+				v-spacer
+				v-btn(icon, @click="reservation_dialog=false"): v-icon close
+			v-card-text
+				v-text-field(v-model="quotas" type="number", value="1", min="1", max="interval.available", :label="api.trans('literals.quota')")
+			v-card-actions
+				v-spacer
+				v-btn(primary, @click="postReservations(interval,quotas)") {{api.trans('literals.reservate')}}
+				v-btn(flat, @click="reservation_dialog=false") {{api.trans('crud.cancel')}}
+	v-dialog(v-model="view_reservation" fullscreen)
+		v-card(v-if="zone && interval && interval.reserved")
+			v-toolbar.purple(dark)
+				v-toolbar-title.title {{api.trans('literals.view_resource')}} {{ api.trans('literals.reservation') }} {{ zone.name }}
+				v-spacer
+				v-btn(icon, @click="view_reservation=false"): v-icon close
+			v-card-text
+				v-list
+					v-divider
+					v-list-tile
+						v-list-tile-content
+							v-list-tile-title 
+								b  {{api.trans('literals.reservation')}} #
+								span {{interval.reservation.id}}
+					v-divider
+					v-list-tile
+						v-list-tile-content
+							v-list-tile-title 
+								b  {{api.trans('literals.quotas')}} 
+								span {{interval.reservation.quotas}}
+					v-divider
+					v-list-tile
+						v-list-tile-content
+							v-list-tile-title 
+								b  {{api.trans('literals.amount')}} 
+								span {{interval.reservation.quotas * zone.price | currency}}
+					v-divider
+				v-list
+					v-list-tile
+						v-list-tile-content
+							v-list-tile-title 
+								b.text-capitalize {{api.trans('literals.start')}}:  
+								span.text-capitalize {{ interval.reservation.start | moment('calendar') }}
+					v-divider
+					v-list-tile
+						v-list-tile-content
+							v-list-tile-title 
+								b.text-capitalize {{ api.trans('literals.end') }}:  
+								span.text-capitalize {{ interval.reservation.end | moment('calendar') }}
+					v-divider
+			v-card-actions
+				v-spacer
+				v-btn.danger(light disabled) 
+					span {{api.trans('crud.cancel')}} {{api.trans('literals.reservation')}}
+				v-btn(flat, @click="view_reservation=false") {{api.trans('crud.close')}}
+	v-snackbar(:timeout="3000", top right, v-model="saved")
+		span {{api.trans('literals.reservation')}} {{api.trans('crud.created')}}
 </template>
 
 <script lang="coffee">
@@ -214,6 +215,21 @@ module.exports =
 			if interval.reserved?
 				return @view_reservation= true
 			@reservation_dialog= true
+		humanize: (interval)->
+			if interval == "60" || interval == 60
+				return "1 hora"
+			else if interval == "90" || interval == 90
+				return "1 hora y media"
+			else if interval == "180" || interval == 180
+				return "2 horas"
+			else if interval == "360" || interval == 360
+				return "6 horas"
+			else if interval == "720" || interval == 720
+				return "12 horas"
+			else if interval == "1440" || interval == 1440
+				return "24 horas"
+			else
+				return interval + " " + "minutos"
 		postReservations:(interval,quotas)->
 			date = moment.utc(@date)
 			@api.post('reservations',
