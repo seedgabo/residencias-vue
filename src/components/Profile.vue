@@ -27,7 +27,9 @@ v-container(fluid='')
             v-flex(xs12='', style='width:100%')
               v-text-field(prepend-icon='phone', type='number', v-model='api.user.phone_number', :label="api.trans('literals.phone_number')")
             v-flex(xs12='', style='width:100%')
-              v-select(prepend-icon='wc', v-model='api.user.sex', v-bind:items='genders', :label="api.trans('literals.sex')")
+              v-select(prepend-icon='wc', v-model='api.user.sex', v-bind:items='genders', :label="api.trans('literals.sex')") 
+            v-flex(xs12='', style='width:100%')
+              v-select(v-if="api.user.id !== api.residence.owner_id" prepend-icon='face', v-model='api.user.relationship', v-bind:items='relationships', :label="api.trans('literals.relationship')")
             v-flex(xs12='', style='width:100%')
               v-menu(lazy='', :close-on-content-click='true', transition='scale-transition', offset-y='', full-width='', :nudge-left='40', max-width='290px')
                 v-text-field(slot='activator', :label="api.trans('literals.birthday')", v-model='api.user.birthday', prepend-icon='event', readonly='')
@@ -160,6 +162,7 @@ v-container(fluid='')
           v-text-field(v-model='user.document', :label="api.trans('literals.document')", type='text', required='')
           v-text-field(v-model='user.password', :label="api.trans('literals.password')", type='password', required='')
           v-select(prepend-icon='wc', v-model='user.sex', v-bind:items='genders', :label="api.trans('literals.sex')")
+          v-select(prepend-icon='face', v-model='user.relationship', v-bind:items='relationships', :label="api.trans('literals.relationship')")
         v-card-actions
           v-spacer
           v-btn.blue--text.darken-1(flat='', @click.native='new_user = false') {{api.trans('crud.close')}}
@@ -193,6 +196,7 @@ module.exports=
   data: ->
     api: api
     genders: [ { text: api.trans('literals.male'), value: 'male' }, { text: api.trans('literals.female'), value: 'female' }, ]
+    relationships: [{text: api.trans('hijo'),  value:'son'},{ text: api.trans('conyuge'),  value:'spouse'},{ text:api.trans('padre/madre'),  value:'parent'},{text:api.trans('hermano/hermana'),  value:'brother'},{text:api.trans('literals.other'), value: 'other'}]
     rules:{
       required: (value) => !!value || 'Required.',
       email: (value) =>
@@ -209,7 +213,8 @@ module.exports=
     snackbar_success: false
     snackbar_success_residence: false
     new_user: false
-    user: { name: '', email: '', password: '', document: '', sex: 'male', }
+    user: { name: '', email: '', password: '', document: '', sex: 'male',relationship:'other'}
+
     password: ''
     password_confirmation: ''
     passwordResults: false,
