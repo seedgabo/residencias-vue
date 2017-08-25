@@ -126,7 +126,7 @@ v-container(fluid='')
           v-subheader.white--text {{api.trans('literals.users')}}
           v-toolbar-title.white--text(slot='extension')
             v-text-field.white--text.always-blank(v-model='query_users', prepend-icon='search', dark='', label='Search')
-          v-btn.cyan.accent-2(@click='addUser()', fab='', small='', bottom='', left='', absolute='')
+          v-btn.cyan.accent-2(v-if="api.residence.users.length < api.residence.number_of_people" @click='addUser()', fab='', small='', bottom='', left='', absolute='')
             v-icon add
         v-card-text
           v-list
