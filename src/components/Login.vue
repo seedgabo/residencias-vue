@@ -9,7 +9,7 @@
 			v-flex
 				v-card.login-card.mt-5(hover='', raised='')
 					v-card-title(primary-title='')
-						.text-center(style='width:100%' v-if="!forgot") 
+						.text-center(style='width:100%' v-if="!forgot")
 							h4.headline
 								| Login
 							v-text-field(name='username', v-model='username', label='username', prepend-icon='account_circle')
@@ -32,7 +32,7 @@
 							v-btn(@click.native='recover(username)', :loading='loging', primary='', block='', v-bind:disabled='username.length <4')
 								| Recuperar
 							v-btn(flat="", @click="forgot=false") Volver a login
-											
+
 			v-flex.hidden-xs
 	v-dialog(v-model="error")
 		v-card
@@ -82,6 +82,9 @@ module.exports =
 						@api.setUser(response.data)
 						window.localStorage.setItem('user', JSON.stringify(response.data.user));
 						window.localStorage.setItem('residence', JSON.stringify(response.data.residence));
+						window.localStorage.setItem('setting', JSON.stringify(response.data.setting));
+						window.localStorage.setItem('setting', JSON.stringify(response.data.setting));
+						window.localStorage.setItem('modules', JSON.stringify(response.data.modules));
 						@getLangs();
 						resolve(response.data)
 						@$router.push('/');
@@ -156,15 +159,15 @@ module.exports =
 <style scoped>
 .login-page,
 body {
-	background: #fff;
-	margin-top: 0px;
-	height: 100vh;
-	width: 100vw;
-	background-image: url(https://s-media-cache-ak0.pinimg.com/originals/d2/b8/fc/d2b8fc669367ac5eac78f9f2d4186913.png);
-	background-size: cover;
+  background: #fff;
+  margin-top: 0px;
+  height: 100vh;
+  width: 100vw;
+  background-image: url(https://s-media-cache-ak0.pinimg.com/originals/d2/b8/fc/d2b8fc669367ac5eac78f9f2d4186913.png);
+  background-size: cover;
 }
 
 .delay {
-	animation-delay: 1s;
+  animation-delay: 1s;
 }
 </style>

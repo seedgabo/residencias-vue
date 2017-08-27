@@ -140,6 +140,7 @@ import Echo from 'laravel-echo'
 window.Pusher = require('pusher-js');
 window.io = require('socket.io-client')
 var api = require('./services/api.js')
+window.$api = api
 export default {
   mounted() {
     this.api.ready.then((data) => {
@@ -193,6 +194,11 @@ export default {
         .then((response) => {
           console.log(response.data)
           this.api.residence = response.data.residence;
+          this.api.settings = response.data.settings;
+          this.api.modules = response.data.modules;
+          window.localStorage.setItem('settings', JSON.stringify(response.data.settings));
+          window.localStorage.setItem('modules', JSON.stringify(response.data.modules));
+
         })
         .catch(console.error)
     },

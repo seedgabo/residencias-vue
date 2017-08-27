@@ -88,6 +88,17 @@ api.ready = new Promise(
             if (i18n) {
                 api.i18n = JSON.parse(i18n);
             }
+
+            var settings = window.localStorage.getItem('settings');
+            if (settings) {
+                api.settings = JSON.parse(settings);
+            }
+
+
+            var modules = window.localStorage.getItem('modules');
+            if (modules) {
+                api.modules = JSON.parse(modules);
+            }
             return resolve(api.user);
         } else {
             return reject();
@@ -96,7 +107,7 @@ api.ready = new Promise(
 )
 
 router.beforeEach((to, from, next) => {
-    document.title = (to.name) + " | Residencias Online"
+    document.title = api.trans('literals.' + to.name.toLocaleLowerCase()) + " | " + (api.settings.name ? api.settings.name : 'Residentes Online')
     next()
 })
 
