@@ -13,7 +13,7 @@ var api = {
         api.residence = data.residence
         api.settings = data.settings
         api.modules = data.modules
-            // localStorage.setItem('user', JSON.stringify(data.user));
+        api.user.residences = data.residences;
     },
 
     get: function(uri) {

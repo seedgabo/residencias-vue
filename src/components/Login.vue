@@ -80,11 +80,10 @@ module.exports =
 						console.log(response.data);
 						@loging = false;
 						@api.setUser(response.data)
-						window.localStorage.setItem('user', JSON.stringify(response.data.user));
-						window.localStorage.setItem('residence', JSON.stringify(response.data.residence));
-						window.localStorage.setItem('setting', JSON.stringify(response.data.setting));
-						window.localStorage.setItem('setting', JSON.stringify(response.data.setting));
-						window.localStorage.setItem('modules', JSON.stringify(response.data.modules));
+						window.localStorage.setItem('user', JSON.stringify(response.data.user))
+						window.localStorage.setItem('residence', JSON.stringify(response.data.residence))
+						window.localStorage.setItem('settings', JSON.stringify(response.data.settings))
+						window.localStorage.setItem('modules', JSON.stringify(response.data.modules))
 						@getLangs();
 						resolve(response.data)
 						@$router.push('/');
@@ -145,6 +144,8 @@ module.exports =
 						@api.setUser(response.data)
 						window.localStorage.setItem('user', JSON.stringify(response.data.user))
 						window.localStorage.setItem('residence', JSON.stringify(response.data.residence))
+						window.localStorage.setItem('settings', JSON.stringify(response.data.settings))
+						window.localStorage.setItem('modules', JSON.stringify(response.data.modules))
 						@getLangs();
 						resolve(response.data)
 						@$router.push('/')
