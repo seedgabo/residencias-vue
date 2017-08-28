@@ -2,16 +2,28 @@
   <v-app id="example-2" :dark="false">
     <v-navigation-drawer temporary v-model="drawer" overflow>
       <v-list class="pa-0" v-if="api.user.id">
-        <v-list-tile avatar tag="div" class="primary">
+        <v-list-tile avatar tag="div" class="primary" @click="see_residences = !see_residences">
           <v-list-tile-avatar>
             <img :src="api.user.image_url" />
           </v-list-tile-avatar>
           <v-list-tile-content>
             <v-list-tile-title v-if="api.user" class="white--text">{{ api.user.name }}</v-list-tile-title>
           </v-list-tile-content>
+          <v-list-tile-action>
+            <v-icon dark>{{!see_residences? 'keyboard_arrow_left': 'keyboard_arrow_down'}}</v-icon>
+          </v-list-tile-action>
         </v-list-tile>
+        <template v-if="see_residences && api.user.residences">
+          <v-subheader class="grey text-capitalize white--text">{{api.trans('literals.my')}} {{api.trans('literals.residences')}}</v-subheader>
+          <v-list-tile @click="changeResidence(res)" v-for="res in api.user.residences" :key="res.id" :disabled="res.id === api.residence.id">
+            <v-list-tile-avatar>
+              <v-icon :class=" (res.status == 'solvent'?'green':'red') + '--text'">home</v-icon>
+            </v-list-tile-avatar>
+            {{res.name}}
+          </v-list-tile>
+        </template>
       </v-list>
-      <v-list class="pt-0" dense>
+      <v-list class="pt-0" dense v-if="!(see_residences && api.user.residences)">
         <v-divider></v-divider>
         <v-list-tile :to="page.url" v-for="(page,i) in pages" :key="i">
           <v-list-tile-action>
@@ -140,6 +152,7 @@ import Echo from 'laravel-echo'
 window.Pusher = require('pusher-js');
 window.io = require('socket.io-client')
 var api = require('./services/api.js')
+window.$api = api
 export default {
   mounted() {
     this.api.ready.then((data) => {
@@ -181,6 +194,7 @@ export default {
       timeout: 15 * 60 * 1000,
       visitConfirmToast: false,
       newVisitModal: false,
+      see_residences: false,
       visitor: null,
       visit: null,
       audio: null,
@@ -193,6 +207,21 @@ export default {
         .then((response) => {
           console.log(response.data)
           this.api.residence = response.data.residence;
+          this.api.settings = response.data.settings;
+          this.api.modules = response.data.modules;
+          this.api.user.residences = response.data.residences;
+          window.localStorage.setItem('settings', JSON.stringify(response.data.settings));
+          window.localStorage.setItem('modules', JSON.stringify(response.data.modules));
+
+        })
+        .catch(console.error)
+    },
+    changeResidence(residence) {
+      this.api.user.residence_id = residence.id;
+      window.localStorage.setItem('user', JSON.stringify(this.api.user));
+      this.api.put('users/' + this.api.user.id, { residence_id: residence.id })
+        .then((response) => {
+          window.location.reload();
         })
         .catch(console.error)
     },

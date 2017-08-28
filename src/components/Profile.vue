@@ -27,7 +27,7 @@ v-container(fluid='')
             v-flex(xs12='', style='width:100%')
               v-text-field(prepend-icon='phone', type='number', v-model='api.user.phone_number', :label="api.trans('literals.phone_number')")
             v-flex(xs12='', style='width:100%')
-              v-select(prepend-icon='wc', v-model='api.user.sex', v-bind:items='genders', :label="api.trans('literals.sex')") 
+              v-select(prepend-icon='wc', v-model='api.user.sex', v-bind:items='genders', :label="api.trans('literals.sex')")
             v-flex(xs12='', style='width:100%')
               v-select(v-if="api.user.id !== api.residence.owner_id" prepend-icon='face', v-model='api.user.relationship', v-bind:items='relationships', :label="api.trans('literals.relationship')")
             v-flex(xs12='', style='width:100%')
@@ -90,7 +90,7 @@ v-container(fluid='')
                 p(v-for='user in api.residence.users', :key='user.id') {{user.name}}
           v-card-text(v-else='', key='edit')
             v-text-field(:label="api.trans('literals.name')", v-model='api.residence.name', prepend-icon='home')
-            v-text-field(:label="api.trans('literals.number_of_people')", v-model='api.residence.number_of_people', prepend-icon='people')
+            v-text-field(v-if="api.settings &&  (api.settings.owners_can_set_residents == true || api.settings.owners_can_set_residents == 'true')", :label="api.trans('literals.number_of_people')", v-model='api.residence.number_of_people', prepend-icon='people')
             v-select(v-bind:items='api.residence.users', :label="api.trans('literals.owner')", prepend-icon='person', v-model='api.residence.owner_id', item-text='name', item-value='id')
               template(slot='selection', scope='data')
                 v-avatar(style='display:inline')
@@ -126,8 +126,9 @@ v-container(fluid='')
           v-subheader.white--text {{api.trans('literals.users')}}
           v-toolbar-title.white--text(slot='extension')
             v-text-field.white--text.always-blank(v-model='query_users', prepend-icon='search', dark='', label='Search')
-          v-btn.cyan.accent-2(v-if="api.residence.users.length < api.residence.number_of_people" @click='addUser()', fab='', small='', bottom='', left='', absolute='')
-            v-icon add
+          template(v-if="(api.settings.limit_user == 'false' || api.settings.limit_user == 'false') ||api.residence.users.length < api.residence.number_of_people")
+            v-btn.cyan.accent-2(v-if="api.settings &&  (api.settings.owners_can_create_users == true || api.settings.owners_can_create_users == 'true')" @click='addUser()', fab='', small='', bottom='', left='', absolute='')
+              v-icon add
         v-card-text
           v-list
             v-list-tile(avatar='', v-for='(user,index) in filterBy(api.residence.users, query_users)', :key='user.id')
