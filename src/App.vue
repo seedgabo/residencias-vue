@@ -217,6 +217,8 @@ export default {
         .catch(console.error)
     },
     changeResidence(residence) {
+      this.api.user.residence_id = residence.id;
+      window.localStorage.setItem('settings', JSON.stringify(this.api.user));
       this.api.put('users/' + this.api.user.id, { residence_id: residence.id })
         .then((response) => {
           window.location.reload();
