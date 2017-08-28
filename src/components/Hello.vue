@@ -44,7 +44,7 @@ div
             v-flex(xs5)
               b &nbsp;&nbsp;{{api.trans('literals.owner')}}:
             v-flex.text-xs-right(xs6)
-              span {{api.residence.owner.name}}
+              span {{ api.residence.owner ? api.residence.owner.name: '-' }}
           v-layout.mt-3(@click="$router.push('profile')", ripple, style="cursor:pointer")
             v-flex(xs1)
               v-icon.large.warning--text fa-bar-chart
@@ -118,7 +118,7 @@ export default {
         })
         .catch(console.error)
     },
-    getEvents: function () {
+    getEvents: function() {
       this.api.get("events?scope[soon]'")
         .then((response) => {
           console.log(response.data)
@@ -126,7 +126,7 @@ export default {
         })
         .catch(console.error)
     },
-    getSolventsGraph: function () {
+    getSolventsGraph: function() {
       this.api.get("residences")
         .then((resp) => {
           var defaulters = 0, solvents = 0;
