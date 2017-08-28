@@ -44,7 +44,8 @@ div
             v-flex(xs5)
               b &nbsp;&nbsp;{{api.trans('literals.owner')}}:
             v-flex.text-xs-right(xs6)
-              span {{ api.residence.owner ? api.residence.owner.name: '-' }}
+              span(v-if="api.residence.owner") {{ api.residence.owner.name }}
+              span(v-else) --
           v-layout.mt-3(@click="$router.push('profile')", ripple, style="cursor:pointer")
             v-flex(xs1)
               v-icon.large.warning--text fa-bar-chart
