@@ -134,6 +134,7 @@ module.exports =
       @post = post
       @creator = true;
     updatePost: (post)->
+      @uploading=true
       @post = JSON.parse JSON.stringify(post)
       delete @post.residence
       delete @post.user
@@ -142,8 +143,17 @@ module.exports =
       @post.user_id = @api.user.id
       @api.put('posts/' + @post.id, @post)
         .then (response)=>
-          @creator = false
-          @getPosts()
+          if @post_image?
+            @api.upload('post',response.data.id,@post_image)
+            .then (resp)=>
+              @creator = false
+              @uploading = false
+              @getPosts()
+            .catch console.error
+          else
+            @creator = false
+            @uploading = false
+            @getPosts()
         .catch console.error
     deletePost: (post)->
       return if  !confirm api.trans('__.are you sure')
