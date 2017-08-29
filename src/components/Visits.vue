@@ -35,7 +35,7 @@ div
         v-spacer
         v-btn(flat primary, :disabled="!canAddVisit()", @click="addVisit()") {{api.trans('crud.add')}}
         v-btn(flat, @click="adding=false") {{api.trans('crud.cancel')}}
-  v-dialog(v-model="see_visit" width="400px")
+  v-dialog(v-model="see_visit" width="500px")
     v-card
       v-toolbar.primary(flat dark)
         v-toolbar-title {{api.trans('literals.visit')}}
@@ -54,6 +54,17 @@ div
           v-chip(v-for="person in selected.visitors" key="person.id")
             v-avatar: img(:src="person.image_url")
             span {{person.name}}
+            v-menu(v-if="person.pivot")
+              v-btn(flat small round slot="activator")
+                small {{api.trans('literals.'+person.pivot.status)}}
+                v-icon(small) arrow_drop_down
+              v-list
+                v-list-tile(:disabled="person.pivot.status === 'approved'" ,@click="person.pivot.status = 'approved'")
+                  v-list-tile-title {{api.trans('literals.approved')}}
+                v-list-tile(:disabled="person.pivot.status === 'rejected'" ,@click="person.pivot.status = 'rejected'")
+                  v-list-tile-title {{api.trans('literals.rejected')}}
+                v-list-tile(:disabled="person.pivot.status === 'waiting for confirmation'" ,@click="person.pivot.status = 'waiting for confirmation'")
+                  v-list-tile-title {{api.trans('literals.waiting for confirmation')}}
         p(v-if="selected.note")
           b {{api.trans('literals.notes')}}:
           span  {{selected.note}}
@@ -123,11 +134,18 @@ module.exports =
     canAddVisit: ()->
       @visit.visitor_id>0
     updateVisit:(visit,status)->
-      @api.put('visits/'+visit.id,{status:status})
+      @api.put('visits/'+visit.id,{status:status,visitors:@prepareVisitors(visit)})
       .then (resp)=>
         console.log resp.data
+        visit.status = resp.data.status
         @see_visit=false
       .catch console.error
+    prepareVisitors:(visit)->
+        obj = {}
+        for person in visit.visitors
+          obj[person.id] = {status: person.pivot.status}
+        return obj
+
   computed:
     visitsFilter:()->
       if @filters.visitor==null
