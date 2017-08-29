@@ -58,7 +58,7 @@ div
             v-flex(xs5)
               b &nbsp;&nbsp;{{api.trans('literals.debt')}}:
             v-flex.text-xs-right(xs6)
-              span $ {{api.residence.debt | currency }}
+              span {{api.residence.debt | currency }}
       v-card.elevation-5.mt-3
         div.text-xs-center.primary--text.title.pt-4
           v-icon.secondary--text event
