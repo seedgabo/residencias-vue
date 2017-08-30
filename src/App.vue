@@ -155,11 +155,11 @@ var api = require('./services/api.js')
 window.$api = api
 export default {
   mounted() {
-    this.api.ready.then((data) => {
-      this.getData()
-      this.startEcho()
-      // setTimeout(this.getVisits, 3000)
-    })
+    this.api.ready
+      .then((data) => {
+        this.getData()
+        this.startEcho()
+      })
       .catch((err) => {
         console.error(err);
         this.navigate('/login');
@@ -217,7 +217,7 @@ export default {
         .catch(console.error)
     },
     changeResidence(residence) {
-      this.api.user.residence_id = residence.id;
+      api.user.residence_id = residence.id;
       window.localStorage.setItem('user', JSON.stringify(this.api.user));
       this.api.put('users/' + this.api.user.id, { residence_id: residence.id })
         .then((response) => {
@@ -232,7 +232,7 @@ export default {
       this.audio.play();
     },
     getVisits() {
-      this.api.get('visits?with[]=visitor&with[]=visitors&where[residence_id]=' + this.api.user.residence_id + "limit=500&order[created_at]=desc")
+      this.api.get('visits?with[]=visitor&with[]=visitors&where[residence_id]=' + api.user.residence_id + "limit=500&order[created_at]=desc")
         .then((resp) => {
           this.api.visits = resp.data;
         })
@@ -266,6 +266,7 @@ export default {
     startEcho() {
       if (this.api.Echo) {
         console.warn('already started Echo');
+        this.stopEcho();
         return;
       }
       this.api.Echo = new Echo({
@@ -334,14 +335,14 @@ export default {
 
         .listen('VisitorCreated', (data) => {
           console.log("created visitor:", data);
-          if (data.visitor.residence_id != this.api.residence.id) return;
+          if (data.visitor.residence_id != api.user.residence_id) return;
           var visitor = this.api.residence.visitors[this.api.residence.visitors.length] = data.visitor;
           if (data.image)
             visitor.image = data.image;
         })
         .listen('VisitorUpdated', (data) => {
           console.log("updated visitor:", data);
-          if (data.visitor.residence_id !== api.residence.id) return;
+          if (data.visitor.residence_id !== api.user.residence_id) return;
           var visitor_index = this.api.residence.visitors.findIndex((visitor) => {
             return visitor.id === data.visitor.id;
           });
@@ -367,14 +368,14 @@ export default {
 
         .listen('VehicleCreated', (data) => {
           console.log("created vehicle:", data);
-          if (data.vehicle.residence_id != this.api.residence.id) return;
+          if (data.vehicle.residence_id != api.user.residence_id) return;
           var vehicle = this.api.residence.vehicles[this.api.residence.vehicles.length] = data.vehicle;
           if (data.image)
             vehicle.image = data.image;
         })
         .listen('VehicleUpdated', (data) => {
           console.log("updated vehicle:", data);
-          if (data.vehicle.residence_id !== api.residence.id) return;
+          if (data.vehicle.residence_id !== api.user.residence_id) return;
           var vehicle_index = this.api.residence.vehicles.findIndex((vehicle) => {
             return vehicle.id === data.vehicle.id;
           });
@@ -400,14 +401,14 @@ export default {
 
         .listen('WorkerCreated', (data) => {
           console.log("created worker:", data);
-          if (data.worker.residence_id != this.api.residence.id) return;
+          if (data.worker.residence_id != api.user.residence_id) return;
           var worker = this.api.residence.workers[this.api.residence.workers.length] = data.worker;
           if (data.image)
             worker.image = data.image;
         })
         .listen('WorkerUpdated', (data) => {
           console.log("updated worker:", data);
-          if (data.worker.residence_id !== api.residence.id) return;
+          if (data.worker.residence_id !== api.user.residence_id) return;
           var worker_index = this.api.residence.workers.findIndex((worker) => {
             return worker.id === data.worker.id;
           });
@@ -433,7 +434,7 @@ export default {
 
         .listen('VisitCreated', (data) => {
           console.log("created visit:", data);
-          if (data.visit.residence_id != this.api.user.residence_id) return;
+          if (data.visit.residence_id != api.user.residence_id) return;
           data.visit.visitor = data.visitor
           data.visit.visitors = data.visitors
           this.api.visits = [data.visit].concat(this.api.visits)
@@ -443,7 +444,7 @@ export default {
         })
         .listen('VisitUpdated', (data) => {
           console.log("updated visit:", data);
-          if (data.visit.residence_id != this.api.user.residence_id) return;
+          if (data.visit.residence_id != api.user.residence_id) return;
           var visit_index = this.api.visits.findIndex((ev) => {
             return ev.id === data.visit.id;
           });
@@ -476,7 +477,7 @@ export default {
 
 
         .listen('EventCreated', (data) => {
-          if (!(data.event.privacity == "public" || data.residence.id == this.api.user.residence_id)) return;
+          if (!(data.event.privacity == "public" || data.residence.id == api.user.residence_id)) return;
           console.log("created event:", data);
           this.api.events[this.api.events.length] = data.event
 
@@ -490,7 +491,7 @@ export default {
         })
         .listen('EventUpdated', (data) => {
           console.log("updated event:", data);
-          if (!(data.event.privacity == "public" || data.residence.id == this.api.user.residence_id)) return;
+          if (!(data.event.privacity == "public" || data.residence.id == api.user.residence_id)) return;
           var event_index = this.api.events.findIndex((ev) => {
             return ev.id === data.event.id;
           });
@@ -520,7 +521,7 @@ export default {
         })
 
 
-      this.api.Echo.private('App.Residence.' + this.api.user.residence_id)
+      this.api.Echo.private('App.Residence.' + this.api.user.residence_idapi.user.residence_id)
         .listen('VisitConfirm', (data) => {
           console.log("VisitConfirm: ", data);
           data.visit.visitor = data.visitor
@@ -549,7 +550,7 @@ export default {
     stopEcho() {
       this.api.Echo.leave('Application');
       this.api.Echo.leave('App.User.' + this.api.user.id);
-      this.api.Echo.leave('App.Residence.' + this.api.user.residence_id);
+      this.api.Echo.leave('App.Residence.' + api.user.residence_id);
       this.api.Echo.leave('App.Mobile');
       this.api.Echo = undefined;
     },
