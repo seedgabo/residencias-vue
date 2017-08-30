@@ -266,8 +266,7 @@ export default {
     startEcho() {
       if (this.api.Echo) {
         console.warn('already started Echo');
-        this.stopEcho();
-        return;
+        this.stopEcho()
       }
       this.api.Echo = new Echo({
         key: '807bbfb3ca20f7bb886e',
