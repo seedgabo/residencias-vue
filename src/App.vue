@@ -520,7 +520,7 @@ export default {
         })
 
 
-      this.api.Echo.private('App.Residence.' + this.api.user.residence_idapi.user.residence_id)
+      this.api.Echo.private('App.Residence.' + api.user.residence_id)
         .listen('VisitConfirm', (data) => {
           console.log("VisitConfirm: ", data);
           data.visit.visitor = data.visitor

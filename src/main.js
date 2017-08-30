@@ -107,7 +107,7 @@ api.ready = new Promise(
 )
 
 router.beforeEach((to, from, next) => {
-    document.title = api.trans('literals.' + to.name.toLocaleLowerCase()) + " | " + (api.settings ? api.settings.name : 'Residentes Online')
+    document.title = api.trans('literals.' + (to.name ? to.name.toLowerCase() : '')) + " | " + (api.settings ? api.settings.name : 'Residentes Online')
     next()
 })
 

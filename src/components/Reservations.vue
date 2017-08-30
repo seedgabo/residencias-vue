@@ -13,9 +13,9 @@ v-container()
 									v-layout(fill-height)
 										v-flex(xs12="" align-end flexbox)
 											span.headline {{zone.name}}
-							v-card-title 
+							v-card-title
 								div
-									p 
+									p
 										v-icon.green--text(large) nature
 										span  &nbsp; {{zone.name}}
 									p(v-if="zone.description")
@@ -35,12 +35,12 @@ v-container()
 											span(v-else) &nbsp; {{ api.trans('literals.all_day') }}
 											span(v-if="zone.end")  - {{[ zone.end, ['HH:mm'] ] | moment('hh:mm A')}}
 										br
-										small {{api.trans('literals.every')}} {{humanize(zone.interval)}} 
+										small {{api.trans('literals.every')}} {{humanize(zone.interval)}}
 									p
 										v-icon.cyan--text(large) event
 										span &nbsp;
-											b {{ api.trans('date.days')}}: 
-											span(v-for="day in zone.days") {{ api.trans('date.'+day) }} &nbsp;
+											b {{ api.trans('date.days')}}:
+											span(v-for="day in zone.days", :key="day") {{ api.trans('date.'+day) }} &nbsp;
 							v-card-actions
 								v-spacer
 								v-btn.orange--text(flat large, @click="select(zone)") {{ api.trans('literals.reservate') }}
@@ -55,11 +55,11 @@ v-container()
 					v-list(subheader two-line)
 						v-subheader
 							v-btn(icon, @click="mode='picker'")
-								v-icon arrow_back 
+								v-icon arrow_back
 							span {{api.trans('literals.schedules')}}
 							v-spacer
 							v-btn(icon, @click="cancel()"): v-icon close
-						v-list-tile(v-for="interval in options", @click.stop="reservate(interval)")
+						v-list-tile(v-for="interval in options", :key="interval.id" ,@click.stop="reservate(interval)")
 							v-list-tile-avatar
 								v-icon(large, :class="interval.reserved?'primary--text':interval.available>0?'green--text':'red--text'") {{ interval.reserved ?'check':interval.available>0?'event_available': 'event_busy'}}
 							v-list-tile-content
@@ -93,38 +93,38 @@ v-container()
 					v-divider
 					v-list-tile
 						v-list-tile-content
-							v-list-tile-title 
+							v-list-tile-title
 								b  {{api.trans('literals.reservation')}} #
 								span {{interval.reservation.id}}
 					v-divider
 					v-list-tile
 						v-list-tile-content
-							v-list-tile-title 
-								b  {{api.trans('literals.quotas')}} 
+							v-list-tile-title
+								b  {{api.trans('literals.quotas')}}
 								span {{interval.reservation.quotas}}
 					v-divider
 					v-list-tile
 						v-list-tile-content
-							v-list-tile-title 
-								b  {{api.trans('literals.amount')}} 
+							v-list-tile-title
+								b  {{api.trans('literals.amount')}}
 								span {{interval.reservation.quotas * zone.price | currency}}
 					v-divider
 				v-list
 					v-list-tile
 						v-list-tile-content
-							v-list-tile-title 
-								b.text-capitalize {{api.trans('literals.start')}}:  
+							v-list-tile-title
+								b.text-capitalize {{api.trans('literals.start')}}:
 								span.text-capitalize {{ interval.reservation.start | moment('calendar') }}
 					v-divider
 					v-list-tile
 						v-list-tile-content
-							v-list-tile-title 
-								b.text-capitalize {{ api.trans('literals.end') }}:  
+							v-list-tile-title
+								b.text-capitalize {{ api.trans('literals.end') }}:
 								span.text-capitalize {{ interval.reservation.end | moment('calendar') }}
 					v-divider
 			v-card-actions
 				v-spacer
-				v-btn.danger(light disabled) 
+				v-btn.danger(light disabled)
 					span {{api.trans('crud.cancel')}} {{api.trans('literals.reservation')}}
 				v-btn(flat, @click="view_reservation=false") {{api.trans('crud.close')}}
 	v-snackbar(:timeout="3000", top right, v-model="saved")
@@ -189,7 +189,7 @@ module.exports =
 			console.log time, end
 			if time < end and @zone.interval > 0
 				loop
-					ref = 
+					ref =
 						available: if @zone.limit_user in [0,"0"] then Number.MAX_SAFE_INTEGER else @zone.limit_user
 						limit_user: @zone.limit_user
 						time: time.clone()
@@ -256,7 +256,7 @@ module.exports =
 			dates
 		getDaysBetweenDates:(start, end, dayName) ->
 			result = []
-			days = 
+			days =
 				sun: 0
 				mon: 1
 				tue: 2
@@ -275,11 +275,11 @@ module.exports =
 				result.push moment.utc([aux.year(),aux.month(),aux.date()]).toDate()
 				current.setDate current.getDate() + 7
 			result
-			
+
 </script>
 
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus" scoped>
-	
+
 </style>

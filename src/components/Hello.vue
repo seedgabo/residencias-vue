@@ -1,7 +1,7 @@
 <template lang="jade">
 div
   v-carousel(v-if='sliders.length >1')
-    v-carousel-item(v-for='slider in sliders', :key='slider.id', v-bind:src='slider.image.url', transition='fade', reversetransition='fade')
+    v-carousel-item(v-for='slider in sliders', :key='slider.id', v-bind:src='slider.image.url', transition='fade', reverse-transition='fade')
       v-layout(row='', wrap='')
         v-flex(xs12='')
           h3.white--text {{slider.name}}
