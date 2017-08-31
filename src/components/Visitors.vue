@@ -23,9 +23,9 @@ v-layout(wrap)
             v-list-tile-content
               v-list-tile-title.body-2 {{visitor.name}}
               v-list-tile-sub-title.caption {{visitor.document}}
-            v-btn.hidden-xs-only(icon, @click.stop="editVisitor(visitor)")
+            v-btn.hidden-xs-only(icon, @click.stop.native="editVisitor(visitor)")
               v-icon edit
-            v-btn.hidden-xs-only(icon, @click.native="deleteVisitor(visitor)")
+            v-btn.hidden-xs-only(icon, @click.stop.native="deleteVisitor(visitor)")
               v-icon delete
             div.hidden-sm-and-up
               v-menu(bottom left)
