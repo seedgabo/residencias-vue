@@ -180,7 +180,7 @@ v-container(fluid='')
     v-dialog(v-model="passwordResults")
       v-card
         v-card-text
-          {{passwordResultsText}}
+          span {{passwordResultsText}}
         v-card-actions
           v-spacer
           v-btn(primary="", @click="passwordResults=false") {{api.trans('literals.ok')}}
