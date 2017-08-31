@@ -172,7 +172,7 @@ export default {
     })
     this.$router.app.$on('logout', (data) => {
       this.api.user = {};
-      window.localStorage.clear();
+      window.storage.clear();
       this.$router.push('/login')
       this.stopEcho()
     })
@@ -210,15 +210,15 @@ export default {
           this.api.settings = response.data.settings;
           this.api.modules = response.data.modules;
           this.api.user.residences = response.data.residences;
-          window.localStorage.setItem('settings', JSON.stringify(response.data.settings));
-          window.localStorage.setItem('modules', JSON.stringify(response.data.modules));
+          window.storage.setItem('settings', JSON.stringify(response.data.settings));
+          window.storage.setItem('modules', JSON.stringify(response.data.modules));
 
         })
         .catch(console.error)
     },
     changeResidence(residence) {
       api.user.residence_id = residence.id;
-      window.localStorage.setItem('user', JSON.stringify(this.api.user));
+      window.storage.setItem('user', JSON.stringify(this.api.user));
       this.api.put('users/' + this.api.user.id, { residence_id: residence.id })
         .then((response) => {
           window.location.reload();
@@ -558,7 +558,7 @@ export default {
     },
     logout() {
       this.api.user = {};
-      window.localStorage.clear();
+      window.storage.clear();
       this.$router.push('/login')
     },
 

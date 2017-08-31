@@ -80,10 +80,10 @@ module.exports =
 						console.log(response.data);
 						@loging = false;
 						@api.setUser(response.data)
-						window.localStorage.setItem('user', JSON.stringify(response.data.user))
-						window.localStorage.setItem('residence', JSON.stringify(response.data.residence))
-						window.localStorage.setItem('settings', JSON.stringify(response.data.settings))
-						window.localStorage.setItem('modules', JSON.stringify(response.data.modules))
+						window.storage.setItem('user', JSON.stringify(response.data.user))
+						window.storage.setItem('residence', JSON.stringify(response.data.residence))
+						window.storage.setItem('settings', JSON.stringify(response.data.settings))
+						window.storage.setItem('modules', JSON.stringify(response.data.modules))
 						@getLangs();
 						resolve(response.data)
 						@$router.push('/');
@@ -104,7 +104,7 @@ module.exports =
 				.then (response) =>
 					console.log(response.data);
 					@api.i18n = response.data;
-					window.localStorage.setItem('i18n', JSON.stringify(response.data));
+					window.storage.setItem('i18n', JSON.stringify(response.data));
 				.catch console.error
 		onFacebookSignInSuccess: (response)->
 			FB.api '/me',{ fields: 'name,birthday,email,link,gender,picture' },(fuser)=>
@@ -142,10 +142,10 @@ module.exports =
 						console.log(response.data)
 						@loging = false
 						@api.setUser(response.data)
-						window.localStorage.setItem('user', JSON.stringify(response.data.user))
-						window.localStorage.setItem('residence', JSON.stringify(response.data.residence))
-						window.localStorage.setItem('settings', JSON.stringify(response.data.settings))
-						window.localStorage.setItem('modules', JSON.stringify(response.data.modules))
+						window.storage.setItem('user', JSON.stringify(response.data.user))
+						window.storage.setItem('residence', JSON.stringify(response.data.residence))
+						window.storage.setItem('settings', JSON.stringify(response.data.settings))
+						window.storage.setItem('modules', JSON.stringify(response.data.modules))
 						@getLangs();
 						resolve(response.data)
 						@$router.push('/')

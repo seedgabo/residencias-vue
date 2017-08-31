@@ -235,7 +235,7 @@ module.exports=
         .then (response)=>
           console.log(response.data)
           @snackbar_success = true;
-          window.localStorage.setItem('user', JSON.stringify(@api.user));
+          window.storage.setItem('user', JSON.stringify(@api.user));
         .catch console.error
     updateResidence:()->
       @api.put('residences/' + @api.user.residence_id,
@@ -250,7 +250,7 @@ module.exports=
             user.id == @api.residence.owner_id
 
           @api.residence.owner=owner
-          window.localStorage.setItem('residence', JSON.stringify(@api.residence))
+          window.storage.setItem('residence', JSON.stringify(@api.residence))
           @editable = false
         .catch console.error
     updatePassword:()->
@@ -276,7 +276,7 @@ module.exports=
         .then (response) =>
           console.log(response.data)
           @api.residence.users.splice(index, 1);
-          window.localStorage.setItem('residence', JSON.stringify(this.api.residence));
+          window.storage.setItem('residence', JSON.stringify(this.api.residence));
         .catch(console.error)
     canAdd:()->
       pattern=/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/

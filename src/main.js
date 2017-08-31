@@ -74,28 +74,38 @@ var api = require('./services/api.js');
 if (window.url) {
     api.url = window.url;
 }
-
+window.storage = {
+    getItem: function(key) {
+        return window.localStorage.getItem(api.url + key)
+    },
+    setItem: function(key, value) {
+        return window.localStorage.setItem(api.url + key, value);
+    },
+    clear: function() {
+        return window.localStorage.clear();
+    }
+}
 api.ready = new Promise(
     (resolve, reject) => {
-        var user = window.localStorage.getItem('user');
+        var user = window.storage.getItem('user');
         if (user) {
             api.user = JSON.parse(user);
-            var residence = window.localStorage.getItem('residence');
+            var residence = window.storage.getItem('residence');
             if (residence) {
                 api.residence = JSON.parse(residence);
             }
-            var i18n = window.localStorage.getItem('i18n');
+            var i18n = window.storage.getItem('i18n');
             if (i18n) {
                 api.i18n = JSON.parse(i18n);
             }
 
-            var settings = window.localStorage.getItem('settings');
+            var settings = window.storage.getItem('settings');
             if (settings) {
                 api.settings = JSON.parse(settings);
             }
 
 
-            var modules = window.localStorage.getItem('modules');
+            var modules = window.storage.getItem('modules');
             if (modules) {
                 api.modules = JSON.parse(modules);
             }
