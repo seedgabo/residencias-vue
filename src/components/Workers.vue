@@ -88,7 +88,7 @@ module.exports =
       @api.post """workers""",@worker
       .then (resp)=>
         console.log resp.data
-        @api.residence.workers[@api.residence.workers.length]=resp.data
+        # @api.residence.workers[@api.residence.workers.length]=resp.data
         @creator=false
         @worker={name:'',document:'',phone_number:'',schedule_id:''}
     editWorker: (worker)->

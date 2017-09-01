@@ -92,7 +92,7 @@ module.exports =
       @api.post """pets""",@pet
       .then (resp)=>
         console.log resp.data
-        @api.residence.pets[@api.residence.pets.length]=resp.data
+        # @api.residence.pets[@api.residence.pets.length]=resp.data
         @creator=false
         @pet={name:'',document:'',phone_number:'',schedule_id:''}
     editpet: (pet)->
