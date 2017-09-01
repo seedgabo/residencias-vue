@@ -5,6 +5,7 @@
 			vehicles(v-show="tab==='vehicles'")
 			parkings(v-show="tab==='parkings'")
 			workers(v-show="tab==='workers'")
+			pets(v-show="tab==='pets'")
 		v-bottom-nav.purple(value="true" light="", :shift="windowWidth<500")
 			v-btn(dark=""  @click.native="tab='visitors'", :value="tab==='visitors'")
 				span {{api.trans('literals.visitors')}}
@@ -18,6 +19,9 @@
 			v-btn(dark=""  @click.native="tab='workers'", :value="tab==='workers'")
 				span {{api.trans('literals.workers')}}
 				v-icon work
+			v-btn(dark=""  @click.native="tab='pets'", :value="tab==='pets'")
+				span {{api.trans('literals.pets')}}
+				v-icon pets
 </template>
 
 <script lang="coffee">
@@ -25,6 +29,7 @@ Visitors=require '@/components/Visitors'
 Vehicles=require '@/components/Vehicles'
 Workers=require '@/components/Workers'
 Parkings=require '@/components/Parkings'
+Pets=require '@/components/Pets'
 
 module.exports =
 	name: 'Tables'
@@ -33,6 +38,7 @@ module.exports =
 		vehicles:Vehicles
 		workers:Workers
 		parkings:Parkings
+		pets:Pets
 	mounted: ()->
 		window.addEventListener('resize', @handleResize)
 	beforeDestroy: ()->
