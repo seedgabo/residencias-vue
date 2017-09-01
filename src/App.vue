@@ -431,6 +431,39 @@ export default {
         })
 
 
+        .listen('PetCreated', (data) => {
+          console.log("created pet:", data);
+          if (data.pet.residence_id != api.user.residence_id) return;
+          var pet = this.api.residence.pets[this.api.residence.pets.length] = data.pet;
+          if (data.image)
+            pet.image = data.image;
+        })
+        .listen('PetUpdated', (data) => {
+          console.log("updated pet:", data);
+          if (data.pet.residence_id !== api.user.residence_id) return;
+          var pet_index = this.api.residence.pets.findIndex((pet) => {
+            return pet.id === data.pet.id;
+          });
+          if (pet_index > -1)
+            var pet = this.api.residence.pets[pet_index] = data.pet;
+          else {
+            var pet = this.api.residence.pets[this.api.residence.pets.length] = data.pet;
+          }
+          if (data.image) {
+            pet.image = data.image;
+          }
+        })
+        .listen('PetDeleted', (data) => {
+          console.log("deleted pet:", data);
+          var pet = this.api.residence.pets.findIndex((pet) => {
+            return pet.id === data.pet.id;
+          });
+          if (pet > -1) {
+            this.api.residence.pets.splice(pet, 1);
+          }
+        })
+
+
         .listen('VisitCreated', (data) => {
           console.log("created visit:", data);
           if (data.visit.residence_id != api.user.residence_id) return;

@@ -4,10 +4,10 @@ v-layout(wrap)
   v-flex(xs12)
     v-card(dense)
       v-card-title
-        v-icon work
+        v-icon fa-paw
         span &nbsp; {{api.trans('literals.pets')}}
         v-spacer
-        v-btn.pink(dark fab small absolute right, @click.stop="pet:{name:'',document:'',breed:'',specie:'',color:'',size:'',birthday:null,sex:'male'};creator=true")
+        v-btn.pink(dark fab small absolute right, @click.stop="pet={name:'',document:'',breed:'',specie:'',color:'',size:'',birthday:null,sex:'male'};creator=true")
           v-icon add
       v-card-text
         v-list(dense three-line)
@@ -46,10 +46,12 @@ v-layout(wrap)
           v-icon close
       v-card-text.text-xs-center(style="height:300px")
         img.avatar-image(v-if="pet.image_id",:src="pet.image_url")
-        v-text-field(v-model='pet.name', :label="api.trans('literals.name')" prepend-icon="person")
+        v-text-field(v-model='pet.name', :label="api.trans('literals.name')" prepend-icon="fa-address-card")
         v-text-field(v-model='pet.document', :label="api.trans('literals.document')" prepend-icon="card_membership")
-        v-text-field(v-model='pet.phone_number', :label="api.trans('literals.phone_number')" prepend-icon="phone")
-        v-text-field(v-model='pet.work', :label="api.trans('literals.work')" prepend-icon="work", :placeholder="api.trans('__.domestico')")
+        v-text-field(v-model='pet.specie', :label="api.trans('literals.specie')" prepend-icon="pets")
+        v-text-field(v-model='pet.breed', :label="api.trans('literals.breed')" prepend-icon="loyalty")
+        v-text-field(v-model='pet.color', :label="api.trans('literals.color')" prepend-icon="color_lens", :placeholder="api.trans('__.color')")
+        v-select(prepend-icon="wc" v-model="pet.sex",:items="genders",:label="api.trans('literals.sex')")
       v-divider
       v-card-actions
         v-btn(:disabled="!canSave()" v-if="!pet.id" flat primary @click="createpet()") {{api.trans('crud.add')}}
@@ -72,6 +74,7 @@ module.exports =
     creator: false
     loaded:false
     imageUploaded: false
+    genders: [ { text: api.trans('literals.male'), value: 'male' }, { text: api.trans('literals.female'), value: 'female' }]
     pet:{name:'',document:'',breed:'',specie:'',color:'',size:'',birthday:null,sex:'male'}
   methods:
     canSave: ()->
