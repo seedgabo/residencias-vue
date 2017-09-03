@@ -141,7 +141,7 @@ module.exports =
         @visit=false
         @selecteds = []
         @note=""
-        @visitors.forEach (v)-> v.selected = false
+        @api.visitors.forEach (v)-> v.selected = false
       .catch console.erorr
     askFile: (visitor)->
       @visitor=visitor
