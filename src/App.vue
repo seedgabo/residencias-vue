@@ -110,19 +110,29 @@
       <span v-if="visitor">
         {{api.trans('__.visit confirmed',{visit:api.trans('literals.visit') ,visitor:visitor.name})}}
       </span>
-      <v-btn flat class="white--text" @click.native="visitConfirmToast = false">X</v-btn>
+
+      <v-btn icon flat class="white--text" @click.native="visitConfirmToast = false">
+        <v-icon>close</v-icon>
+      </v-btn>
     </v-snackbar>
 
     <v-snackbar primary multi-line :timeout="timeout" bottom right v-model="newChat">
       <p>
+        <v-avatar size="28px">
+          <img :src="sender.image_url">
+        </v-avatar>
+
         <b v-if="sender">
-          {{sender.name}}:
+          {{sender.name}}
+          <span v-if="sender.residence"> - {{ sender.residence.name }}</span> :
         </b>
         <span>
           {{message}}
         </span>
       </p>
-      <v-btn flat class="white--text" @click.native="newChat = false">X</v-btn>
+      <v-btn icon small flat class="white--text" @click.native="newChat = false">
+        <v-icon>close</v-icon>
+      </v-btn>
     </v-snackbar>
 
     <v-dialog persistent v-model="newVisitModal" width="400px">

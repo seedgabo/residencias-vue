@@ -39,7 +39,7 @@
     "vue-router": "^2.3.1",
     "vue2-animate": "^1.0.4",
     "vue2-filters": "^0.1.9",
-    "vuetify": "^0.14.6"
+    "vuetify": "^0.15.2"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",
