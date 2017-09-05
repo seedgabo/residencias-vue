@@ -2,7 +2,7 @@
 v-container
   v-layout(wrap='')
     v-flex(xs12='', sm12='', md6='', lg6='')
-      v-card
+      v-card.mx-1
         v-toolbar.primary(dark='')
           v-icon(dark='') insert_drive_file
           v-toolbar-title
@@ -23,7 +23,7 @@ v-container
                 v-icon.dark--text file_download
         // </v-card-text>
     v-flex(xs12='', sm12='', md6='', lg6='')
-      v-card(hover)
+      v-card.mx-1(hover)
         pdf(ref="pdfDoc" style="width:100%;height:470px" v-if="document && document.url && document.type === 'dynamic'", :src="document.url + '/api?token='+ api.user.token")
         v-card-text(style='height:480px' v-if="document && document.url && document.type!== 'dynamic'")
           object(width="100%" height="100%", :data="document.url + '/api?token='+ api.user.token")
@@ -51,7 +51,7 @@ export default {
     }
   },
   methods: {
-    getDocuments: function () {
+    getDocuments: function() {
       this.api.get('documents')
         .then((response) => {
           this.documents = response.data
@@ -59,11 +59,11 @@ export default {
         })
         .catch(console.error)
     },
-    selectDocument: function (document) {
+    selectDocument: function(document) {
       this.document = document
       console.log(document)
     },
-    icon: function (document) {
+    icon: function(document) {
       if (document.type === 'dynamic' || document.type === 'pdf')
         return 'fa-file-pdf-o'
       if (document.type === 'xls' || document.type === 'xlx')
@@ -72,7 +72,7 @@ export default {
         return 'fa-file-image-o'
       return 'fa-file-o'
     },
-    iconColor: function (document) {
+    iconColor: function(document) {
       if (document.type === 'dynamic' || document.type === 'pdf')
         return 'red--text'
       if (document.type === 'xls' || document.type === 'xlx')
