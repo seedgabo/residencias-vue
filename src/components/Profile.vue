@@ -4,7 +4,7 @@ v-container(fluid='')
     input(type="file" ref="inputImage" style="display:none;", @change="fileUploaded" accept="image/*")
     // //* CARD PROFILE
     v-flex.mt-3(xs12='', sm6='', md4='')
-      v-card
+      v-card.mx-1
         v-card-media.white--text(src=' https://ak2.picdn.net/shutterstock/videos/23151772/thumb/1.jpg ', height='150px')
           v-container(fill-height='', fluid='')
             v-layout(fill-height='', wrap='')
@@ -45,7 +45,7 @@ v-container(fluid='')
     // //* END CARD PROFILE
     // //* CARD RESIDENCE
     v-flex.mt-3(xs12='', sm6='', md4='')
-      v-card
+      v-card.mx-1
         v-toolbar.text-xs-center.primary.white--text
           v-icon(dark='') home
           v-subheader.white--text
@@ -120,7 +120,7 @@ v-container(fluid='')
     // //* END CARD RESIDENCE
     // //* CARD USERS
     v-flex.mt-3(xs12='', sm6='', md4='')
-      v-card
+      v-card.mx-1
         v-toolbar.primary.white--text(extended='')
           v-icon(dark='') people
           v-subheader.white--text {{api.trans('literals.users')}}
@@ -144,7 +144,7 @@ v-container(fluid='')
     // //* END CARD USERS
     // //* CARD PASSWORD
     v-flex.mt-3(xs12='', sm6='', md4='')
-      v-card
+      v-card.mx-1
         v-card-title: h5 {{api.trans('crud.edit')}} {{api.trans('literals.password')}}
         v-card-text
           v-text-field(v-model='password', :label="api.trans('literals.password')", required='', type='password')
@@ -154,7 +154,7 @@ v-container(fluid='')
     // //* END PASSWORD
     // //* NEW USER DIALOG
     v-dialog(v-model='new_user', persistent='')
-      v-card
+      v-card.mx-1
         v-card-title
           span.headline {{api.trans('crud.add')}} {{api.trans('literals.user')}}
         v-card-text

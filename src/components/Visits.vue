@@ -1,6 +1,6 @@
 <template lang="jade">
 div
-  v-card
+  v-card.mx-1
     v-toolbar.primary(dark)
       v-icon.white--text list
       v-toolbar-title {{api.trans('literals.visits')}}

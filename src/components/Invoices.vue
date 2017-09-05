@@ -85,14 +85,14 @@ v-container(fluid='')
       v-container(fluid='')
         v-layout(wrap='')
           v-flex(xs12='', sm8='', md8='', lg9='')
-            v-card(hover='')
+            v-card.mx-1(hover='')
               v-data-table.text-xs-right(:headers='headers_items', :pagination.sync='pagination_items', :items='invoice.items', hide-actions='')
                 template(slot='items', scope='props')
                   td {{props.item.concept}}
                   td {{props.item.amount}}
                   td {{props.item.quantity}}
           v-flex(xs12='', sm4='', md4='', lg3='', v-if='see_dialog')
-            v-card.mt-3(hover='')
+            v-card.mx-1.mt-3(hover='')
               column-chart(:label="api.trans('literals.charges')", :stacked='true', :colors='colors', :data='values', :download='true')
           v-flex(xs9='')
             h3.headline.dark--text.text-xs-center
@@ -195,7 +195,7 @@ export default {
         })
         .catch(console.error)
     },
-    sendMailInvoice: function (invoice) {
+    sendMailInvoice: function(invoice) {
       if (confirm(this.api.trans('__.are you sure?')))
         this.api.post(`invoice/${invoice.id}/email`)
           .then((data) => {
@@ -203,7 +203,7 @@ export default {
           })
           .catch(console.error);
     },
-    sendMailReceipt: function (receipt) {
+    sendMailReceipt: function(receipt) {
       if (confirm(this.api.trans('__.are you sure?')))
         this.api.post(`receipt/${receipt.id}/email`)
           .then((data) => {
@@ -254,7 +254,7 @@ export default {
     }
   },
   computed: {
-    debt: function () {
+    debt: function() {
       var total = 0
       this.invoices.forEach(inv => {
         if (inv.status === 'unpaid' || inv.status === 'partially paid' || inv.status === 'overdue')
@@ -262,7 +262,7 @@ export default {
       })
       return total
     },
-    total: function () {
+    total: function() {
       var total = 0
       this.invoices.forEach(inv => {
         total += inv.total

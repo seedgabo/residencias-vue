@@ -11,7 +11,7 @@
         </v-card>
       </v-flex>
       <v-flex class="hidden-sm-and-down" md3>
-        <v-card>
+        <v-card class="mx-1">
           <v-card-title>
             <h3 class="headline primary--text">
               {{api.trans('__.next events')}}

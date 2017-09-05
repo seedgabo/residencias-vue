@@ -7,7 +7,7 @@ v-container()
 				//- List of Zones
 				v-layout(key="zones" v-if="mode=='zones'"  wrap="")
 					v-flex(xs12="" sm12="" md6="" v-for="zone in zones", :key="zone.id")
-						v-card.mt-3
+						v-card.mx-1.mt-3
 							v-card-media.white--text(height="150px", :src="zone.image_url")
 								v-container(fill-height fluid)
 									v-layout(fill-height)

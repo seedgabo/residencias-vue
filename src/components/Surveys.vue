@@ -3,7 +3,7 @@ v-container(fluid="")
 	v-layout(wrap="")
 		v-flex.text-xs-center(xs12="" sm6="")
 			v-progress-circular.primary--text(indeterminate="" v-bind:size="50" v-if="loading")
-			v-card.elevation-0(v-else)
+			v-card.mx-1.elevation-0(v-else)
 				v-list(subheader="")
 					v-subheader(inset="")  
 						span   &nbsp; {{api.trans('literals.surveys')}}
@@ -18,7 +18,7 @@ v-container(fluid="")
 							small {{survey.close_time | moment('from')}}
 		v-flex.text-xs-center(xs12="" sm6="")
 			transition(name="zoomin" enter-active-class="animated slideInRight" leave-active-class="animated slideOutRight" mode="out-in", :duration="{ enter: 500, leave:500 }")
-				v-card.elevation-0(v-if="!voting" key="normal")
+				v-card.mx-1.elevation-0(v-if="!voting" key="normal")
 					div(v-if="survey.id")
 						v-card-title 
 							h3.headline.primary--text {{survey.question}}

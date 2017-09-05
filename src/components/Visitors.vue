@@ -2,7 +2,7 @@
 v-layout(wrap)
   input(type="file" ref="inputImage" style="display:none;", @change="fileUploaded" accept="image/*")
   v-flex(xs12)
-    v-card(dense)
+    v-card.mx-1(dense)
       v-card-title
         v-icon people
         span &nbsp; {{api.trans('literals.visitors')}}
