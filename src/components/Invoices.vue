@@ -92,7 +92,7 @@ v-container(fluid='')
                   td {{props.item.amount}}
                   td {{props.item.quantity}}
           v-flex(xs12='', sm4='', md4='', lg3='', v-if='see_dialog')
-            v-card.mx-1.mt-3(hover='')
+            v-card.mx-1(hover='')
               column-chart(:label="api.trans('literals.charges')", :stacked='true', :colors='colors', :data='values', :download='true')
           v-flex(xs9='')
             h3.headline.dark--text.text-xs-center
