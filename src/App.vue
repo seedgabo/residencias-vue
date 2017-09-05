@@ -113,10 +113,7 @@
       <v-btn flat class="white--text" @click.native="visitConfirmToast = false">X</v-btn>
     </v-snackbar>
 
-    <v-snackbar :timeout="timeout" top right v-model="newChat">
-      <b>
-        {{api.trans('__.new message')}}
-      </b>
+    <v-snackbar primary multi-line :timeout="timeout" bottom right v-model="newChat">
       <p>
         <b v-if="sender">
           {{sender.name}}:
@@ -125,7 +122,7 @@
           {{message}}
         </span>
       </p>
-      <v-btn flat class="white--text" @click.native="visitConfirmToast = false">X</v-btn>
+      <v-btn flat class="white--text" @click.native="newChat = false">X</v-btn>
     </v-snackbar>
 
     <v-dialog persistent v-model="newVisitModal" width="400px">
@@ -284,8 +281,10 @@ export default {
     },
     newChatMessage(thread, message, sender) {
       this.sender = sender;
-      this.message.message;
+      this.message = message.body;
       this.newChat = true;
+      this.audio = new Audio('./static/sounds/chat.mp3');
+      this.audio.play();
     },
     startEcho() {
       if (this.api.Echo) {
@@ -588,10 +587,11 @@ export default {
 
       this.api.Echo.private('App.User.' + this.api.user.id)
         .listen('Chat', (data) => {
+          console.log("new chat event", data);
           var thread = data.thread
           var message = data.message
           var sender = data.sender
-          if (api.user.id !== sender.id) {
+          if (true || api.user.id !== sender.id) {
             this.newChatMessage(thread, message, sender)
           }
           this.$router.app.$emit('Chat', data.thread)
