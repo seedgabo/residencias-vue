@@ -26,9 +26,10 @@
 						v-layout.chat-message.pa-1(v-for="msg in messages")
 							v-flex(xs1)
 								v-avatar.mt-2(size="38px")
-									img(:src="api.user.image_url")
+									img(:src="chat.user.image_url")
 							v-flex(xs9)
-								p: b {{api.user.name}}
+								p(v-if="chat.user"): b {{chat.user.name}}
+									span(v-if="chat.user.residence") - {{chat.user.residence.name}}
 								span.caption.text-xs-justify {{msg.body}}
 							v-flex.text-xs-right(xs2)
 								small {{ msg.created_at | moment('from') }}
@@ -79,7 +80,11 @@ module.exports =
 				@messages[@messages.length]= 
 					body: @text
 					created_at: new Date()
-					sender: @api.user
+					user:
+						name: @api.user.name
+						image_url: @api.user.image_url
+						residence:
+							name: @api.residence.name
 				@sending=false
 				@text=""
 				@scrolltoBottom()
