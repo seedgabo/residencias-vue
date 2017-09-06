@@ -22,14 +22,14 @@
 						v-spacer
 						v-btn(small flat @click="scrolltoBottom()" fab)
 							v-icon arrow_downward
-					v-card-text(ref="chatBody" style="max-height:400px;overflow:scroll;")
+					v-card-text(ref="chatBody" style="height:400px;overflow:scroll;")
 						v-layout.chat-message.pa-1(v-for="msg in messages")
 							v-flex(xs1)
-								v-avatar.mt-2(size="38px")
-									img(:src="chat.user.image_url")
+								v-avatar.mt-2(size="38px" v-if="msg.user")
+									img(:src="msg.user.image_url")
 							v-flex(xs9)
-								p(v-if="chat.user"): b {{chat.user.name}}
-									span(v-if="chat.user.residence") - {{chat.user.residence.name}}
+								p(v-if="msg.user"): b {{msg.user.name}}
+									span.primary--text(v-if="msg.user.residence") &nbsp;- {{msg.user.residence.name}}
 								span.caption.text-xs-justify {{msg.body}}
 							v-flex.text-xs-right(xs2)
 								small {{ msg.created_at | moment('from') }}
@@ -47,6 +47,15 @@ module.exports =
 	name: 'Chat'
 	mounted: ()->
 		@getData()
+		@$router.app.$on 'Chat',(data)=>
+			if data.thread.id == @chat?.id and data.sender.id != @api.user.id
+				msg =
+					user: data.sender
+					body: data.message?.body
+				msg.user.residence = data.residence
+				@messages[@messages.length] = msg
+	beforeDestroy: ()->
+    	@$router.app.$off('Chat')
 	data: ->
 		api: api
 		chats: []

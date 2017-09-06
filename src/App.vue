@@ -604,8 +604,9 @@ export default {
           var thread = data.thread
           var message = data.message
           var sender = data.sender
+          var residence = data.residence
           this.newChatMessage(thread, message, sender)
-          this.$router.app.$emit('Chat', data.thread)
+          this.$router.app.$emit('Chat', { thread: thread, message: message, sender: sender, residence: residence })
         })
         .notification((notification) => {
           console.log(notification);
