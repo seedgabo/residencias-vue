@@ -1,7 +1,7 @@
 <template lang="jade">
 	div(fluid="")
 		v-layout(wrap="")
-			v-flex(xs3)
+			v-flex(xs12 sm3)
 				v-list.pt-0(dark style="height:85vh")
 					v-list-tile
 						span {{api.trans('literals.chats')}}
@@ -13,12 +13,15 @@
 							v-list-tile-title {{ thread.subject }}
 						v-list-tile-action
 							v-icon(primary) question_answer
-			v-flex(xs9)
+			v-flex(xs12 sm9)
 				v-card.mx-2.pa-2(v-if="chat")
-					v-subheader.grey.lighten-2
-						v-avatar.blue
+					v-subheader.blue-grey.lighten-5
+						v-avatar.blue(size="40px")
 							v-icon(dark) home 
 						span {{ chat.subject }}
+						v-spacer
+						v-btn(small flat @click="scrolltoBottom()" fab)
+							v-icon arrow_downward
 					v-card-text(ref="chatBody" style="max-height:400px;overflow:scroll;")
 						v-layout.chat-message.pa-1(v-for="msg in messages")
 							v-flex(xs1)
