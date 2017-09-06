@@ -291,9 +291,11 @@ export default {
       this.newVisitModal = false;
     },
     newChatMessage(thread, message, sender) {
-      this.sender = sender;
-      this.message = message.body;
-      this.newChat = true;
+      if (api.user.id !== sender.id) {
+        this.sender = sender;
+        this.message = message.body;
+        this.newChat = true;
+      }
       this.audio = new Audio('./static/sounds/chat.mp3');
       this.audio.play();
     },
@@ -602,9 +604,7 @@ export default {
           var thread = data.thread
           var message = data.message
           var sender = data.sender
-          if (true || api.user.id !== sender.id) {
-            this.newChatMessage(thread, message, sender)
-          }
+          this.newChatMessage(thread, message, sender)
           this.$router.app.$emit('Chat', data.thread)
         })
         .notification((notification) => {
