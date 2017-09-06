@@ -116,7 +116,7 @@
       </v-btn>
     </v-snackbar>
 
-    <v-snackbar primary multi-line :timeout="timeout" bottom right v-model="newChat">
+    <v-snackbar warning multi-line :timeout="3000" top right v-model="newChat">
       <p>
         <v-avatar size="28px">
           <img :src="sender.image_url">
@@ -212,6 +212,7 @@ export default {
         { icon: 'insert_drive_file', title: 'documentos', 'url': 'documents' },
         { icon: 'event_available', title: 'Reservaciones', 'url': 'reservations' },
         { icon: 'pie_chart', title: 'surveys', 'url': 'surveys' },
+        { icon: 'chat', title: 'chats', 'url': 'chats' },
       ],
       timeout: 15 * 60 * 1000,
       visitConfirmToast: false,

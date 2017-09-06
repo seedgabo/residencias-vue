@@ -10,6 +10,7 @@ import Posts from '@/components/Posts'
 import Surveys from '@/components/Surveys'
 import Tables from '@/components/Tables'
 import Reservations from '@/components/Reservations'
+import Chat from '@/components/Chat'
 import VisitsPage from '@/components/VisitsPage'
 import Example from '@/components/Example'
 
@@ -56,9 +57,11 @@ export default new Router({
     name: 'Reservations',
     component: Reservations
   }, {
-
+    path: '/chats',
+    name: 'Chats',
+    component: Chat
+  }, {
     path: '/login',
-
     name: 'Login',
     component: Login
   }, {
