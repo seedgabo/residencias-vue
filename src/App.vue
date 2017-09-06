@@ -39,6 +39,15 @@
           </v-list-tile-action>
         </v-list-tile>
 
+        <v-list-tile to="chats" v-if="api.user">
+          <v-list-tile-action>
+            <v-icon>chat</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title class="text-capitalize" v-badge="{ value: api.user.unread, left: true, visible: true}">{{ api.trans('literals.chats') }}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+
         <v-list-tile @click.native="logout()">
           <v-list-tile-action>
             <v-icon>fa-sign-out</v-icon>
@@ -212,7 +221,7 @@ export default {
         { icon: 'insert_drive_file', title: 'documentos', 'url': 'documents' },
         { icon: 'event_available', title: 'Reservaciones', 'url': 'reservations' },
         { icon: 'pie_chart', title: 'surveys', 'url': 'surveys' },
-        { icon: 'chat', title: 'chats', 'url': 'chats' },
+        // { icon: 'chat', title: 'chats', 'url': 'chats' },
       ],
       timeout: 15 * 60 * 1000,
       visitConfirmToast: false,
@@ -237,6 +246,7 @@ export default {
           this.api.settings = response.data.settings;
           this.api.modules = response.data.modules;
           this.api.user.residences = response.data.residences;
+          this.api.user.unread = response.data.unread;
           window.storage.setItem('settings', JSON.stringify(response.data.settings));
           window.storage.setItem('modules', JSON.stringify(response.data.modules));
 
