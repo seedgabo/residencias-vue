@@ -17,13 +17,13 @@
 				v-card.mx-2.pa-2(v-if="chat")
 					v-subheader.blue-grey.lighten-5
 						v-avatar.blue(size="40px")
-							v-icon(dark) home 
+							v-icon(dark) home
 						span {{ chat.subject }}
 						v-spacer
 						v-btn(small flat @click="scrolltoBottom()" fab)
 							v-icon arrow_downward
 					v-card-text(ref="chatBody" style="height:400px;overflow:scroll;")
-						v-layout.chat-message.pa-1(v-for="msg in messages")
+						v-layout.chat-message.pa-1(v-for="msg in messages", :key="msg.id")
 							v-flex(xs1)
 								v-avatar.mt-2(size="38px" v-if="msg.user")
 									img(:src="msg.user.image_url")
@@ -37,8 +37,8 @@
 						v-text-field(placeholder="Type your message" v-model="text" v-on:keyup.enter="send()")
 						v-btn(@click="send()" primary icon dark large, :disabled="text.length===0", :loading="sending")
 							v-icon send
-						
-				
+
+
 </template>
 
 <script lang="coffee">
@@ -86,7 +86,7 @@ module.exports =
 			@sending=true
 			@api.put("messages/#{@chat.id}?message=#{@text}")
 			.then ()=>
-				@messages[@messages.length]= 
+				@messages[@messages.length]=
 					body: @text
 					created_at: new Date()
 					user:
@@ -110,5 +110,5 @@ module.exports =
 <style lang="stylus" scoped>
 .chat-message
 	&:nth-child(even)
-		background: rgba(128,128,128,0.15)	
+		background: rgba(128,128,128,0.15)
 </style>
