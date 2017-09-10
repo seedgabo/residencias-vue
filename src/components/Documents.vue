@@ -11,9 +11,8 @@ v-container
         v-list(two-line='')
           v-list-tile(v-for='document in documents', :key='document.id')
             v-list-tile-action(@click='selectDocument(document)')
-              v-icon(:class="iconColor(document)")
-                {{icon(document) }}
-              
+              v-icon(:class="iconColor(document)") {{ icon(document) }}
+
             v-list-tile-content(@click='selectDocument(document)')
               v-list-tile-title {{document.title}}
               small {{document.description}}

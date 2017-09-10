@@ -11,7 +11,7 @@ v-layout(wrap)
           v-icon add
         v-btn(primary v-else, @click.stop="visit=true")
           v-icon(dark) add_circle
-          {{api.trans('crud.add') }} {{api.trans('literals.visit')}} {{ api.trans('literals.multiple') }}
+          span {{ api.trans('crud.add') }} {{api.trans('literals.visit')}} {{ api.trans('literals.multiple') }}
       v-card-text
         v-list(dense two-line)
           v-list-tile(v-for="visitor in api.residence.visitors", :key="visitor.id", avatar="", v-on:click="clickVisitor(visitor)" xv-bind:class="selected==visitor.id?'primary':''")
