@@ -6,11 +6,11 @@
 					v-list-tile
 						span {{api.trans('literals.chats')}}
 						v-spacer
-						v-btn.pink(fab small)
+						v-btn.pink(fab small @click.stop="chatModal=true")
 							v-icon(dark) add
 					v-list-tile(@click="selectChat(thread)" v-for="thread in chats", :key="thread.id")
 						v-list-tile-content
-							v-list-tile-title {{ thread.subject }}
+							v-list-tile-title {{ thread.title }}
 						v-list-tile-action
 							v-icon(primary) question_answer
 			v-flex(xs12 sm9)
@@ -18,7 +18,7 @@
 					v-subheader.blue-grey.lighten-5
 						v-avatar.blue(size="40px")
 							v-icon(dark) home
-						span {{ chat.subject }}
+						span {{ chat.title }}
 						v-spacer
 						v-btn(small flat @click="scrolltoBottom()" fab)
 							v-icon arrow_downward
@@ -34,10 +34,19 @@
 							v-flex.text-xs-right(xs2)
 								small {{ msg.created_at | moment('from') }}
 					v-card-actions
-						v-text-field(placeholder="Type your message" v-model="text" v-on:keyup.enter="send()")
-						v-btn(@click="send()" primary icon dark large, :disabled="text.length===0", :loading="sending")
+						v-text-field(ref="messager" placeholder="Type your message" v-model="text" v-on:keyup.enter="send()")
+						v-btn(@click="send()" ref="sender" primary icon dark large, :disabled="text.length===0", :loading="sending")
 							v-icon send
-
+		v-dialog(v-model="chatModal" scrollable)
+			v-card
+				v-card-title {{api.trans('literals.residences')}}
+				v-card-text(style="height:300px")
+					v-list
+						v-list-tile(v-for="residence in api.residences", :key="residence.id", @click="addChat(residence)")
+							v-list-tile-title {{residence.name}}
+				v-card-actions
+					v-spacer
+					v-btn(flat @click="chatModal=false") {{api.trans('crud.cancel') }}
 
 </template>
 
@@ -55,20 +64,37 @@ module.exports =
 				msg.user.residence = data.residence
 				@messages[@messages.length] = msg
 	beforeDestroy: ()->
-    	@$router.app.$off('Chat')
+			@$router.app.$off('Chat')
 	data: ->
 		api: api
+		residences: []
 		chats: []
 		chat: null
 		messages:[]
 		text:""
 		sending: false
+		chatModal:false
 	methods:
+		addChat: (residence)->
+			console.log residence
+			@createChat(residence)
+			@chatModal=false
+
+		createChat: (residence)->
+			@api.post("messages/#{residence.id}")
+			.then (resp)=>
+				console.log resp.data
+				@getData()
+			.catch console.error
 		getData: ()->
 			@api.get "messages"
 			.then (resp)=>
 				console.log 'data', resp.data
 				@chats=resp.data
+				@api.get "residences"
+				.then (resp)=>
+					@api.residences = resp.data
+					console.log resp.data
 			.catch console.error
 		getMessages: (threadId)->
 			@api.get "messages/#{threadId}"
@@ -84,6 +110,7 @@ module.exports =
 		send: ()->
 			return if @text.length == 0
 			@sending=true
+			@$refs.sender.$el.focus()
 			@api.put("messages/#{@chat.id}?message=#{@text}")
 			.then ()=>
 				@messages[@messages.length]=
@@ -94,8 +121,12 @@ module.exports =
 						image_url: @api.user.image_url
 						residence:
 							name: @api.residence.name
-				@sending=false
+				@$set(@, 'text', '')
 				@text=""
+				@sending=false
+				setTimeout(=>
+					@$refs.messager.$el.children[0].children[0].focus()
+				,300)
 				@scrolltoBottom()
 			.catch console.error
 		scrolltoBottom: ()->
