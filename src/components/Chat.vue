@@ -8,7 +8,7 @@
 						v-spacer
 						v-btn.pink(fab small @click.stop="chatModal=true")
 							v-icon(dark) add
-					v-list-tile(@click="selectChat(thread)" v-for="thread in chats", :key="thread.id")
+					v-list-tile(@click="selectChat(thread)" v-for="thread in chats", :key="thread.id", :class="chat && thread.id === chat.id ? 'grey white--text' : '' ")
 						v-list-tile-content
 							v-list-tile-title {{ thread.title }}
 						v-list-tile-action
@@ -23,6 +23,7 @@
 						v-btn(small flat @click="scrolltoBottom()" fab)
 							v-icon arrow_downward
 					v-card-text(ref="chatBody" style="height:400px;overflow:scroll;")
+						v-progress-linear(height="10" info indeterminate v-if="loading")
 						v-layout.chat-message.pa-1(v-for="msg in messages", :key="msg.id")
 							v-flex(xs1)
 								v-avatar.mt-2(size="38px" v-if="msg.user")
@@ -56,6 +57,11 @@ module.exports =
 	name: 'Chat'
 	mounted: ()->
 		@getData()
+		@api.get "residences"
+			.then (resp)=>
+				@api.residences = resp.data
+				console.log resp.data
+			.catch console.error
 		@$router.app.$on 'Chat',(data)=>
 			if data.thread.id == @chat?.id and data.sender.id != @api.user.id
 				msg =
@@ -73,6 +79,7 @@ module.exports =
 		messages:[]
 		text:""
 		sending: false
+		loading:false
 		chatModal:false
 	methods:
 		addChat: (residence)->
@@ -84,6 +91,7 @@ module.exports =
 			@api.post("messages/#{residence.id}")
 			.then (resp)=>
 				console.log resp.data
+				@selectChat resp.data.thread
 				@getData()
 			.catch console.error
 		getData: ()->
@@ -91,16 +99,15 @@ module.exports =
 			.then (resp)=>
 				console.log 'data', resp.data
 				@chats=resp.data
-				@api.get "residences"
-				.then (resp)=>
-					@api.residences = resp.data
-					console.log resp.data
 			.catch console.error
 		getMessages: (threadId)->
+			@loading =true
+			@messages = []
 			@api.get "messages/#{threadId}"
 			.then (resp)=>
 				console.log 'data', resp.data
 				@messages = resp.data.messages.reverse()
+				@loading=false
 				@scrolltoBottom()
 			.catch console.error
 		selectChat: (chat)->
