@@ -90,7 +90,7 @@ export default {
         this.getSliders();
         this.getPosts();
         this.getEvents();
-        this.getSolventsGraph();
+        // this.getSolventsGraph();
       });
   },
   data() {

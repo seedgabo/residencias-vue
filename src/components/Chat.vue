@@ -3,8 +3,8 @@
 		v-layout(wrap="")
 			v-flex.hidden-sm-and-up(xs12 v-if="chat===null")
 				v-list.pt-0(dark style="height:90vh")
-					v-list-tile
-						span {{api.trans('literals.chats')}}
+					v-subheader.sedondary
+						span.text-capitalize {{api.trans('literals.chats')}}
 						v-spacer
 						v-btn.pink(fab small @click.stop="chatModal=true")
 							v-icon(dark) add
@@ -13,21 +13,19 @@
 							v-list-tile-title {{ thread.title }}
 						v-list-tile-action
 							v-icon.red--after(accent v-if="thread.unread" v-badge="{ value: thread.unread }") question_answer
-							v-icon(v-else primary) question_answer
 
 			v-flex.hidden-xs-only(xs12 sm3)
-				v-list.pt-0(dark style="height:85vh")
-					v-list-tile
-						span {{api.trans('literals.chats')}}
+				v-list.pt-0(dark style="height:90vh")
+					v-subheader.secondary
+						span.text-capitalize {{api.trans('literals.chats')}}
 						v-spacer
-						v-btn.pink(fab small @click.stop="chatModal=true")
+						v-btn.primary(fab small @click.stop="chatModal=true")
 							v-icon(dark) add
 					v-list-tile(@click="selectChat(thread)" v-for="thread in chats", :key="thread.id", :class="chat && thread.id === chat.id ? 'grey white--text' : '' ")
 						v-list-tile-content
 							v-list-tile-title {{ thread.title }}
 						v-list-tile-action
 							v-icon.red--after(accent v-if="thread.unread" v-badge="{ value: thread.unread }") question_answer
-							v-icon(v-else primary) question_answer
 			v-flex(xs12 sm9)
 				v-card.mx-2.pa-2(v-if="chat")
 					v-subheader.blue-grey.lighten-5
@@ -169,7 +167,7 @@ module.exports =
 			.catch console.error
 		scrolltoBottom: ()->
 			setTimeout(=>
-				console.log @$refs['chatBody']
+				# console.log @$refs['chatBody']
 				@$refs['chatBody'].scrollTop = @$refs['chatBody'].scrollHeight
 			,50)
 </script>

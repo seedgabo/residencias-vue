@@ -29,7 +29,7 @@
       </v-list>
       <v-list class="pt-0" dense v-if="!(see_residences && api.user.residences)">
         <v-divider></v-divider>
-        <v-list-tile :to="page.url" v-for="(page,i) in pages" :key="i">
+        <v-list-tile :to="page.url" v-for="(page,i) in pages" :key="i" v-if="siteHas(page.module)">
           <v-list-tile-action>
             <v-icon>{{ page.icon }}</v-icon>
           </v-list-tile-action>
@@ -43,7 +43,7 @@
           </v-list-tile-action>
         </v-list-tile>
 
-        <v-list-tile to="chats" v-if="api.user">
+        <v-list-tile to="chats" v-if="api.user && siteHas('chat')">
           <v-list-tile-action>
             <v-icon>chat</v-icon>
           </v-list-tile-action>
@@ -148,6 +148,15 @@
       </v-btn>
     </v-snackbar>
 
+    <v-snackbar error multi-line :timeout="3000" bottom center v-model="panicSent">
+      <span>
+        {{api.trans('__.panic sent')}}
+      </span>
+      <v-btn icon small flat class="white--text" @click.native="panicSent = false">
+        <v-icon>close</v-icon>
+      </v-btn>
+    </v-snackbar>
+
     <v-dialog persistent v-model="newVisitModal" width="400px">
       <v-card>
         <v-toolbar flat>
@@ -214,16 +223,17 @@ export default {
   },
   data() {
     return {
+      api: api,
       drawer: false,
       pages: [
         { icon: 'home', title: 'home', url: '/' },
-        { icon: 'account_balance_wallet', title: 'invoices', 'url': 'invoices' },
+        { icon: 'account_balance_wallet', title: 'invoices', 'url': 'invoices', 'module': 'finanze' },
         { icon: 'person', title: 'profile', url: 'profile' },
         { icon: 'list', title: 'mis listas', url: 'tables' },
         { icon: 'people', title: 'visitas', url: 'visits' },
         { icon: 'event', title: 'events', 'url': 'events' },
         { icon: 'insert_drive_file', title: 'documentos', 'url': 'documents' },
-        { icon: 'event_available', title: 'Reservaciones', 'url': 'reservations' },
+        { icon: 'event_available', title: 'Reservaciones', 'url': 'reservations', 'module': 'reservations' },
         { icon: 'pie_chart', title: 'surveys', 'url': 'surveys' },
         // { icon: 'chat', title: 'chats', 'url': 'chats' },
       ],
@@ -234,8 +244,7 @@ export default {
       visitor: null,
       visit: null,
       audio: null,
-      api: api,
-
+      panicSent: false,
       newChat: false,
       message: '',
       sender: {}
@@ -250,10 +259,8 @@ export default {
           this.api.settings = response.data.settings;
           this.api.modules = response.data.modules;
           this.api.user.residences = response.data.residences;
-          this.api.user.unread = response.data.unread;
           window.storage.setItem('settings', JSON.stringify(response.data.settings));
           window.storage.setItem('modules', JSON.stringify(response.data.modules));
-
         })
         .catch(console.error)
     },
@@ -657,8 +664,16 @@ export default {
       this.api.post('panic', {})
         .then((resp) => {
           console.log(resp.data)
+          this.panicSent = true
         })
         .catch(console.error)
+    },
+    siteHas(modul) {
+      if (modul === undefined && !this.api.modules)
+        return false
+      if (this.api.modules[modul] === undefined)
+        return true
+      return this.api.modules[modul]
     }
 
   }
