@@ -1,7 +1,21 @@
 <template lang="jade">
 	div(fluid="")
 		v-layout(wrap="")
-			v-flex(xs12 sm3)
+			v-flex.hidden-sm-and-up(xs12 v-if="chat===null")
+				v-list.pt-0(dark style="height:90vh")
+					v-list-tile
+						span {{api.trans('literals.chats')}}
+						v-spacer
+						v-btn.pink(fab small @click.stop="chatModal=true")
+							v-icon(dark) add
+					v-list-tile(@click="selectChat(thread)" v-for="thread in chats", :key="thread.id", :class="chat && thread.id === chat.id ? 'grey white--text' : '' ")
+						v-list-tile-content
+							v-list-tile-title {{ thread.title }}
+						v-list-tile-action
+							v-icon.red--after(accent v-if="thread.unread" v-badge="{ value: thread.unread }") question_answer
+							v-icon(v-else primary) question_answer
+
+			v-flex.hidden-xs-only(xs12 sm3)
 				v-list.pt-0(dark style="height:85vh")
 					v-list-tile
 						span {{api.trans('literals.chats')}}
@@ -12,23 +26,26 @@
 						v-list-tile-content
 							v-list-tile-title {{ thread.title }}
 						v-list-tile-action
-							v-icon(primary) question_answer
+							v-icon.red--after(accent v-if="thread.unread" v-badge="{ value: thread.unread }") question_answer
+							v-icon(v-else primary) question_answer
 			v-flex(xs12 sm9)
 				v-card.mx-2.pa-2(v-if="chat")
 					v-subheader.blue-grey.lighten-5
+						v-btn(icon small flat @click="chat=null")
+							v-icon arrow_back
 						v-avatar.blue(size="40px")
 							v-icon(dark) home
 						span {{ chat.title }}
 						v-spacer
 						v-btn(small flat @click="scrolltoBottom()" fab)
-							v-icon arrow_downward
+							v-icon arrow_drop_down
 					v-card-text(ref="chatBody" style="height:400px;overflow:scroll;")
 						v-progress-linear(height="10" info indeterminate v-if="loading")
 						v-layout.chat-message.pa-1(v-for="msg in messages", :key="msg.id")
-							v-flex(xs1)
+							v-flex(xs2)
 								v-avatar.mt-2(size="38px" v-if="msg.user")
 									img(:src="msg.user.image_url")
-							v-flex(xs9)
+							v-flex(xs8)
 								p(v-if="msg.user"): b {{msg.user.name}}
 									span.primary--text(v-if="msg.user.residence") &nbsp;- {{msg.user.residence.name}}
 								span.caption.text-xs-justify {{msg.body}}
@@ -53,6 +70,7 @@
 
 <script lang="coffee">
 api = require '../services/api.js'
+window.__ = require('underscore')._
 module.exports =
 	name: 'Chat'
 	mounted: ()->
@@ -68,7 +86,10 @@ module.exports =
 					user: data.sender
 					body: data.message?.body
 				msg.user.residence = data.residence
-				@messages[@messages.length] = msg
+				@messages.push msg
+			else if data.thread.id not in window.__.pluck(@chats,'id')
+				@chats.push data.thread
+				@selectChat data.thread
 	beforeDestroy: ()->
 			@$router.app.$off('Chat')
 	data: ->
