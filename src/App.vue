@@ -12,12 +12,8 @@
           <v-list-tile-action>
             <v-icon dark>{{!see_residences? 'keyboard_arrow_left': 'keyboard_arrow_down'}}</v-icon>
           </v-list-tile-action>
-
         </v-list-tile>
 
-        <v-btn @click="panic()" fab small absolute bottom right style="bottom:25px;" class="danger">
-          <v-icon class="white--text">fa-life-ring</v-icon>
-        </v-btn>
         <template v-if="see_residences && api.user.residences">
           <v-subheader class="grey text-capitalize white--text">{{api.trans('literals.my')}} {{api.trans('literals.residences')}}</v-subheader>
           <v-list-tile @click="changeResidence(res)" v-for="res in api.user.residences" :key="res.id" :disabled="res.id === api.residence.id">
@@ -27,6 +23,9 @@
             {{res.name}}
           </v-list-tile>
         </template>
+        <v-btn v-tooltip:left="{ html: api.trans('__.panic button') }" @click="panic()" fab small absolute bottom right style="bottom:25px;" class="danger">
+          <v-icon class="white--text">fa-life-ring</v-icon>
+        </v-btn>
       </v-list>
       <v-list class="pt-0" dense v-if="!(see_residences && api.user.residences)">
         <v-divider></v-divider>
@@ -37,7 +36,7 @@
           <v-list-tile-content>
             <v-list-tile-title class="text-capitalize">{{ api.trans('literals.'+page.title) }}</v-list-tile-title>
           </v-list-tile-content>
-          <v-list-tile-action v-if="page.title==='visitas'" v-tooltip:right="{html:api.trans('literals.waiting for confirmation')}">
+          <v-list-tile-action v-if="page.title==='visitas'" v-tooltip:left="{html:api.trans('literals.waiting for confirmation')}">
             <v-chip class="accent white--text green--after" v-badge:notifications.icon.overlap>
               {{waitingConfirmation()}}
             </v-chip>

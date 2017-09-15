@@ -87,9 +87,18 @@ module.exports =
 					body: data.message?.body
 				msg.user.residence = data.residence
 				@messages.push msg
-			else if data.thread.id not in window.__.pluck(@chats,'id')
+			else if data.thread.id in window.__.pluck(@chats,'id')
+				for chat in @chats
+					if chat.id == data.thread.id
+						if chat.unread?
+							chat.unread = 1
+						else
+							chat.unread++
+						return
+			else
 				@chats.push data.thread
 				@selectChat data.thread
+				data.thread.unread = 1
 	beforeDestroy: ()->
 			@$router.app.$off('Chat')
 	data: ->
@@ -133,6 +142,7 @@ module.exports =
 			.catch console.error
 		selectChat: (chat)->
 			@chat = chat
+			@chat.unread=0 
 			@getMessages(chat.id)
 			@scrolltoBottom()
 		send: ()->
