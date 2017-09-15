@@ -1,7 +1,7 @@
 <template lang="jade">
 v-container(fluid="")
 	v-layout(wrap="")
-		v-flex.text-xs-center(xs12="" sm6="")
+		v-flex.text-xs-center(xs12="" sm6="" order-xs2)
 			v-progress-circular.primary--text(indeterminate="" v-bind:size="50" v-if="loading")
 			v-card.mx-1.elevation-0(v-else)
 				v-list(subheader="")
@@ -16,7 +16,7 @@ v-container(fluid="")
 							v-list-tile-sub-title {{survey.question}}
 						v-list-tile-action(v-tooltip:left="{html: api.trans('literals.close_time')}")
 							small {{survey.close_time | moment('from')}}
-		v-flex.text-xs-center(xs12="" sm6="")
+		v-flex.text-xs-center(xs12="" sm6="" order-xs1)
 			transition(name="zoomin" enter-active-class="animated slideInRight" leave-active-class="animated slideOutRight" mode="out-in", :duration="{ enter: 500, leave:500 }")
 				v-card.mx-1.elevation-0(v-if="!voting" key="normal")
 					div(v-if="survey.id")
