@@ -12,7 +12,12 @@
           <v-list-tile-action>
             <v-icon dark>{{!see_residences? 'keyboard_arrow_left': 'keyboard_arrow_down'}}</v-icon>
           </v-list-tile-action>
+
         </v-list-tile>
+
+        <v-btn @click="panic()" fab small absolute bottom right style="bottom:25px;" class="danger">
+          <v-icon class="white--text">fa-life-ring</v-icon>
+        </v-btn>
         <template v-if="see_residences && api.user.residences">
           <v-subheader class="grey text-capitalize white--text">{{api.trans('literals.my')}} {{api.trans('literals.residences')}}</v-subheader>
           <v-list-tile @click="changeResidence(res)" v-for="res in api.user.residences" :key="res.id" :disabled="res.id === api.residence.id">
@@ -649,6 +654,13 @@ export default {
       window.storage.clear();
       this.$router.push('/login')
     },
+    panic() {
+      this.api.post('panic', {})
+        .then((resp) => {
+          console.log(resp.data)
+        })
+        .catch(console.error)
+    }
 
   }
 }
