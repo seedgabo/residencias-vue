@@ -669,9 +669,9 @@ export default {
         .catch(console.error)
     },
     siteHas(modul) {
-      if (modul === undefined || this.api.modules === undefined)
+      if (this.api.modules === undefined)
         return false
-      if (this.api.modules[modul] === undefined)
+      if (modul === undefined || this.api.modules[modul] === undefined)
         return true
       return this.api.modules[modul]
     }
