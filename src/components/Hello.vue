@@ -9,8 +9,8 @@ div
           p(:style="'color:'+(slider.color?slider.color:'white')") {{slider.text}}
   v-parallax.my-parallax(:src='sliders[0].image.url', v-if='sliders.length === 1', height='270')
     v-layout(column='', align-center='', justify-center='')
-      h3(:style="'margin-left:15px;color:'+(slider.color?slider.color:'white')") {{sliders[0].name}}
-      h5(:style="'margin-left:15px;color:'+(slider.color?slider.color:'white')") {{sliders[0].text}}
+      h3(:style="'margin-left:15px;color:'+(sliders[0].color?sliders[0].color:'white')") {{sliders[0].name}}
+      h5(:style="'margin-left:15px;color:'+(sliders[0].color?sliders[0].color:'white')") {{sliders[0].text}}
   div(style='position:relative; z-index:1')
     v-btn(fab='', absolute='', top='', left='', primary='', dark='', medium='', :to="'posts?create=true'")
       v-icon add
