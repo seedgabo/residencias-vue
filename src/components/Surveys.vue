@@ -27,7 +27,7 @@ v-container(fluid="")
 							div.text-capitalize(v-if="my_vote")
 								b {{ api.trans('__.my vote') }}:
 								span {{survey['response_'+my_vote.response]}}
-							v-btn(success="" @click.stop="voting=true;selectResponse()")
+							v-btn(success="" v-else @click.stop="voting=true;selectResponse()")
 								v-icon(dark="") thumbs_up_down
 								span &nbsp; {{api.trans('literals.vote')}}
 				v-card.elevation-0(v-else key="edit")
