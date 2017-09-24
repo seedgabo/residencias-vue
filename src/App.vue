@@ -68,8 +68,10 @@
       <v-spacer>
         <div class="text-xs-center">
           <v-toolbar-title>
-            <img src="./assets/logo.png" class="hidden-md-and-up logo" @click="navigate('/')">
-            <img src="./assets/logo-completo.png" class="hidden-sm-and-down logo" @click="navigate('/')">
+            <img v-if="api.user" src="./assets/logo.png" class="hidden-md-and-up logo" @click="navigate('/')">
+            <img v-else :src="api.url +'/img/icon.png'" class="hidden-md-and-up logo" @click="navigate('/')">
+            <img v-if="api.user" src="./assets/logo-completo.png" class="hidden-sm-and-down logo" @click="navigate('/')">
+            <img v-else :src="api.url +'/img/logo.png'" class="hidden-sm-and-down logo" @click="navigate('/')">
           </v-toolbar-title>
         </div>
       </v-spacer>
