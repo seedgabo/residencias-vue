@@ -26,7 +26,7 @@ div
                 span.headline-2.mr-4(v-if='post.user') {{post.user.name}}
                 span.grey--text
                   | {{ post.created_at | moment('from')}}
-      v-btn.primary(fixed='', fab='', bottom='', right='', dark='', @click.stop='newPost()')
+      v-btn.primary(v-if="api.settings && api.settings.users_can_create_posts" fixed='', fab='', bottom='', right='', dark='', @click.stop='newPost()')
         v-icon add
     v-dialog(fullscreen='', v-model='creator')
       v-toolbar.indigo(dark='')

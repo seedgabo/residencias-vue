@@ -256,12 +256,17 @@ export default {
       this.api.get('getData')
         .then((response) => {
           console.log(response.data)
-          this.api.residence = response.data.residence;
-          this.api.settings = response.data.settings;
-          this.api.modules = response.data.modules;
-          this.api.user.residences = response.data.residences;
-          window.storage.setItem('settings', JSON.stringify(response.data.settings));
-          window.storage.setItem('modules', JSON.stringify(response.data.modules));
+          this.api.setUser(response.data);
+          window.storage.setItem('user', JSON.stringify(response.data.user))
+          window.storage.setItem('residence', JSON.stringify(response.data.residence))
+          window.storage.setItem('settings', JSON.stringify(response.data.settings))
+          window.storage.setItem('modules', JSON.stringify(response.data.modules))
+
+          this.api.get('lang').then((response) => {
+            console.log(response.data);
+            this.api.i18n = response.data;
+            window.storage.setItem('i18n', JSON.stringify(response.data));
+          }).catch(console.error)
         })
         .catch(console.error)
     },
@@ -676,7 +681,6 @@ export default {
         return true
       return this.api.modules[modul]
     }
-
   }
 }
 </script>

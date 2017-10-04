@@ -182,7 +182,7 @@
     </v-dialog>
     <!--//* END Visor  -->
 
-    <v-btn fab fixed right bottom dark primary @click="createEvent()" v-tooltip:left="{html: api.trans( 'crud.add') + ' ' + api.trans( 'literals.event')}">
+    <v-btn fab fixed right bottom dark primary @click="createEvent()" v-tooltip:left="{html: api.trans( 'crud.add') + ' ' + api.trans( 'literals.event')}" v-if="api.settings && api.settings.users_can_create_events">
       <v-icon>add</v-icon>
     </v-btn>
   </v-container>
