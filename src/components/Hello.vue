@@ -12,7 +12,7 @@ div
       h3(:style="'margin-left:15px;color:'+(sliders[0].color?sliders[0].color:'white')") {{sliders[0].name}}
       h5(:style="'margin-left:15px;color:'+(sliders[0].color?sliders[0].color:'white')") {{sliders[0].text}}
   div(style='position:relative; z-index:1')
-    v-btn(fab='', absolute='', top='', left='', primary='', dark='', medium='', :to="'posts?create=true'")
+    v-btn(fab='', absolute='', top='', left='', color="primary", dark='', medium='', :to="'posts?create=true'")
       v-icon add
   v-layout.pt-3.pl-2(wrap="")
     v-flex.mt-3(xs12='', sm8='', order-xs2, order-sm1="")

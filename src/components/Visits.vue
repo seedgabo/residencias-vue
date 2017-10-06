@@ -33,7 +33,7 @@ div
             v-text-field(v-model='visit.note', :label="api.trans('literals.notes')" prepend-icon="paragraph")
       v-card-actions
         v-spacer
-        v-btn(flat primary, :disabled="!canAddVisit()", @click="addVisit()") {{api.trans('crud.add')}}
+        v-btn(flat color="primary", :disabled="!canAddVisit()", @click="addVisit()") {{api.trans('crud.add')}}
         v-btn(flat, @click="adding=false") {{api.trans('crud.cancel')}}
   v-dialog(v-model="see_visit" width="500px")
     v-card
@@ -86,7 +86,7 @@ div
         div()
           v-select(:items="statuses", v-model="selected.status", :label="api.trans('literals.status')", prepend-icon="transfer_within_a_station")
           div.text-xs-right
-            v-btn(@click="updateVisit(selected,selected.status)" flat primary) {{api.trans('crud.save')}}
+            v-btn(@click="updateVisit(selected,selected.status)" flat color="primary") {{api.trans('crud.save')}}
 </template>
 
 <script lang="coffee">

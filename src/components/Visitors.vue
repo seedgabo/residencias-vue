@@ -9,7 +9,7 @@ v-layout(wrap)
         v-spacer
         v-btn.pink(dark fab small absolute right, @click.stop="visitor={ sex:'male'};creator=true" v-if="selecteds.length  ===  0")
           v-icon add
-        v-btn(primary v-else, @click.stop="visit=true")
+        v-btn(color="primary" v-else, @click.stop="visit=true")
           v-icon(dark) add_circle
           span {{ api.trans('crud.add') }} {{api.trans('literals.visit')}} {{ api.trans('literals.multiple') }}
       v-card-text
@@ -52,7 +52,7 @@ v-layout(wrap)
          v-text-field(v-model='note', :label="api.trans('literals.notes')" prepend-icon="paragraph")
       v-card-actions
         v-spacer
-        v-btn(primary flat, @click="addVisit()") {{api.trans('literals.generate')}}
+        v-btn(color="primary" flat, @click="addVisit()") {{api.trans('literals.generate')}}
         v-btn(flat, @click="visit=false") {{api.trans('crud.close')}}
   v-dialog(v-model="creator")
     v-card
@@ -69,9 +69,9 @@ v-layout(wrap)
         //- v-text-field(v-model='visitor.phone_number', :label="api.trans('literals.phone_number')" prepend-icon="phone")
       v-divider
       v-card-actions
-        v-btn(v-if="!visitor.id" flat primary @click="createVisitor()") {{api.trans('crud.add')}}
-        v-btn(v-else flat primary @click="updateVisitor(visitor)") {{api.trans('crud.save')}}
-        v-btn(@click="creator=false" flat primary) {{api.trans('crud.cancel')}}
+        v-btn(v-if="!visitor.id" flat color="primary"  @click="createVisitor()") {{api.trans('crud.add')}}
+        v-btn(v-else flat color="primary"  @click="updateVisitor(visitor)") {{api.trans('crud.save')}}
+        v-btn(@click="creator=false" flat color="primary") {{api.trans('crud.cancel')}}
   v-snackbar(:timeout="1500", bottom v-model="imageUploaded")
     span {{ api.trans('__.image uploaded') }}
     v-btn.pink--text(flat, @click.native="snackbar=false" icon)

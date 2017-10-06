@@ -49,8 +49,8 @@ v-container()
 					v-date-picker.hidden-md-and-up(v-model="date", :allowed-dates="allowed", :first-day-of-week="1" locale="es-sp")
 					div
 						v-spacer
-						v-btn(flat primary @click.native="cancel()" large) {{ api.trans('crud.cancel') }}
-						v-btn(flat primary @click.native="choose()" large) {{ api.trans('literals.choose') }}
+						v-btn(flat color="primary"  @click.native="cancel()" large) {{ api.trans('crud.cancel') }}
+						v-btn(flat color="primary"  @click.native="choose()" large) {{ api.trans('literals.choose') }}
 				v-card(v-else-if="mode=='reservation'" key="reservation")
 					v-list(subheader two-line)
 						v-subheader
@@ -80,7 +80,7 @@ v-container()
 				v-text-field(v-model="quotas" type="number", value="1", min="1", max="interval.available", :label="api.trans('literals.quota')")
 			v-card-actions
 				v-spacer
-				v-btn(primary, @click="postReservations(interval,quotas)") {{api.trans('literals.reservate')}}
+				v-btn(color="primary" @click="postReservations(interval,quotas)") {{api.trans('literals.reservate')}}
 				v-btn(flat, @click="reservation_dialog=false") {{api.trans('crud.cancel')}}
 	v-dialog(v-model="view_reservation" fullscreen)
 		v-card(v-if="zone && interval && interval.reserved")

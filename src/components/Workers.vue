@@ -52,9 +52,9 @@ v-layout(wrap)
         v-text-field(v-model='worker.work', :label="api.trans('literals.work')" prepend-icon="work", :placeholder="api.trans('__.domestico')")
       v-divider
       v-card-actions
-        v-btn(:disabled="!canSave()" v-if="!worker.id" flat primary @click="createWorker()") {{api.trans('crud.add')}}
-        v-btn(:disabled="!canSave()" v-else flat primary @click="updateWorker(worker)") {{api.trans('crud.save')}}
-        v-btn(@click="creator=false" flat primary) {{api.trans('crud.cancel')}}
+        v-btn(:disabled="!canSave()" v-if="!worker.id" flat color="primary"  @click="createWorker()") {{api.trans('crud.add')}}
+        v-btn(:disabled="!canSave()" v-else flat color="primary"  @click="updateWorker(worker)") {{api.trans('crud.save')}}
+        v-btn(@click="creator=false" flat color="primary") {{api.trans('crud.cancel')}}
   v-snackbar(:timeout="1500", bottom v-model="imageUploaded")
     span {{ api.trans('__.image uploaded') }}
     v-btn.pink--text(flat, @click.native="snackbar=false" icon)

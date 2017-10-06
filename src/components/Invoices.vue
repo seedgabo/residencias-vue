@@ -2,7 +2,7 @@
 v-container(fluid='')
   v-layout(wrap='')
     v-flex(xs12='', center='')
-      h2.headline.text-xs-center(primary='')
+      h2.headline.text-xs-center(color="primary")
         v-icon fa-files-o
         | {{api.trans('literals.invoices')}}
     v-flex(xs12='')
@@ -35,14 +35,22 @@ v-container(fluid='')
               td(:class="(props.item.status=='paid'?'green':'red') + '--text'")
                 strong {{ api.trans('literals.'+props.item.status)}}
               td
-                v-btn(@click.stop='pay(props.item)', v-if="props.item.status !== 'paid'", v-tooltip:bottom="{ html: api.trans('__.report payment')}", icon='')
-                  v-icon.primary--text credit_card
-                v-btn(v-if='props.item.receipts.length!==0 ', v-tooltip:bottom="{ html: (api.trans('literals.download') +  ' ' + api.trans('literals.receipt')) }", icon='', :href="api.url + 'receipt/'+ props.item.receipts[0].id +'/pdf?token='+ api.user.token", target='receipt', @click.stop='null')
-                  v-icon.green--text fa-file-text-o
-                v-btn(v-tooltip:bottom="{ html: api.trans('literals.download') }", icon='', :href="api.url + 'invoice/'+ props.item.id +'/pdf?token='+ api.user.token", target='invoice', @click.stop='null')
-                  v-icon.red--text fa-file-pdf-o
-                v-btn(icon='', v-tooltip:bottom="{ html: api.trans('__.send by mail') }", small='', @click.stop='sendMailInvoice(props.item)')
-                  v-icon email
+                v-btn(@click.stop='pay(props.item)', v-if="props.item.status !== 'paid'", icon='')
+                  v-tooltip(bottom)
+                    span {{api.trans('__.report payment')}}
+                    v-icon.primary--text(slot="activator") credit_card
+                v-btn(v-if='props.item.receipts.length!==0 ', icon='', :href="api.url + 'receipt/'+ props.item.receipts[0].id +'/pdf?token='+ api.user.token", target='receipt', @click.stop='null')
+                  v-tooltip(bottom)
+                    span {{api.trans('literals.download')}} {{api.trans('literals.receipt')}}
+                    v-icon.green--text(slot="activator") fa-file-text-o
+                v-btn(icon='', :href="api.url + 'invoice/'+ props.item.id +'/pdf?token='+ api.user.token", target='invoice', @click.stop='null')
+                  v-tooltip(bottom)
+                    span {{api.trans('literals.download')}} 
+                    v-icon.red--text(slot="activator") fa-file-pdf-o
+                v-btn(icon='', small='', @click.stop='sendMailInvoice(props.item)')
+                  v-tooltip(bottom)
+                    span {{api.trans('__.send by email')}}
+                    v-icon(slot="activator") email
         v-list.hidden-sm-and-up(two-line subheader)
           v-subheader {{api.trans('literals.invoices')}}
           template(v-for="(invoice,index) in orderBy(invoices,'date',-1)")
@@ -109,12 +117,18 @@ v-container(fluid='')
           v-btn.blue.darken-2(slot='activator', style='right:5px', dark='', hover='', fab='', v-model='fab')
             v-icon menu
             v-icon close
-          v-btn.green(v-if="invoice.status !== 'paid'", @click.native='pay(invoice)', fab='', dark='', small='', style='right:5px', v-tooltip:left="{html:api.trans('__.report payment')}")
-            v-icon credit_card
-          v-btn.red(:href="api.url + 'invoice/'+ invoice.id +'/pdf?token='+ api.user.token", target='invoice', fab='', dark='', small='', style='right:5px', v-tooltip:left="{html:api.trans('__.print as pdf')}")
-            v-icon fa-file-pdf-o
-          v-btn.indigo(@click='sendMailInvoice(invoice)', fab='', dark='', small='', style='right:5px', v-tooltip:left="{html:api.trans('__.send by email')}")
-            v-icon mail
+          v-btn.green(v-if="invoice.status !== 'paid'", @click.native='pay(invoice)', fab='', dark='', small='', style='right:5px')
+            v-tooltip(left)
+              span {{api.trans('__.report payment')}}
+              v-icon(slot="activator") credit_card
+          v-btn.red(:href="api.url + 'invoice/'+ invoice.id +'/pdf?token='+ api.user.token", target='invoice', fab='', dark='', small='', style='right:5px')
+            v-tooltip(left)
+              span {{api.trans('__.print as pdf')}}
+              v-icon(slot="activator") fa-file-pdf-o
+          v-btn.indigo(@click='sendMailInvoice(invoice)', fab='', dark='', small='', style='right:5px')
+            v-tooltip(bottom)
+              span {{api.trans('__.send by email')}}
+              v-icon(slot="activator") mail
   v-dialog(v-model='see_payment', scrollable='')
     v-card(flat)
       v-card-title.primary
@@ -127,9 +141,9 @@ v-container(fluid='')
         v-select(v-bind:items='transactions', v-model='payment.transaction', prepend-icon='account_balance_wallet', label='Select', single-line='', bottom='')
       v-card-actions
         v-spacer
-        v-btn(flat='', primary='', @click.native='reportPayment(invoice)', :loading='proccesingPayment')
+        v-btn(flat='', color="primary", @click.native='reportPayment(invoice)', :loading='proccesingPayment')
           | {{api.trans('__.report payment')}}
-        v-btn(flat='', primary='', @click.native='see_payment=false')
+        v-btn(flat='', color="primary", @click.native='see_payment=false')
           | {{api.trans('crud.cancel')}}
   v-snackbar(:timeout='4000', top='', right='', v-model='success_email')
     | {{api.trans('literals.email') + " " + api.trans('literals.sent')}}

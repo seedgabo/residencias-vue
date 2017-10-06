@@ -50,10 +50,10 @@ div
                 v-select(:label="api.trans('literals.tags')", v-bind:items='tags', v-model='post.tags', item-text='name', item-value='id', multiple='', chips='', max-height='auto', autocomplete='')
                 v-flex.text-xs-right
                   v-spacer
-                  v-btn(primary='', v-if='!post.id', @click='createPost()', :disabled="!canSave()", :loading="uploading")
+                  v-btn(color="primary", v-if='!post.id', @click='createPost()', :disabled="!canSave()", :loading="uploading")
                     v-icon(dark='') save
                     |  {{api.trans('crud.save')}}
-                  v-btn(primary='', v-else='', @click='updatePost(post)', :disabled="!canSave()")
+                  v-btn(color="primary", v-else='', @click='updatePost(post)', :disabled="!canSave()")
                     v-icon(dark='') save
                     |  {{api.trans('crud.save')}}
                   v-btn(flat='', @click='creator=false')

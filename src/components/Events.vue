@@ -115,16 +115,25 @@
               </v-flex>
 
             </v-layout>
-            <v-btn :disabled="!canSave()" v-if="event.id" v-tooltip:top="{ html: api.trans('crud.save') }" fixed bottom right primary dark fab @click.native="saveEvent()">
-              <v-icon dark>save</v-icon>
+            <v-btn :disabled="!canSave()" v-if="event.id" fixed bottom right color="primary" dark fab @click.native="saveEvent()">
+              <v-tooltip top>
+                <span>{{ api.trans('crud.save') }}</span>
+                <v-icon slot="activator" dark>save</v-icon>
+              </v-tooltip>
             </v-btn>
 
-            <v-btn :disabled="!canSave()" v-else v-tooltip:top="{ html: api.trans('crud.add') }" fixed bottom right primary dark fab @click.native="saveNewEvent()">
-              <v-icon dark>add_circle</v-icon>
+            <v-btn :disabled="!canSave()" v-else fixed bottom right color="primary" dark fab @click.native="saveNewEvent()">
+              <v-tooltip top>
+                <span>{{ api.trans('crud.add') }}</span>
+                <v-icon slot="activator" dark>add_circle</v-icon>
+              </v-tooltip>
             </v-btn>
 
-            <v-btn v-if="event.id" v-tooltip:top="{html: api.trans('crud.delete')}" fixed bottom style="right:80px" class="red" dark fab @click.native="deleteEvent(event)">
-              <v-icon>delete</v-icon>
+            <v-btn v-if="event.id" fixed bottom style="right:80px" class="red" dark fab @click.native="deleteEvent(event)">
+              <v-tooltip top>
+                <span>{{ api.trans('crud.delete') }}</span>
+                <v-icon slot="activator">delete</v-icon>
+              </v-tooltip>
             </v-btn>
           </v-container>
         </v-card-text>
@@ -182,8 +191,11 @@
     </v-dialog>
     <!--//* END Visor  -->
 
-    <v-btn fab fixed right bottom dark primary @click="createEvent()" v-tooltip:left="{html: api.trans( 'crud.add') + ' ' + api.trans( 'literals.event')}" v-if="api.settings && api.settings.users_can_create_events">
-      <v-icon>add</v-icon>
+    <v-btn fab fixed right bottom dark color="primary" @click="createEvent()" v-if="api.settings && api.settings.users_can_create_events">
+      <v-tooltip top>
+        <span>{{ api.trans('crud.add') }} {{ api.trans('literals.event')}} </span>
+        <v-icon slot="activator">add</v-icon>
+      </v-tooltip>
     </v-btn>
   </v-container>
 </template>

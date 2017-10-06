@@ -1,6 +1,6 @@
 <template>
   <v-app id="example-2" :dark="false">
-    <v-navigation-drawer temporary v-model="drawer" overflow>
+    <v-navigation-drawer app temporary v-model="drawer" overflow>
       <v-list class="pa-0" v-if="api.user.id">
         <v-list-tile avatar tag="div" class="primary" @click="see_residences = !see_residences">
           <v-list-tile-avatar>
@@ -23,8 +23,11 @@
             {{res.name}}
           </v-list-tile>
         </template>
-        <v-btn v-tooltip:left="{ html: api.trans('__.panic button') }" @click="panic()" fab small absolute bottom right style="bottom:25px;" class="danger">
-          <v-icon class="white--text">fa-life-ring</v-icon>
+        <v-btn @click="panic()" fab small absolute bottom right style="bottom:25px;" color="danger">
+          <v-tooltip left>
+            <span>{{api.trans('__.panic button')}}</span>
+            <v-icon slot="activator" class="white--text">fa-life-ring</v-icon>
+          </v-tooltip>
         </v-btn>
       </v-list>
       <v-list class="pt-0" dense v-if="!(see_residences && api.user.residences)">
@@ -36,11 +39,14 @@
           <v-list-tile-content>
             <v-list-tile-title class="text-capitalize">{{ api.trans('literals.'+page.title) }}</v-list-tile-title>
           </v-list-tile-content>
-          <v-list-tile-action v-if="page.title==='visitas'" v-tooltip:left="{html:api.trans('literals.waiting for confirmation')}">
-            <v-chip class="accent white--text green--after" v-badge:notifications.icon.overlap>
-              {{waitingConfirmation()}}
-            </v-chip>
-          </v-list-tile-action>
+          <v-tooltip left>
+            <v-list-tile-action v-if="page.title==='visitas'" slot="activator">
+              <v-chip class="accent white--text green--after">
+                {{waitingConfirmation()}}
+              </v-chip>
+            </v-list-tile-action>
+            <span>{{api.trans('literals.waiting for confirmation')}}</span>
+          </v-tooltip>
         </v-list-tile>
 
         <v-list-tile to="chats" v-if="api.user && siteHas('chat')">
@@ -48,7 +54,7 @@
             <v-icon>chat</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title class="text-capitalize" v-badge="{ value: api.user.unread, left: true, visible: true}">{{ api.trans('literals.chats') }}</v-list-tile-title>
+            <v-list-tile-title class="text-capitalize">{{ api.trans('literals.chats') }}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
 
@@ -63,7 +69,7 @@
 
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar prominent fixed class="primary" v-if="api.user.id" dark>
+    <v-toolbar app prominent fixed class="primary" v-if="api.user.id" dark>
       <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-spacer>
         <div class="text-xs-center">
@@ -118,7 +124,9 @@
       </v-toolbar-items>
     </v-toolbar>
     <main>
-      <router-view></router-view>
+      <v-content>
+        <router-view></router-view>
+      </v-content>
     </main>
 
     <v-snackbar :timeout="timeout" success top right v-model="visitConfirmToast">
@@ -180,10 +188,10 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn primary @click="visitConfirmed('approved')">
+          <v-btn color="primary" @click="visitConfirmed('approved')">
             {{api.trans('literals.confirm')}}
           </v-btn>
-          <v-btn danger @click="visitConfirmed('rejected')">
+          <v-btn color="danger" @click="visitConfirmed('rejected')">
             {{api.trans('literals.reject')}}
           </v-btn>
         </v-card-actions>

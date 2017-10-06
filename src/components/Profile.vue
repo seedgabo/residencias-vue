@@ -2,7 +2,7 @@
 v-container(fluid='')
   v-layout(wrap='')
     input(type="file" ref="inputImage" style="display:none;", @change="fileUploaded" accept="image/*")
-    // //* CARD PROFILE
+    // CARD PROFILE
     v-flex.mt-3(xs12='', sm6='', md4='')
       v-card.mx-1
         v-card-media.white--text(src=' https://ak2.picdn.net/shutterstock/videos/23151772/thumb/1.jpg ', height='150px')
@@ -31,19 +31,19 @@ v-container(fluid='')
             v-flex(xs12='', style='width:100%')
               v-select(v-if="api.user.id !== api.residence.owner_id" prepend-icon='face', v-model='api.user.relationship', v-bind:items='relationships', :label="api.trans('literals.relationship')")
             v-flex(xs12='', style='width:100%')
-              v-menu(lazy='', :close-on-content-click='true', transition='scale-transition', offset-y='', full-width='', :nudge-left='40', max-width='290px')
+              v-menu(lazy='', :close-on-content-click='true', offset-y='', full-width='', :nudge-left='40', max-width='290px')
                 v-text-field(slot='activator', :label="api.trans('literals.birthday')", v-model='api.user.birthday', prepend-icon='event', readonly='')
                 v-date-picker(v-model='api.user.birthday', scrollable='', actions='')
                   template(scope='{ save, cancel }')
                     v-card-actions
-                      v-btn(flat='', primary='', @click.native='cancel()') {{api.trans('crud.cancel')}}
-                      v-btn(flat='', primary='', @click.native='save()') {{api.trans('crud.save')}}
+                      v-btn(flat='', color="primary", @click.native='cancel()') {{api.trans('crud.cancel')}}
+                      v-btn(flat='', color="primary", @click.native='save()') {{api.trans('crud.save')}}
             v-flex.text-xs-right(xs12='')
-              v-btn(flat='', primary='', @click.native='updateUser()')
+              v-btn(flat='', color="primary", @click.native='updateUser()')
                 | {{api.trans('crud.save')}}  
-                v-icon(primary='') save
-    // //* END CARD PROFILE
-    // //* CARD RESIDENCE
+                v-icon(color="primary") save
+    // END CARD PROFILE
+    // CARD RESIDENCE
     v-flex.mt-3(xs12='', sm6='', md4='')
       v-card.mx-1
         v-toolbar.text-xs-center.primary.white--text
@@ -103,22 +103,17 @@ v-container(fluid='')
                 v-list-tile-content
                   v-list-tile-title(v-html='data.item.name')
             v-flex.text-xs-right
-              v-btn(primary='', flat='', @click.native='updateResidence()')
-                v-icon.primary--text save
-                span {{api.trans('crud.save')}}
-        v-card-actions(v-if='!editable')
-          v-btn.primary--text(flat='', @click.native='editable=!editable')
-            v-icon(primary='') edit
-            | 							{{api.trans('crud.edit')}}
+              v-btn(flat color="primary" @click="updateResidence()") {{api.trans('crud.save')}}
+        v-card-actions(v-if="!editable")
           v-spacer
-          v-btn.pink--text(flat='', to='invoices')
-            v-icon.pink--text account_balance_wallet
-            | 							{{this.api.trans('literals.invoices')}}
-          v-btn.pink--text(flat='', to='documents')
-            v-icon.pink--text insert_drive_file
-            | 							{{this.api.trans('literals.dynamic_documents')}}
-    // //* END CARD RESIDENCE
-    // //* CARD USERS
+          v-btn.orange--text(flat='', to='invoices')
+            v-icon.orange--text account_balance_wallet
+            | {{this.api.trans('literals.invoices')}}
+          v-btn.orange--text(flat='', to='documents')
+            v-icon.orange--text insert_drive_file
+            | {{this.api.trans('literals.dynamic_documents')}}
+    // END CARD RESIDENCE
+    // CARD USERS
     v-flex.mt-3(xs12='', sm6='', md4='')
       v-card.mx-1
         v-toolbar.primary.white--text(extended='')
@@ -141,8 +136,8 @@ v-container(fluid='')
               v-list-tile-action(v-if='api.residence.owner_id !== user.id && user.id !== api.user.id')
                 v-btn(icon='', @click='deleteUser(user,index)')
                   v-icon delete
-    // //* END CARD USERS
-    // //* CARD PASSWORD
+    // END CARD USERS
+    // CARD PASSWORD
     v-flex.mt-3(xs12='', sm6='', md4='')
       v-card.mx-1
         v-card-title: h5 {{api.trans('crud.edit')}} {{api.trans('literals.password')}}
@@ -150,7 +145,7 @@ v-container(fluid='')
           v-text-field(v-model='password', :label="api.trans('literals.password')", required='', type='password')
           v-text-field(v-model='password_confirmation', :label="api.trans('literals.password_confirmation')", type='password', required='')
           v-spacer
-          v-btn(primary='', full='', :disabled="!(password.length>5 && password === password_confirmation)", @click="updatePassword()",flat="") {{ api.trans('crud.save') }}
+          v-btn(color="primary", full='', :disabled="!(password.length>5 && password === password_confirmation)", @click="updatePassword()",flat="") {{ api.trans('crud.save') }}
     // //* END PASSWORD
     // //* NEW USER DIALOG
     v-dialog(v-model='new_user', persistent='')
@@ -183,7 +178,7 @@ v-container(fluid='')
           span {{passwordResultsText}}
         v-card-actions
           v-spacer
-          v-btn(primary="", @click="passwordResults=false") {{api.trans('literals.ok')}}
+          v-btn(color="primary", @click="passwordResults=false") {{api.trans('literals.ok')}}
 </template>
 
 <script lang="coffee">
@@ -215,7 +210,6 @@ module.exports=
     snackbar_success_residence: false
     new_user: false
     user: { name: '', email: '', password: '', document: '', sex: 'male',relationship:'other'}
-
     password: ''
     password_confirmation: ''
     passwordResults: false,
@@ -237,6 +231,7 @@ module.exports=
           @snackbar_success = true;
           window.storage.setItem('user', JSON.stringify(@api.user));
         .catch console.error
+    
     updateResidence:()->
       @api.put('residences/' + @api.user.residence_id,
         {
