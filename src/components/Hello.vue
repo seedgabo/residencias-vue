@@ -4,13 +4,13 @@ div
     v-carousel-item(v-for='slider in sliders', :key='slider.id', v-bind:src='slider.image.url', transition='fade', reverse-transition='fade')
       v-layout(row='', wrap='')
         v-flex(xs12='')
-          h3(:style="'color:'+(slider.color?slider.color:'white')") {{slider.name}}
+          h3.ml-5(:style="'color:'+(slider.color?slider.color:'white')") {{slider.name}}
         v-flex(xs12='')
-          p(:style="'color:'+(slider.color?slider.color:'white')") {{slider.text}}
+          p.ml-5(:style="'color:'+(slider.color?slider.color:'white')") {{slider.text}}
   v-parallax.my-parallax(:src='sliders[0].image.url', v-if='sliders.length === 1', height='270')
-    v-layout(column='', align-center='', justify-center='')
-      h3(:style="'margin-left:15px;color:'+(sliders[0].color?sliders[0].color:'white')") {{sliders[0].name}}
-      h5(:style="'margin-left:15px;color:'+(sliders[0].color?sliders[0].color:'white')") {{sliders[0].text}}
+    v-layout.ml-5(column='', align-center='', justify-center='')
+      h3.ml-5(:style="'color:'+(sliders[0].color?sliders[0].color:'white')") {{sliders[0].name}}
+      h5.ml-5(:style="'color:'+(sliders[0].color?sliders[0].color:'white')") {{sliders[0].text}}
   div(style='position:relative; z-index:1')
     v-btn(fab='', absolute='', top='', left='', color="primary", dark='', medium='', :to="'posts?create=true'")
       v-icon add
