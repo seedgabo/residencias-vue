@@ -56,7 +56,7 @@ v-layout(wrap)
                 img(:src="data.item.avatar")
               v-list-tile-content
                 v-list-tile-title {{data.item.text}}
-        //- v-text-field(v-model='visitor.phone_number', :label="api.trans('literals.phone_number')" prepend-icon="phone")
+        v-select(v-model='vehicle.type', :label="api.trans('literals.type')" prepend-icon="diretions_car", :items="types")
       v-divider
       v-card-actions
         v-btn(:disabled="!canSave()" v-if="!vehicle.id" flat primary @click="createVehicle()") {{api.trans('crud.add')}}
@@ -79,7 +79,16 @@ module.exports =
     creator: false
     loaded:false
     imageUploaded: false
-    vehicle:{make:'',model:'',plate:'',color:''}
+    types: [ 
+      { text: api.trans('literals.car'), value: 'car' }, 
+      { text: api.trans('literals.moto'), value: 'moto'},
+      { text: api.trans('literals.bicycle'), value: 'bicycle'},
+      { text: api.trans('literals.van'), value: 'van' }, 
+      { text: api.trans('literals.boat'), value: 'boat'},
+      { text: api.trans('literals.golf car'), value: 'golf car'},
+      { text: api.trans('literals.ambulance'), value: 'ambulance'},
+    ]
+    vehicle:{make:'',model:'',plate:'',color:'', type:'car'}
   methods:
     owners: ()->
         owners=[]
@@ -102,15 +111,16 @@ module.exports =
         console.log resp.data
         # @api.residence.vehicles[@api.residence.vehicles.length]=resp.data
         @creator=false
-        @vehicle={make:'',model:'',plate:'',color:''}
+        @vehicle={type:'car', make:'',model:'',plate:'',color:''}
     editVehicle: (vehicle)->
       @vehicle=vehicle
       @creator=true
     updateVehicle: (vehicle)->
-      @api.put """vehicles/#{vehicle.id}""",{make:vehicle.make,model:vehicle.model,plate:vehicle.plate,color:vehicle.color,owner_id:vehicle.owner_id,residence_id:vehicle.residence_id, visitor_id:vehicle.visitor_id}
+      @api.put """vehicles/#{vehicle.id}""",{make:vehicle.make,model:vehicle.model,plate:vehicle.plate,color:vehicle.color,owner_id:vehicle.owner_id,residence_id:vehicle.residence_id, visitor_id:vehicle.visitor_id,
+      type:  vehicle.type}
       .then (resp)=>
         console.log resp.data
-        @vehicle={make:'',model:'',plate:'',color:''}
+        @vehicle={type:'car', make:'',model:'',plate:'',color:''}
         @creator=false
     deleteVehicle: (vehicle)->
       if !confirm @api.trans '__.are you sure?'
@@ -138,11 +148,14 @@ module.exports =
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus">
-.avatar-image
-  border-radius 50%
-  height 70px
-  width 70px
-.avatar img.large
-  height 46px !important
-  width 46px !important
+.avatar-image {
+  border-radius: 50%;
+  height: 70px;
+  width: 70px;
+}
+
+.avatar img.large {
+  height: 46px !important;
+  width: 46px !important;
+}
 </style>
