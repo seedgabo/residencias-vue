@@ -56,7 +56,7 @@ v-layout(wrap)
                 img(:src="data.item.avatar")
               v-list-tile-content
                 v-list-tile-title {{data.item.text}}
-        v-select(v-model='vehicle.type', :label="api.trans('literals.type')" prepend-icon="diretions_car", :items="types")
+        v-select(v-model='vehicle.type', :label="api.trans('literals.type')" prepend-icon="directions_car", :items="types")
       v-divider
       v-card-actions
         v-btn(:disabled="!canSave()" v-if="!vehicle.id" flat color="primary"  @click="createVehicle()") {{api.trans('crud.add')}}
