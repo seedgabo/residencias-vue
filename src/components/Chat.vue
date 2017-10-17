@@ -12,7 +12,9 @@
 						v-list-tile-content
 							v-list-tile-title {{ thread.title }}
 						v-list-tile-action
-							v-icon.red--after(accent v-if="thread.unread" v-badge="{ value: thread.unread }") question_answer
+							v-badge(left color="red" v-if="thread.unread")
+								span(slot="badge") {{thread.unread}}
+								v-icon(accent) question_answer
 
 			v-flex.hidden-xs-only(xs12 sm3)
 				v-list.pt-0(dark style="height:90vh")
@@ -25,7 +27,9 @@
 						v-list-tile-content
 							v-list-tile-title {{ thread.title }}
 						v-list-tile-action
-							v-icon.red--after(accent v-if="thread.unread" v-badge="{ value: thread.unread }") question_answer
+							v-badge(color="red" v-if="thread.unread")
+								span(slot="badge") {{thread.unread}}
+								v-icon(accent) question_answer
 			v-flex(xs12 sm9)
 				v-card.mx-2.pa-2(v-if="chat")
 					v-subheader.blue-grey.lighten-5
@@ -51,7 +55,7 @@
 								small {{ msg.created_at | moment('from') }}
 					v-card-actions
 						v-text-field(ref="messager" placeholder="Type your message" v-model="text" v-on:keyup.enter="send()")
-						v-btn(@click="send()" ref="sender" primary icon dark large, :disabled="text.length===0", :loading="sending")
+						v-btn(@click="send()" ref="sender" color="primary"  icon dark large, :disabled="text.length===0", :loading="sending")
 							v-icon send
 		v-dialog(v-model="chatModal" scrollable)
 			v-card

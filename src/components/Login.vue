@@ -14,10 +14,10 @@
 								| Login
 							v-text-field(name='username', v-model='username', label='username', prepend-icon='account_circle')
 							v-text-field(name='password', v-model='password', label='password', prepend-icon='lock', :append-icon="e1 ? 'visibility' : 'visibility_off'", :append-icon-cb='() => (e1 = !e1)', :type="e1 ? 'password' : 'text'")
-							v-btn(@click.native='doLogin()', :loading='loging', primary='', block='', v-bind:disabled='password.length <4 || username.length <4')
+							v-btn(@click.native='doLogin()', :loading='loging', color="primary", block='', v-bind:disabled='password.length <4 || username.length <4')
 								| Login
 							fb-signin-button(:params='fbSignInParams', @success='onFacebookSignInSuccess', @error='onSignInError')
-								v-btn(primary='', flat='')
+								v-btn(color="primary", flat='')
 									v-icon.blue--text fa-facebook-square
 									|                       Facebook
 							g-signin-button(:params='googleSignInParams', @success='onGoogleSignInSuccess', @error='onSignInError')
@@ -29,7 +29,7 @@
 						.text-center(v-else)
 							h4.headline Recuperar Cuenta
 							v-text-field(name='username', v-model='username', label='username', prepend-icon='account_circle')
-							v-btn(@click.native='recover(username)', :loading='loging', primary='', block='', v-bind:disabled='username.length <4')
+							v-btn(@click.native='recover(username)', :loading='loging', color="primary", block='', v-bind:disabled='username.length <4')
 								| Recuperar
 							v-btn(flat="", @click="forgot=false") Volver a login
 
@@ -40,14 +40,14 @@
 			v-card-text: p {{errorText}}
 			v-card-actions
 				v-spacer
-				v-btn(flat primary dark, @click="error=false") {{api.trans('literals.ok')}}
+				v-btn(flat color="primary"  dark, @click="error=false") {{api.trans('literals.ok')}}
 	v-dialog(v-model="recover_dialog")
 		v-card
 			v-card-title.subheader Listo!
 			v-card-text: p Le hemos enviado un email de recuperación
 			v-card-actions
 				v-spacer
-				v-btn(flat primary dark, @click="recover_dialog=false") {{api.trans('literals.ok')}}
+				v-btn(flat color="primary"  dark, @click="recover_dialog=false") {{api.trans('literals.ok')}}
 </template>
 
 <script lang="coffee">
@@ -160,15 +160,15 @@ module.exports =
 <style scoped>
 .login-page,
 body {
-  background: #fff;
-  margin-top: 0px;
-  height: 100vh;
-  width: 100vw;
-  background-image: url(https://s-media-cache-ak0.pinimg.com/originals/d2/b8/fc/d2b8fc669367ac5eac78f9f2d4186913.png);
-  background-size: cover;
+	background: #fff;
+	margin-top: 0px;
+	height: 100vh;
+	width: 100vw;
+	background-image: url(https://s-media-cache-ak0.pinimg.com/originals/d2/b8/fc/d2b8fc669367ac5eac78f9f2d4186913.png);
+	background-size: cover;
 }
 
 .delay {
-  animation-delay: 1s;
+	animation-delay: 1s;
 }
 </style>

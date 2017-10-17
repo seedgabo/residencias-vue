@@ -26,7 +26,7 @@ div
                 span.headline-2.mr-4(v-if='post.user') {{post.user.name}}
                 span.grey--text
                   | {{ post.created_at | moment('from')}}
-      v-btn.primary(fixed='', fab='', bottom='', right='', dark='', @click.stop='newPost()')
+      v-btn.primary(v-if="api.settings && api.settings.users_can_create_posts" fixed='', fab='', bottom='', right='', dark='', @click.stop='newPost()')
         v-icon add
     v-dialog(fullscreen='', v-model='creator')
       v-toolbar.indigo(dark='')
@@ -50,10 +50,10 @@ div
                 v-select(:label="api.trans('literals.tags')", v-bind:items='tags', v-model='post.tags', item-text='name', item-value='id', multiple='', chips='', max-height='auto', autocomplete='')
                 v-flex.text-xs-right
                   v-spacer
-                  v-btn(primary='', v-if='!post.id', @click='createPost()', :disabled="!canSave()", :loading="uploading")
+                  v-btn(color="primary", v-if='!post.id', @click='createPost()', :disabled="!canSave()", :loading="uploading")
                     v-icon(dark='') save
                     |  {{api.trans('crud.save')}}
-                  v-btn(primary='', v-else='', @click='updatePost(post)', :disabled="!canSave()")
+                  v-btn(color="primary", v-else='', @click='updatePost(post)', :disabled="!canSave()")
                     v-icon(dark='') save
                     |  {{api.trans('crud.save')}}
                   v-btn(flat='', @click='creator=false')
