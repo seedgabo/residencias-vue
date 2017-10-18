@@ -19,6 +19,8 @@ v-container()
 										v-list-tile
 										v-list-tile-content
 											v-list-tile-title {{reserv.zone.name }}
+												span: br
+													span(v-if="reserv.event") {{reserv.event.name}}
 											v-list-tile-sub-title 
 												span {{reserv.start | moment('calendar') }} - 
 												span {{reserv.end  | moment('calendar') }}
