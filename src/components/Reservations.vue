@@ -1,9 +1,27 @@
 <template lang="jade">
 v-container()
 	v-layout(wrap="")
+		v-flex.text-xs-center(xs12="")
+			v-btn(color="primary",v-if="mode!='reservations'", @click="myReservations();mode='reservations'") {{ api.trans('__.mys') }} {{ api.trans('literals.reservations') }}
 		v-flex(xs12="" sm12="" md8="" offset-md2="")
 			v-progress-linear(v-if="loading" v-bind:indeterminate="true")
 			transition(name='fadeLeft', enter-active-class='animated zoomIn', leave-active-class='animated zoomOut', mode='out-in', :duration='{ enter: 200, leave:200 }')
+				//- List of reservations
+				v-layout(key="reservations" v-if="mode=='reservations'")
+					v-flex(xs12="")
+						v-card
+							v-card-title
+								v-btn(icon, @click="mode='zones'"): v-icon arrow_back
+								span {{api.trans('__.mys')}} {{ api.trans('literals.reservations') }}
+							v-card-text
+								v-list
+									v-list-tile(v-for="reserv in my_reservations", :key="reserv.id")
+										v-list-tile
+										v-list-tile-content
+											v-list-tile-title {{reserv.zone.name }}
+											v-list-tile-sub-title 
+												span {{reserv.start | moment('calendar') }} - 
+												span {{reserv.end  | moment('calendar') }}
 				//- List of Zones
 				v-layout(key="zones" v-if="mode=='zones'"  wrap="")
 					v-flex(xs12="" sm12="" md6="" v-for="zone in zones", :key="zone.id")
@@ -135,6 +153,7 @@ module.exports =
 		api: api
 		date: new Date()
 		zones: []
+		my_reservations: []
 		quotas:1
 		zone: null
 		interval: null
@@ -294,6 +313,11 @@ module.exports =
 				result.push moment.utc([aux.year(),aux.month(),aux.date()]).toDate()
 				current.setDate current.getDate() + 7
 			result
+		myReservations:()->
+			@api.get("reservations?with[]=zone&with[]=zone.image&with[]=event&whereDategte[start]=#{moment().startOf('day').format("YYYY-MM-DD")}")
+			.then (resp)=>
+				@my_reservations = resp.data
+			.catch console.error
 
 </script>
 
