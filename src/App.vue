@@ -191,7 +191,7 @@
           <v-btn color="primary" @click="visitConfirmed('approved')">
             {{api.trans('literals.confirm')}}
           </v-btn>
-          <v-btn color="danger" @click="visitConfirmed('rejected')">
+          <v-btn dark color="danger" @click="visitConfirmed('rejected')">
             {{api.trans('literals.reject')}}
           </v-btn>
         </v-card-actions>
