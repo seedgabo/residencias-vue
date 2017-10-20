@@ -1,9 +1,29 @@
 <template lang="jade">
 v-container()
 	v-layout(wrap="")
+		v-flex.text-xs-center(xs12="")
+			v-btn(color="primary",v-if="mode!='reservations'", @click="myReservations();mode='reservations'") {{ api.trans('__.mys') }} {{ api.trans('literals.reservations') }}
 		v-flex(xs12="" sm12="" md8="" offset-md2="")
 			v-progress-linear(v-if="loading" v-bind:indeterminate="true")
 			transition(name='fadeLeft', enter-active-class='animated zoomIn', leave-active-class='animated zoomOut', mode='out-in', :duration='{ enter: 200, leave:200 }')
+				//- List of reservations
+				v-layout(key="reservations" v-if="mode=='reservations'")
+					v-flex(xs12="")
+						v-card
+							v-card-title
+								v-btn(icon, @click="mode='zones'"): v-icon arrow_back
+								span {{api.trans('__.mys')}} {{ api.trans('literals.reservations') }}
+							v-card-text
+								v-list
+									v-list-tile(v-for="reserv in my_reservations", :key="reserv.id")
+										v-list-tile
+										v-list-tile-content
+											v-list-tile-title {{reserv.zone.name }}
+												span: br
+													span(v-if="reserv.event") {{reserv.event.name}}
+											v-list-tile-sub-title 
+												span {{reserv.start | moment('calendar') }} - 
+												span {{reserv.end  | moment('calendar') }}
 				//- List of Zones
 				v-layout(key="zones" v-if="mode=='zones'"  wrap="")
 					v-flex(xs12="" sm12="" md6="" v-for="zone in zones", :key="zone.id")
@@ -27,15 +47,6 @@ v-container()
 											b {{api.trans('literals.price')}}:
 											span(v-if="zone.price != 0") &nbsp; {{zone.price | currency}}
 											span(v-if="zone.price == 0") &nbsp; {{api.trans('literals.free')}}
-									p
-										v-icon.pink--text(large) schedule
-										span &nbsp;
-											b {{api.trans('literals.schedule')}}:
-											span(v-if="zone.start") &nbsp; {{[zone.start, ['HH:mm'] ]| moment('hh:mm A') }}
-											span(v-else) &nbsp; {{ api.trans('literals.all_day') }}
-											span(v-if="zone.end")  - {{[ zone.end, ['HH:mm'] ] | moment('hh:mm A')}}
-										br
-										small {{api.trans('literals.every')}} {{humanize(zone.interval)}}
 									p
 										v-icon.cyan--text(large) event
 										span &nbsp;
@@ -63,7 +74,7 @@ v-container()
 							v-list-tile-avatar
 								v-icon(large, :class="interval.reserved?'primary--text':interval.available>0?'green--text':'red--text'") {{ interval.reserved ?'check':interval.available>0?'event_available': 'event_busy'}}
 							v-list-tile-content
-								v-list-tile-title {{ interval.time | moment('hh:mm A')}}
+								v-list-tile-title {{ interval.start | moment('hh:mm A')}} - {{ interval.end | moment('hh:mm A') }}
 									small  | {{ zone.price | currency }}
 								template(v-if="!interval.reserved")
 									v-list-tile-sub-title(v-if="interval.limit_user == 0") {{api.trans('__.cupos ilimitados')}}
@@ -144,6 +155,7 @@ module.exports =
 		api: api
 		date: new Date()
 		zones: []
+		my_reservations: []
 		quotas:1
 		zone: null
 		interval: null
@@ -160,12 +172,39 @@ module.exports =
 	methods:
 		getData: ()->
 			@loading=true
-			@api.get 'zones?scope[reservable]='
+			@api.get 'zones?with[]=image&with[]=schedule&scope[reservable]='
 			.then (resp)=>
 				@loading=false
 				console.log 'zones', resp.data
 				@zones=resp.data
+				@formatZones()
 			.catch console.error
+		formatZones: ()->
+			@zones.forEach (zone)=>
+				if (zone.schedule) 
+					zone.days = []
+
+					if (zone.schedule.monday.length > 0)
+						zone.days.push('monday')
+
+					if (zone.schedule.tuesday.length > 0)
+						zone.days.push('tuesday')
+
+					if (zone.schedule.wednesday.length > 0)
+						zone.days.push('wednesday')
+
+					if (zone.schedule.thursday.length > 0)
+						zone.days.push('thursday')
+
+					if (zone.schedule.friday.length > 0)
+						zone.days.push('friday')
+
+					if (zone.schedule.saturday.length > 0)
+						zone.days.push('saturday')
+
+					if (zone.schedule.sunday.length > 0)
+						zone.days.push('sunday')
+
 		cancel: ()->
 			@mode= 'zones'
 		select: (zone)->
@@ -180,25 +219,24 @@ module.exports =
 			@loading=true
 			@options = []
 			@collections = {}
-			time = moment(@zone.start, 'HH:mm')
-			end = moment(@zone.end, 'HH:mm')
-			if @zone.start == null
-				time = moment().startOf('day')
-			if @zone.end == null
-				end = moment().startOf('day').add(23,'hours')
-			console.log time, end
-			if time < end and @zone.interval > 0
-				loop
-					ref =
-						available: if @zone.limit_user in [0,"0"] then Number.MAX_SAFE_INTEGER else @zone.limit_user
-						limit_user: @zone.limit_user
-						time: time.clone()
-						ref: time.clone().format('HH:mm')
-					@options[@options.length] = ref
-					@collection['' + time.clone().format('HH:mm')] = ref
-					time = time.add(@zone.interval, 'm')
-					break unless(time <= end)
-				@getReservations()
+			date = moment.utc(date)
+			intervals = @zone.schedule["" + date.locale('en').format('dddd').toLowerCase()];
+
+			intervals.forEach (element)=>
+				start = date.clone().startOf('day').add(element[0].split(':')[0], 'hours').add(element[0].split(':')[1], 'minutes')
+
+				end =  date.clone().startOf('day').add(element[1].split(':')[0], 'hours').add(element[1].split(':')[1], 'minutes')
+
+				ref  =
+					# available: @zone.limit_user is 0 ? Number.MAX_SAFE_INTEGER : @zone.limit_user
+					limit_user: @zone.limit_user
+					start: start
+					end: end
+					ref: start.format("HH:mm")
+
+				@options.push ref
+				@collection["" + start.clone().format("HH:mm")] = ref
+			@getReservations()
 		getReservations: ()->
 			date = moment.utc(@date)
 			@.api.get("reservations?where[zone_id]=#{@zone.id}&whereDateBetween[start]=#{date.format("YYYY-MM-DD")},#{date.clone().add(1, 'd').format("YYYY-MM-DD")}")
@@ -240,14 +278,16 @@ module.exports =
 				zone_id: @zone.id
 				user_id: @api.user.id
 				quotas: quotas
-				start: date.format('YYYY-MM-DD') + ' ' + interval.time.format('HH:mm')
-				end:  date.format('YYYY-MM-DD') + ' ' + interval.time.clone().add(@zone.interval, 'm').format('HH:mm'))
+				start: moment.utc(interval.start).format('YYYY-MM-DD HH:mm')
+				end: moment.utc(interval.end).format('YYYY-MM-DD HH:mm')
+			)
 			.then (data)=>
 				console.log data
 				@cancel()
-				@reservation_dialog=false
-				@saved=true
-			.catch console.error
+				@reservation_dialog = false
+				@saved = true
+			.catch (err)=> console.error err
+
 		getAvailableDays: (availables_days) ->
 			dates = []
 			availables_days.forEach (day) =>
@@ -275,11 +315,15 @@ module.exports =
 				result.push moment.utc([aux.year(),aux.month(),aux.date()]).toDate()
 				current.setDate current.getDate() + 7
 			result
+		myReservations:()->
+			@api.get("reservations?with[]=zone&with[]=zone.image&with[]=event&whereDategte[start]=#{moment().startOf('day').format("YYYY-MM-DD")}")
+			.then (resp)=>
+				@my_reservations = resp.data
+			.catch console.error
 
 </script>
 
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus" scoped>
-
 </style>
