@@ -125,7 +125,9 @@
     </v-toolbar>
     <main>
       <v-content>
-        <router-view></router-view>
+          <transition name="fade" :duration="{ enter: 300, leave: 300 }" mode="out-in">
+            <router-view></router-view>
+          </transition>
       </v-content>
     </main>
 
@@ -695,6 +697,14 @@ export default {
 
 <style lang="stylus">
   @import './stylus/main'
+  .fade-enter-active, .fade-leave-active {
+      transition: opacity 0.3s ease;
+    }
+
+    .fade-enter, .fade-leave-to {
+      opacity: 0;
+    }
+
   .avatar
       border-radius: 50px
       margin: 0 6px
