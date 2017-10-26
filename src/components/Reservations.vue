@@ -14,17 +14,21 @@ v-container()
 								v-btn(icon, @click="mode='zones'"): v-icon arrow_back
 								span {{api.trans('__.mys')}} {{ api.trans('literals.reservations') }}
 							v-card-text
-								v-list
+								v-list(three-line)
 									v-list-tile(v-for="reserv in my_reservations", :key="reserv.id")
-										v-list-tile
+										v-list-tile-avatar(v-if="reserv.zone")
+											img(:src="reserv.zone.image_url")
 										v-list-tile-content
 											v-list-tile-title 
 												span {{reserv.zone.name }}
-												p(v-if="reserv.event") {{reserv.event.name}}
-												p {{reserv.quotas}}
 											v-list-tile-sub-title 
+												h3(v-if="reserv.event") {{reserv.event.name}}
 												span {{reserv.start | moment('calendar') }} - 
 												span {{reserv.end  | moment('calendar') }}
+												p 
+													b {{api.trans('literals.quotas')}}: &nbsp;
+													span {{reserv.quotas}}
+												
 				//- List of Zones
 				v-layout(key="zones" v-if="mode=='zones'"  wrap="")
 					v-flex(xs12="" sm12="" md6="" v-for="zone in zones", :key="zone.id")
