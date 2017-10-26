@@ -18,8 +18,10 @@ v-container()
 									v-list-tile(v-for="reserv in my_reservations", :key="reserv.id")
 										v-list-tile
 										v-list-tile-content
-											v-list-tile-title {{reserv.zone.name }}
-												span(v-if="reserv.event") {{reserv.event.name}}
+											v-list-tile-title 
+												span {{reserv.zone.name }}
+												p(v-if="reserv.event") {{reserv.event.name}}
+												p {{reserv.quotas}}
 											v-list-tile-sub-title 
 												span {{reserv.start | moment('calendar') }} - 
 												span {{reserv.end  | moment('calendar') }}
