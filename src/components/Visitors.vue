@@ -67,6 +67,7 @@ v-layout(wrap)
         v-text-field(v-model='visitor.document', :label="api.trans('literals.document')" prepend-icon="card_membership")
         v-select(prepend-icon="wc" v-model="visitor.sex",:items="genders",:label="api.trans('literals.sex')")
         //- v-text-field(v-model='visitor.phone_number', :label="api.trans('literals.phone_number')" prepend-icon="phone")
+        v-text-field(v-model='visitor.relationship', :label="api.trans('literals.relationship')" prepend-icon="card_membership")
       v-divider
       v-card-actions
         v-btn(v-if="!visitor.id" flat color="primary"  @click="createVisitor()") {{api.trans('crud.add')}}
@@ -90,7 +91,7 @@ module.exports =
     loaded:false
     visit:false
     imageUploaded: false
-    visitor:{ sex:'male'}
+    visitor:{ sex:'male', relationship:'' }
     genders: [ { text: api.trans('literals.male'), value: 'male' }, { text: api.trans('literals.female'), value: 'female' }]
     selected:null
     selecteds: []
@@ -121,10 +122,10 @@ module.exports =
       @visitor=visitor
       @creator=true
     updateVisitor: (visitor)->
-      @api.put """visitors/#{visitor.id}""",{name:visitor.name, sex:visitor.sex,document:visitor.document, residence_id:visitor.residence_id}
+      @api.put """visitors/#{visitor.id}""",{name:visitor.name, sex:visitor.sex,document:visitor.document, residence_id:visitor.residence_id, relationship: visitor.relationship}
       .then (resp)=>
         console.log resp.data
-        @visitor={sex:'male'}
+        @visitor={sex:'male',relationship:''}
         @creator=false
     deleteVisitor: (visitor)->
       if !confirm @api.trans '__.are you sure?'
@@ -165,9 +166,12 @@ module.exports =
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus" scoped>
-.avatar img.large
-  height 46px !important
- 	width 46px !important
-.selected
-  background: #AAA
+.avatar img.large {
+  height: 46px !important;
+  width: 46px !important;
+}
+
+.selected {
+  background: #AAA;
+}
 </style>

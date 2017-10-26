@@ -102,6 +102,13 @@ v-container(fluid='')
                   img(v-bind:src='data.item.image_url')
                 v-list-tile-content
                   v-list-tile-title(v-html='data.item.name')
+
+            v-divider
+            v-subheader {{ api.trans('literals.emergency_contact') }}
+            v-text-field(:label="api.trans('literals.emergency_contact') + ' - ' +  api.trans('literals.name')", v-model='api.residence.emergency_contact.name')
+            v-text-field(:label="api.trans('literals.emergency_contact') + ' - ' + api.trans('literals.phone_number')", v-model='api.residence.emergency_contact.phone_number')
+            v-text-field(:label="api.trans('literals.emergency_contact') + ' - ' + api.trans('literals.email')", v-model='api.residence.emergency_contact.email')
+
             v-flex.text-xs-right
               v-btn(flat color="primary" @click="updateResidence()") {{api.trans('crud.save')}}
         v-card-actions(v-if="!editable")
@@ -188,6 +195,12 @@ module.exports=
   mounted:()->
     this.api.ready
       .then (dat)=>
+          if  not @api.residence.emergency_contact?
+            @api.residence.emergency_contact = {
+              name: ''
+              phone_number : ''
+              email: ''
+            }
         return
   data: ->
     api: api
@@ -298,7 +311,8 @@ module.exports=
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus">
-  .always-blank
-    color white !important
+.always-blank {
+  color: white !important;
+}
 </style>
 
