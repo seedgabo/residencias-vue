@@ -125,7 +125,7 @@
     </v-toolbar>
     <main>
       <v-content>
-          <transition name="fade" :duration="{ enter: 300, leave: 300 }" mode="out-in">
+          <transition name="fade" :duration="{ enter: 120, leave: 120 }" mode="out-in">
             <router-view></router-view>
           </transition>
       </v-content>

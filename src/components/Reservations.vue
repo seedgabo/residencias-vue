@@ -19,8 +19,7 @@ v-container()
 										v-list-tile
 										v-list-tile-content
 											v-list-tile-title {{reserv.zone.name }}
-												span: br
-													span(v-if="reserv.event") {{reserv.event.name}}
+												span(v-if="reserv.event") {{reserv.event.name}}
 											v-list-tile-sub-title 
 												span {{reserv.start | moment('calendar') }} - 
 												span {{reserv.end  | moment('calendar') }}
@@ -184,25 +183,25 @@ module.exports =
 				if (zone.schedule) 
 					zone.days = []
 
-					if (zone.schedule.monday.length > 0)
+					if (zone.schedule.monday.length > 0 && zone.schedule.monday[0] is not null)
 						zone.days.push('monday')
 
-					if (zone.schedule.tuesday.length > 0)
+					if (zone.schedule.tuesday.length > 0 && zone.schedule.tuesday[0] is not null)
 						zone.days.push('tuesday')
 
-					if (zone.schedule.wednesday.length > 0)
+					if (zone.schedule.wednesday.length > 0 && zone.schedule.wednesday[0] is not null )
 						zone.days.push('wednesday')
 
-					if (zone.schedule.thursday.length > 0)
+					if (zone.schedule.thursday.length > 0 && zone.schedule.thursday[0] is not null)
 						zone.days.push('thursday')
 
-					if (zone.schedule.friday.length > 0)
+					if (zone.schedule.friday.length > 0 && zone.schedule.friday[0] is not null)
 						zone.days.push('friday')
 
-					if (zone.schedule.saturday.length > 0)
+					if (zone.schedule.saturday.length > 0 && zone.schedule.saturday[0] is not null )
 						zone.days.push('saturday')
 
-					if (zone.schedule.sunday.length > 0)
+					if (zone.schedule.sunday.length > 0 && zone.schedule.sunday[0] is not null)
 						zone.days.push('sunday')
 
 		cancel: ()->
