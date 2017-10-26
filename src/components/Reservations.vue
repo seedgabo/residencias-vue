@@ -319,7 +319,7 @@ module.exports =
 				current.setDate current.getDate() + 7
 			result
 		alloweds: (value)->
-			return moment(value).diff(moment(),'days') < 120 && moment(value).diff(moment(),'days') >= 0
+			return moment(value).diff(moment(),'days') < 120 && moment(value).diff(moment(),'days') >= 0 &&  moment(value).format('dddd').toLowerCase() in @zone.days
 		myReservations:()->
 			@api.get("reservations?with[]=zone&with[]=zone.image&with[]=event&whereDategte[start]=#{moment().startOf('day').format("YYYY-MM-DD")}")
 			.then (resp)=>
