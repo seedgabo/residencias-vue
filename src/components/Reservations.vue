@@ -54,13 +54,15 @@ v-container()
 							v-card-actions
 								v-spacer
 								v-btn.orange--text(flat large, @click="select(zone)") {{ api.trans('literals.reservate') }}
+				//- Picker
 				div(v-else-if="mode=='picker'" key="picker")
-					v-date-picker.hidden-sm-and-down(v-model="date", :allowed-dates="allowed" landscape :first-day-of-week="1" locale="es-sp")
-					v-date-picker.hidden-md-and-up(v-model="date", :allowed-dates="allowed", :first-day-of-week="1" locale="es-sp")
+					v-date-picker.hidden-sm-and-down(v-model="date", :allowed-dates="alloweds" landscape :first-day-of-week="1" locale="es-sp")
+					v-date-picker.hidden-md-and-up(v-model="date", :allowed-dates="alloweds", :first-day-of-week="1" locale="es-sp")
 					div
 						v-spacer
 						v-btn(flat color="primary"  @click.native="cancel()" large) {{ api.trans('crud.cancel') }}
 						v-btn(flat color="primary"  @click.native="choose()" large) {{ api.trans('literals.choose') }}
+				//- list
 				v-card(v-else-if="mode=='reservation'" key="reservation")
 					v-list(subheader two-line)
 						v-subheader
@@ -80,6 +82,8 @@ v-container()
 									v-list-tile-sub-title(v-else) {{interval.available}}
 								template(v-else)
 									v-list-tile-sub-title {{api.trans('__.you have a reservation')}}
+						div(v-if="options && options.length === 0")
+							{{api.trans('__.no hay intervalos disponibles para este dia')}}
 	v-dialog(v-model="reservation_dialog" fullscreen)
 		v-card(v-if="zone && interval")
 			v-toolbar.primary(dark)
@@ -183,25 +187,25 @@ module.exports =
 				if (zone.schedule) 
 					zone.days = []
 
-					if (zone.schedule.monday.length > 0 && zone.schedule.monday[0] is not null)
+					if (zone.schedule.monday.length > 0 && zone.schedule.monday[0] != null)
 						zone.days.push('monday')
 
-					if (zone.schedule.tuesday.length > 0 && zone.schedule.tuesday[0] is not null)
+					if (zone.schedule.tuesday.length > 0 && zone.schedule.tuesday[0] != null)
 						zone.days.push('tuesday')
 
-					if (zone.schedule.wednesday.length > 0 && zone.schedule.wednesday[0] is not null )
+					if (zone.schedule.wednesday.length > 0 && zone.schedule.wednesday[0] != null )
 						zone.days.push('wednesday')
 
-					if (zone.schedule.thursday.length > 0 && zone.schedule.thursday[0] is not null)
+					if (zone.schedule.thursday.length > 0 && zone.schedule.thursday[0] != null)
 						zone.days.push('thursday')
 
-					if (zone.schedule.friday.length > 0 && zone.schedule.friday[0] is not null)
+					if (zone.schedule.friday.length > 0 && zone.schedule.friday[0] != null)
 						zone.days.push('friday')
 
-					if (zone.schedule.saturday.length > 0 && zone.schedule.saturday[0] is not null )
+					if (zone.schedule.saturday.length > 0 && zone.schedule.saturday[0] != null )
 						zone.days.push('saturday')
 
-					if (zone.schedule.sunday.length > 0 && zone.schedule.sunday[0] is not null)
+					if (zone.schedule.sunday.length > 0 && zone.schedule.sunday[0] != null)
 						zone.days.push('sunday')
 
 		cancel: ()->
@@ -209,7 +213,7 @@ module.exports =
 		select: (zone)->
 			@mode= 'picker'
 			@zone= zone
-			@allowed= @getAvailableDays zone.days
+			# @allowed= @getAvailableDays zone.days
 			console.log @allowed
 		choose: ()->
 			console.log @date
@@ -314,6 +318,8 @@ module.exports =
 				result.push moment.utc([aux.year(),aux.month(),aux.date()]).toDate()
 				current.setDate current.getDate() + 7
 			result
+		alloweds: (value)->
+			return moment(value).diff(moment(),'days') < 120 && moment(value).diff(moment(),'days') >= 0
 		myReservations:()->
 			@api.get("reservations?with[]=zone&with[]=zone.image&with[]=event&whereDategte[start]=#{moment().startOf('day').format("YYYY-MM-DD")}")
 			.then (resp)=>
