@@ -11,6 +11,7 @@ import Surveys from '@/components/Surveys'
 import Tables from '@/components/Tables'
 import Reservations from '@/components/Reservations'
 import Chat from '@/components/Chat'
+import Correspondences from '@/components/Correspondences'
 import VisitsPage from '@/components/VisitsPage'
 import Example from '@/components/Example'
 
@@ -60,6 +61,10 @@ export default new Router({
     path: '/chats',
     name: 'Chats',
     component: Chat
+  }, {
+    path: '/correspondences',
+    name: 'Correspondences',
+    component: Correspondences
   }, {
     path: '/login',
     name: 'Login',
