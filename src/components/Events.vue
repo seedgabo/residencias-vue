@@ -201,73 +201,72 @@
 </template>
 
 <script>
-const axios = require('axios')
-window.moment = require('moment')
-window.__ = require('underscore')._
-moment.locale('es')
-var api = require('../services/api.js')
+const axios = require("axios");
+window.moment = require("moment");
+window.__ = require("underscore")._;
+moment.locale("es");
+var api = require("../services/api.js");
 function getRandomColor() {
-  var letters = '0123456789ABCDEF';
-  var color = '#';
+  var letters = "0123456789ABCDEF";
+  var color = "#";
   for (var i = 0; i < 6; i++) {
     color += letters[Math.floor(Math.random() * 16)];
   }
   return color;
 }
 export default {
-  name: 'Events',
+  name: "Events",
   mounted() {
-    this.$router.app.$on('eventCreated', (data) => {
+    this.$router.app.$on("eventCreated", data => {
       console.log("event created", data);
       this.refreshEvents();
     });
-    this.$router.app.$on('eventChanged', (data) => {
+    this.$router.app.$on("eventChanged", data => {
       console.log("event changed", data);
       this.refreshEvents();
     });
-    this.$router.app.$on('eventDeleted', (data) => {
+    this.$router.app.$on("eventDeleted", data => {
       console.log("event deleted", data);
       this.refreshEvents();
     });
-    this.api.ready
-      .then(() => {
-        this.getEvents()
-        this.getZones()
-      })
+    this.api.ready.then(() => {
+      this.getEvents();
+      this.getZones();
+    });
   },
   beforeDestroy() {
-    this.$router.app.$off('eventCreated')
-    this.$router.app.$off('eventChanged')
-    this.$router.app.$off('eventDeleted')
+    this.$router.app.$off("eventCreated");
+    this.$router.app.$off("eventChanged");
+    this.$router.app.$off("eventDeleted");
   },
   data() {
     return {
       dialog: false,
       visor: false,
-      type: 'events',
+      type: "events",
       api: api,
       event: {},
       events: [],
       zones: [],
       config: {
-        locale: 'es',
-        defaultView: 'month',
-        height: 'auto',
+        locale: "es",
+        defaultView: "month",
+        height: "auto",
         customButtons: {
           addEvent: {
-            text: api.trans('crud.add') + " " + api.trans('literals.event'),
+            text: api.trans("crud.add") + " " + api.trans("literals.event"),
             click: () => {
-              this.createEvent()
+              this.createEvent();
             }
           }
         },
         header: {
-          left: 'prev,next today',
-          center: 'title',
-          right: 'month,agendaWeek,agendaDay'
+          left: "prev,next today",
+          center: "title",
+          right: "month,agendaWeek,agendaDay"
         },
         footer: {
-          center: 'addEvent'
+          center: "addEvent"
         },
         editable: false,
         select: this.createEvent
@@ -278,8 +277,8 @@ export default {
       menu_end_time_picker: false,
       menu: false,
       privacities: [
-        { text: api.trans('__.public'), value: 'public' },
-        { text: api.trans('__.private'), value: 'private' },
+        { text: api.trans("__.public"), value: "public" },
+        { text: api.trans("__.private"), value: "private" }
       ],
       types: [
         { text: api.trans("__.no specified"), value: "no specified" },
@@ -289,15 +288,15 @@ export default {
         { text: api.trans("__.expose"), value: "expose" },
         { text: api.trans("__.wedding"), value: "wedding" },
         { text: api.trans("__.birthday"), value: "birthday" },
-        { text: api.trans("__.funeral"), value: "funeral" },
+        { text: api.trans("__.funeral"), value: "funeral" }
       ]
-    }
+    };
   },
   methods: {
     eventSelected: function(event, jsEv, view) {
-      event.start = moment(event.start)
+      event.start = moment(event.start);
       if (event.end) {
-        event.end = moment(event.end)
+        event.end = moment(event.end);
       }
       this.event = {
         id: event.id,
@@ -306,181 +305,209 @@ export default {
         description: event.description,
         start: event.start,
         end: event.end,
-        start_date: event.start.format('YYYY-MM-DD'),
-        start_time: event.start.format('HH:mma'),
+        start_date: event.start.format("YYYY-MM-DD"),
+        start_time: event.start.format("HH:mma"),
         end_time: event.start.format("HH:mma"),
         privacity: event.privacity,
         visibility: event.visibility,
         color: event.color,
         type: event.type,
-        zones: event.residence_id == this.api.user.residence_id ? window.__.pluck(event.zones, 'id') : event.zones,
+        zones:
+          event.residence_id == this.api.user.residence_id
+            ? window.__.pluck(event.zones, "id")
+            : event.zones,
         allDay: event.allDay,
         residence_id: event.residence_id,
         residence: event.residence,
         creator: event.creator,
         creator_id: event.creator_id
-      }
+      };
       if (event.end) {
-        event.end = moment(event.end)
-        this.event.end_date = event.end.format('YYYY-MM-DD')
-        this.event.end_time = event.end.format('HH:mma')
+        event.end = moment(event.end);
+        this.event.end_date = event.end.format("YYYY-MM-DD");
+        this.event.end_time = event.end.format("HH:mma");
+      } else {
+        this.event.end_date = event.start
+          .clone()
+          .add(1, "day")
+          .format("YYYY-MM-DD");
+        this.event.end_time = event.start
+          .clone()
+          .add(1, "day")
+          .format("HH:mma");
       }
-      else {
-        this.event.end_date = event.start.clone().add(1, 'day').format('YYYY-MM-DD')
-        this.event.end_time = event.start.clone().add(1, 'day').format('HH:mma')
-      }
-      console.log(this.event)
+      console.log(this.event);
       setTimeout(() => {
         if (this.event.residence_id == this.api.user.residence_id)
-          this.dialog = true
-        else
-          this.visor = true
-      }, 30)
+          this.dialog = true;
+        else this.visor = true;
+      }, 30);
     },
     getEvents: function() {
-      this.api.get("events?limit=500&order[start]=desc&with[]=creator&with[]=residence&with[]=zones&afterEach[toCalendar]=null")
-        .then((response) => {
-          console.log(response.data)
-          this.api.events = response.data
+      this.api
+        .get(
+          "events?limit=500&order[start]=desc&with[]=creator&with[]=residence&with[]=zones&afterEach[toCalendar]=null"
+        )
+        .then(response => {
+          console.log(response.data);
+          this.api.events = response.data;
           if (this.$route.query.event_id) {
-            var selected = this.api.events.find((ev) => { return ev.id == this.$route.query.event_id })
-            if (selected)
-              this.eventSelected(selected);
+            var selected = this.api.events.find(ev => {
+              return ev.id == this.$route.query.event_id;
+            });
+            if (selected) this.eventSelected(selected);
           }
         })
-        .catch(console.error)
+        .catch(console.error);
     },
     getZones: function() {
-      this.api.get("zones")
-        .then((response) => {
-          console.log(response.data)
-          this.zones = response.data
+      this.api
+        .get("zones")
+        .then(response => {
+          console.log(response.data);
+          this.zones = response.data;
         })
-        .catch(console.error)
+        .catch(console.error);
     },
     createEvent: function(start, end) {
       if (!start) {
-        var start = moment().add(1, 'd')
+        var start = moment().add(1, "d");
       }
       if (!end) {
-        var end = start.clone().add(1, 'd')
+        var end = start.clone().add(1, "d");
       }
       this.event = {
-        _title: api.trans('crud.add') + " " + api.trans('literals.event'),
-        title: '',
-        description: '',
+        _title: api.trans("crud.add") + " " + api.trans("literals.event"),
+        title: "",
+        description: "",
         start: start,
         end: end,
-        start_date: start.format('YYYY-MM-DD'),
-        start_time: start.format('HH:mma'),
+        start_date: start.format("YYYY-MM-DD"),
+        start_time: start.format("HH:mma"),
         end_date: end.format("YYYY-MM-DD"),
         end_time: end.format("HH:mma"),
-        privacity: 'public',
-        visibility: 'public',
+        privacity: "public",
+        visibility: "public",
         color: getRandomColor(),
-        type: 'party',
+        type: "party",
         zones: [],
         allDay: false,
         residence_id: this.api.user_residence_di,
         creator: this.api.user.id,
         creator_id: this.api.user.id
-      }
+      };
       setTimeout(() => {
-
-        this.dialog = true
-      }, 200)
-
+        this.dialog = true;
+      }, 200);
     },
     saveNewEvent: function() {
-      this.event.start = moment.utc(this.event.start_date + " " + this.event.start_time, "YYYY-MM-DD HH:mma")
-      this.event.end = moment.utc(this.event.end_date + " " + this.event.end_time, "YYYY-MM-DD HH:mma")
-      this.event.creator_id = this.api.user.id
-      this.event.residence_id = this.api.user.residence_id
-      var event = JSON.parse(JSON.stringify(this.event))
-      delete event._tile
-      delete event.creator
-      delete event.residence
-      delete event.start_date
-      delete event.start_time
-      delete event.end_date
-      delete event.end_time
-      console.log(this.event)
-      this.api.post('events', event)
-        .then((response) => {
-          console.log(response.data)
+      this.event.start = moment.utc(
+        this.event.start_date + " " + this.event.start_time,
+        "YYYY-MM-DD HH:mma"
+      );
+      this.event.end = moment.utc(
+        this.event.end_date + " " + this.event.end_time,
+        "YYYY-MM-DD HH:mma"
+      );
+      this.event.creator_id = this.api.user.id;
+      this.event.residence_id = this.api.user.residence_id;
+      var event = JSON.parse(JSON.stringify(this.event));
+      delete event._tile;
+      delete event.creator;
+      delete event.residence;
+      delete event.start_date;
+      delete event.start_time;
+      delete event.end_date;
+      delete event.end_time;
+      console.log(this.event);
+      this.api
+        .post("events", event)
+        .then(response => {
+          console.log(response.data);
           this.dialog = false;
         })
-        .catch(console.error)
+        .catch(console.error);
     },
     saveEvent: function() {
-      this.event.start = moment.utc(this.event.start_date + " " + this.event.start_time, "YYYY-MM-DD HH:mma")
-      this.event.end = moment.utc(this.event.end_date + " " + this.event.end_time, "YYYY-MM-DD HH:mma")
-      this.event.creator_id = this.api.user.id
-      this.event.residence_id = this.api.user.residence_id
-      var event = JSON.parse(JSON.stringify(this.event))
-      delete event._tile
-      delete event.creator
-      delete event.residence
-      delete event.start_date
-      delete event.start_time
-      delete event.end_date
-      delete event.end_time
+      this.event.start = moment.utc(
+        this.event.start_date + " " + this.event.start_time,
+        "YYYY-MM-DD HH:mma"
+      );
+      this.event.end = moment.utc(
+        this.event.end_date + " " + this.event.end_time,
+        "YYYY-MM-DD HH:mma"
+      );
+      this.event.creator_id = this.api.user.id;
+      this.event.residence_id = this.api.user.residence_id;
+      var event = JSON.parse(JSON.stringify(this.event));
+      delete event._tile;
+      delete event.creator;
+      delete event.residence;
+      delete event.start_date;
+      delete event.start_time;
+      delete event.end_date;
+      delete event.end_time;
 
-      console.log(this.event)
-      this.api.put('events/' + event.id, event)
-        .then((response) => {
-          this.api.events.filter((ev) => {
-            ev.id === response.id
-          })
-          console.log(response.data)
+      console.log(this.event);
+      this.api
+        .put("events/" + event.id, event)
+        .then(response => {
+          this.api.events.filter(ev => {
+            ev.id === response.id;
+          });
+          console.log(response.data);
         })
-        .catch(console.error)
+        .catch(console.error);
       this.dialog = false;
     },
     deleteEvent(event) {
-      this.api.delete('events/' + event.id)
-        .then((response) => {
+      this.api
+        .delete("events/" + event.id)
+        .then(response => {
           this.dialog = false;
         })
-        .catch(console.error)
+        .catch(console.error);
     },
     refreshEvents: function() {
       setTimeout(() => {
-        if (this.$refs.calendar)
-          this.$refs.calendar.$emit('reload-events')
-      }, 100)
+        if (this.$refs.calendar) this.$refs.calendar.$emit("reload-events");
+      }, 100);
     },
     dayClick: function(day) {
-      this.createEvent(day)
+      this.createEvent(day);
     },
     canSave: function() {
-      return this.event.title && this.event.title.length > 3 &&
-        this.event.start_date && this.event.start_time
+      return (
+        this.event.title &&
+        this.event.title.length > 3 &&
+        this.event.start_date &&
+        this.event.start_time
+      );
     },
     duration: function(start, end) {
-      return moment.duration(moment(start).diff(moment(end))).humanize()
+      return moment.duration(moment(start).diff(moment(end))).humanize();
     }
   },
   computed: {
     nextEvents: function(max = 6) {
-      var events = []
-      var now = moment()
+      var events = [];
+      var now = moment();
       for (var i = 0; i < this.api.events.length; i++) {
         var event = this.api.events[i];
         if (now > moment(event.end)) {
-          continue
+          continue;
         }
-        events[events.length] = event
+        events[events.length] = event;
       }
       return events;
     }
   }
-}
+};
 </script>
 
 <!-- Add"scoped" attribute to limit CSS to this component only -->
 <style>
-@import '~fullcalendar/dist/fullcalendar.css';
+@import "~fullcalendar/dist/fullcalendar.css";
 
 #calendar {
   padding-top: 30px;
@@ -521,12 +548,11 @@ export default {
 .fc-toolbar button:focus,
 .fc-toolbar .fc-state-active,
 .fc-toolbar .ui-state-active {
-  z-index: 0
+  z-index: 0;
 }
 
-
 .fc-unthemed td.fc-today {
-  background-color: rgba(255, 255, 0, .4)
+  background-color: rgba(255, 255, 0, 0.4);
 }
 
 .fc td,
