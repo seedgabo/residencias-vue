@@ -243,6 +243,7 @@ export default {
         { icon: 'person', title: 'profile', url: 'profile' },
         { icon: 'list', title: 'mis listas', url: 'tables' },
         { icon: 'people', title: 'visitas', url: 'visits', 'siteHas': 'visits' },
+        { icon: 'markunread_mailbox', title: 'correspondencias', url: 'correspondences', 'siteHas': 'correspondences' },
         { icon: 'event', title: 'events', 'url': 'events', 'siteHas': 'events' },
         { icon: 'insert_drive_file', title: 'documentos', 'url': 'documents', 'siteHas': 'documents' },
         { icon: 'event_available', title: 'Reservaciones', 'url': 'reservations', 'siteHas': 'reservations' },

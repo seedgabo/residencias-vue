@@ -20,9 +20,6 @@ import '../node_modules/fullcalendar/dist/locale-all.js'
 import FullCalendar from 'vue-full-calendar'
 
 require('vue2-animate/dist/vue2-animate.min.css')
-const moment = require('moment')
-require('moment/locale/es')
-moment.updateLocale('es')
 
 Chartkick.configure({
   language: "es"
@@ -67,9 +64,14 @@ Vue.use(FullCalendar)
 Vue.use(VueChartkick, {
   Chartkick
 })
+
+const moment = require('moment')
+require('moment/locale/es')
+moment.locale('es')
 Vue.use(require('vue-moment'), {
   moment
 })
+console.log(Vue.moment().locale())
 Vue.config.productionTip = false
 
 
