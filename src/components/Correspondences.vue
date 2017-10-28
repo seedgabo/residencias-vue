@@ -18,7 +18,7 @@
 										| mail_outline
 									span &nbsp;
 									span.text-capitalize {{corres.item}}
-									span(v-if="corres.quantity > 1")&nbsp; ({{corres.quantity}})
+									span(v-if="corres.quantity > 1") &nbsp; ({{corres.quantity}})
 								v-card
 									v-card-text.grey.lighten-3(@click.stop="actions(corres)")
 										b {{api.trans('literals.'+corres.status)}}

@@ -50,7 +50,7 @@ v-layout(wrap)
         v-text-field(v-model='vehicle.plate', :label="api.trans('literals.plate')" prepend-icon="wb_iridescent")
         v-text-field(v-model='vehicle.color', :label="api.trans('literals.color')" prepend-icon="color_lens")
         v-select(v-model='vehicle.owner_id', :label="api.trans('literals.owner')" prepend-icon="person", :items="owners()" autocomplete)
-          template(slot="item" scope="data")
+          template(slot="item" slot-scope="data")
             v-list-tile(close avatar)
               v-avatar
                 img(:src="data.item.avatar")
