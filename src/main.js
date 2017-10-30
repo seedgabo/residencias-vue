@@ -19,6 +19,7 @@ import 'fullcalendar'
 import '../node_modules/fullcalendar/dist/locale-all.js'
 import FullCalendar from 'vue-full-calendar'
 
+
 require('vue2-animate/dist/vue2-animate.min.css')
 
 Chartkick.configure({
@@ -61,6 +62,7 @@ Vue.use(GSignInButton)
 Vue.use(VueQuillEditor)
 Vue.use(Autocomplete)
 Vue.use(FullCalendar)
+
 Vue.use(VueChartkick, {
   Chartkick
 })
