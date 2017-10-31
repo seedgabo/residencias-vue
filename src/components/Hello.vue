@@ -12,7 +12,7 @@ div
       h3.ml-5(:style="'color:'+(sliders[0].color?sliders[0].color:'white')") {{sliders[0].name}}
       h5.ml-5(:style="'color:'+(sliders[0].color?sliders[0].color:'white')") {{sliders[0].text}}
   div(style='position:relative; z-index:1')
-    v-btn(fab='', absolute='', top='', left='', color="primary", dark='', medium='', :to="'posts?create=true'")
+    v-btn.primary(fab='', absolute='', top='', left='', color="primary", dark='', medium='', :to="'posts?create=true'")
       v-icon add
   v-layout.pt-3.pl-2(wrap="")
     v-flex.mt-3(xs12='', sm8='', order-xs2, order-sm1="")
@@ -81,17 +81,16 @@ div
 </template>
 
 <script>
-const axios = require('axios')
+const axios = require("axios");
 export default {
-  name: 'hello',
+  name: "hello",
   mounted() {
-    this.api.ready
-      .then(() => {
-        this.getSliders();
-        this.getPosts();
-        this.getEvents();
-        // this.getSolventsGraph();
-      });
+    this.api.ready.then(() => {
+      this.getSliders();
+      this.getPosts();
+      this.getEvents();
+      // this.getSolventsGraph();
+    });
   },
   data() {
     return {
@@ -99,53 +98,53 @@ export default {
       posts: [],
       next_events: [],
       data: { solvents: 0, defaults: 0 },
-      api: require('../services/api.js'),
-    }
+      api: require("../services/api.js")
+    };
   },
   methods: {
     getSliders() {
-      this.api.get('sliders?with[]=image')
-        .then((response) => {
-          console.log(response.data)
+      this.api
+        .get("sliders?with[]=image")
+        .then(response => {
+          console.log(response.data);
           this.sliders = response.data;
         })
-        .catch(console.error)
+        .catch(console.error);
     },
     getPosts() {
-      this.api.get('posts?limit=10&order[created_at]=desc&with[]=user&with[]=image')
-        .then((response) => {
-          console.log(response.data)
+      this.api
+        .get("posts?limit=10&order[created_at]=desc&with[]=user&with[]=image")
+        .then(response => {
+          console.log(response.data);
           this.posts = response.data;
         })
-        .catch(console.error)
+        .catch(console.error);
     },
     getEvents: function() {
-      this.api.get("events?scope[soon]'")
-        .then((response) => {
-          console.log(response.data)
-          this.next_events = response.data
+      this.api
+        .get("events?scope[soon]'")
+        .then(response => {
+          console.log(response.data);
+          this.next_events = response.data;
         })
-        .catch(console.error)
+        .catch(console.error);
     },
     getSolventsGraph: function() {
-      this.api.get("residences")
-        .then((resp) => {
-          var defaulters = 0, solvents = 0;
-          resp.data.forEach((res) => {
-            if (res.status == 'solvent')
-              solvents++;
-            else
-              defaulters++;
-          });
-          console.log("solventes:", solvents);
-          console.log("morosos:", defaulters);
-          this.data.solvents = solvents
-          this.data.defaulters = defaulters
-        })
+      this.api.get("residences").then(resp => {
+        var defaulters = 0,
+          solvents = 0;
+        resp.data.forEach(res => {
+          if (res.status == "solvent") solvents++;
+          else defaulters++;
+        });
+        console.log("solventes:", solvents);
+        console.log("morosos:", defaulters);
+        this.data.solvents = solvents;
+        this.data.defaulters = defaulters;
+      });
     }
-
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
