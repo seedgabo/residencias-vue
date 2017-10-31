@@ -88,8 +88,7 @@ v-container()
 									v-list-tile-sub-title(v-else) {{interval.available}}
 								template(v-else)
 									v-list-tile-sub-title {{api.trans('__.you have a reservation')}}
-						div(v-if="options && options.length === 0")
-							{{api.trans('__.no hay intervalos disponibles para este dia')}}
+						div(v-if="options && options.length === 0") {{ api.trans('__.no hay intervalos disponibles para este dia') }}
 	v-dialog(v-model="reservation_dialog" fullscreen)
 		v-card(v-if="zone && interval")
 			v-toolbar.primary(dark)
@@ -325,7 +324,8 @@ module.exports =
 				current.setDate current.getDate() + 7
 			result
 		alloweds: (value)->
-			return moment(value).diff(moment(),'days') < 120 && moment(value).diff(moment(),'days') >= 0 &&  moment(value).format('dddd').toLowerCase() in @zone.days
+			# console.log  moment(value).lang("en").format('dddd').toLowerCase(), @zone.days,  moment(value).format('dddd').toLowerCase() in @zone.days
+			return moment(value).diff(moment(),'days') < 120 && moment(value).diff(moment(),'days') >= 0 &&  moment(value).lang("en").format('dddd').toLowerCase() in @zone.days
 		myReservations:()->
 			@api.get("reservations?with[]=zone&with[]=zone.image&with[]=event&whereDategte[start]=#{moment().startOf('day').format("YYYY-MM-DD")}")
 			.then (resp)=>

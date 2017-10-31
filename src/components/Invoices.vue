@@ -20,7 +20,7 @@ v-container(fluid='')
           b  {{api.trans('literals.total')}} {{api.trans('literals.debt')}} :
           span  {{debt | currency }}
         v-data-table.hidden-xs-only.elevation-1.text-xs-right(:loading='!loading', :pagination.sync='pagination', :headers='headers', :items='invoices')
-          template(slot='items', scope='props')
+          template(slot='items', slot-scope='props')
             tr(@click.stop='seeInvoice(props.item)')
               td
                 a(href='#/invoices', @click='seeInvoice(props.item)')
@@ -101,7 +101,7 @@ v-container(fluid='')
           v-flex(xs12='', sm8='', md8='', lg9='')
             v-card.mx-1(hover='')
               v-data-table.text-xs-right(:headers='headers_items', :pagination.sync='pagination_items', :items='invoice.items', hide-actions='')
-                template(slot='items', scope='props')
+                template(slot='items', slot-scope='props')
                   td {{props.item.concept}}
                   td {{props.item.amount}}
                   td {{props.item.quantity}}

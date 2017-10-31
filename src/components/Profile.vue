@@ -34,7 +34,7 @@ v-container(fluid='')
               v-menu(lazy='', :close-on-content-click='true', offset-y='', full-width='', :nudge-left='40', max-width='290px')
                 v-text-field(slot='activator', :label="api.trans('literals.birthday')", v-model='api.user.birthday', prepend-icon='event', readonly='')
                 v-date-picker(v-model='api.user.birthday', scrollable='', actions='')
-                  template(scope='{ save, cancel }')
+                  template(slot-scope='{ save, cancel }')
                     v-card-actions
                       v-btn(flat='', color="primary", @click.native='cancel()') {{api.trans('crud.cancel')}}
                       v-btn(flat='', color="primary", @click.native='save()') {{api.trans('crud.save')}}
@@ -92,12 +92,12 @@ v-container(fluid='')
             v-text-field(:label="api.trans('literals.name')", v-model='api.residence.name', prepend-icon='home')
             v-text-field(v-if="api.settings &&  (api.settings.owners_can_set_residents == true || api.settings.owners_can_set_residents == 'true')", :label="api.trans('literals.number_of_people')", v-model='api.residence.number_of_people', prepend-icon='people')
             v-select(v-bind:items='api.residence.users', :label="api.trans('literals.owner')", prepend-icon='person', v-model='api.residence.owner_id', item-text='name', item-value='id')
-              template(slot='selection', scope='data')
+              template(slot='selection', slot-scope='data')
                 v-avatar(style='display:inline')
                   img(:src='data.item.image_url')
                 span
                   | {{ data.item.name }}
-              template(slot='item', scope='data')
+              template(slot='item', slot-scope='data')
                 v-list-tile-avatar
                   img(v-bind:src='data.item.image_url')
                 v-list-tile-content
