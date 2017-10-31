@@ -49,7 +49,7 @@ v-layout(wrap)
         v-chip(v-for="person in selecteds" key="person.id")
           v-avatar: img(:src="person.image_url")
           span {{person.name}}
-        v-text-field(v-model="note", :label="api.trans('literals.notes')" prepend-icon="paragraph")
+        v-text-field(v-model="note", :label="api.trans('literals.notes')" prepend-icon="textsms")
       v-card-actions
         v-spacer
         v-btn(color="primary" flat, @click="addVisit()") {{api.trans('literals.generate')}}
