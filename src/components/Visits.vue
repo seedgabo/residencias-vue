@@ -138,6 +138,7 @@ module.exports =
       .then (resp)=>
         console.log resp.data
         visit.status = resp.data.status
+        @$set(visit,'status',resp.data.status)
         @see_visit=false
       .catch console.error
     prepareVisitors:(visit)->
