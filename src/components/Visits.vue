@@ -127,7 +127,7 @@ module.exports =
     addVisit:()->
       @api.post('visits',@visit)
       .then (resp)=>
-        @visits= [resp.data].concat @visits
+        # @visits= [resp.data].concat @visits
         @adding=false
         @visit={visitor_id:null,residence_id:api.residence.id,status:'approved',note:""}
       .catch console.error
@@ -163,5 +163,4 @@ module.exports =
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus" scoped>
-
 </style>

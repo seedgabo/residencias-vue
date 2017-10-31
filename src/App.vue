@@ -204,50 +204,74 @@
 </template>
 
 <script>
-import Echo from 'laravel-echo'
-window.Pusher = require('pusher-js');
-window.io = require('socket.io-client')
-var api = require('./services/api.js')
-window.$api = api
+import Echo from "laravel-echo";
+window.Pusher = require("pusher-js");
+window.io = require("socket.io-client");
+var api = require("./services/api.js");
+window.$api = api;
 export default {
   mounted() {
     this.api.ready
-      .then((data) => {
-        this.getData()
-        this.startEcho()
+      .then(data => {
+        this.getData();
+        this.startEcho();
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
-        this.navigate('/login');
+        this.navigate("/login");
       });
-    this.$router.app.$on('login', (data) => {
-      this.getData()
-      this.startEcho()
-      setTimeout(this.getVisits, 3000)
-
-    })
-    this.$router.app.$on('logout', (data) => {
+    this.$router.app.$on("login", data => {
+      this.getData();
+      this.startEcho();
+      setTimeout(this.getVisits, 3000);
+    });
+    this.$router.app.$on("logout", data => {
       this.api.user = {};
       window.storage.clear();
-      this.$router.push('/login')
-      this.stopEcho()
-    })
+      this.$router.push("/login");
+      this.stopEcho();
+    });
   },
   data() {
     return {
       api: api,
       drawer: false,
       pages: [
-        { icon: 'home', title: 'home', url: '/' },
-        { icon: 'account_balance_wallet', title: 'invoices', 'url': 'invoices', 'siteHas': 'finanze' },
-        { icon: 'person', title: 'profile', url: 'profile' },
-        { icon: 'list', title: 'mis listas', url: 'tables' },
-        { icon: 'people', title: 'visitas', url: 'visits', 'siteHas': 'visits' },
-        { icon: 'markunread_mailbox', title: 'correspondencias', url: 'correspondences', 'siteHas': 'correspondences' },
-        { icon: 'event', title: 'events', 'url': 'events', 'siteHas': 'events' },
-        { icon: 'insert_drive_file', title: 'documentos', 'url': 'documents', 'siteHas': 'documents' },
-        { icon: 'event_available', title: 'Reservaciones', 'url': 'reservations', 'siteHas': 'reservations' },
-        { icon: 'pie_chart', title: 'surveys', 'url': 'surveys', 'siteHas': 'surveys' },
+        { icon: "home", title: "home", url: "/" },
+        {
+          icon: "account_balance_wallet",
+          title: "invoices",
+          url: "invoices",
+          siteHas: "finanze"
+        },
+        { icon: "person", title: "profile", url: "profile" },
+        { icon: "list", title: "mis listas", url: "tables" },
+        { icon: "people", title: "visitas", url: "visits", siteHas: "visits" },
+        {
+          icon: "markunread_mailbox",
+          title: "correspondencias",
+          url: "correspondences",
+          siteHas: "correspondences"
+        },
+        { icon: "event", title: "events", url: "events", siteHas: "events" },
+        {
+          icon: "insert_drive_file",
+          title: "documentos",
+          url: "documents",
+          siteHas: "documents"
+        },
+        {
+          icon: "event_available",
+          title: "Reservaciones",
+          url: "reservations",
+          siteHas: "reservations"
+        },
+        {
+          icon: "pie_chart",
+          title: "surveys",
+          url: "surveys",
+          siteHas: "surveys"
+        }
       ],
       timeout: 15 * 60 * 1000,
       visitConfirmToast: false,
@@ -258,74 +282,92 @@ export default {
       audio: null,
       panicSent: false,
       newChat: false,
-      message: '',
+      message: "",
       sender: {}
-    }
+    };
   },
   methods: {
     getData() {
-      this.api.get('getData')
-        .then((response) => {
-          console.log(response.data)
+      this.api
+        .get("getData")
+        .then(response => {
+          console.log(response.data);
           this.api.setUser(response.data);
-          window.storage.setItem('user', JSON.stringify(response.data.user))
-          window.storage.setItem('residence', JSON.stringify(response.data.residence))
-          window.storage.setItem('settings', JSON.stringify(response.data.settings))
-          window.storage.setItem('modules', JSON.stringify(response.data.modules))
+          window.storage.setItem("user", JSON.stringify(response.data.user));
+          window.storage.setItem(
+            "residence",
+            JSON.stringify(response.data.residence)
+          );
+          window.storage.setItem(
+            "settings",
+            JSON.stringify(response.data.settings)
+          );
+          window.storage.setItem(
+            "modules",
+            JSON.stringify(response.data.modules)
+          );
 
-          this.api.get('lang').then((response) => {
-            console.log(response.data);
-            this.api.i18n = response.data;
-            window.storage.setItem('i18n', JSON.stringify(response.data));
-          }).catch(console.error)
+          this.api
+            .get("lang")
+            .then(response => {
+              console.log(response.data);
+              this.api.i18n = response.data;
+              window.storage.setItem("i18n", JSON.stringify(response.data));
+            })
+            .catch(console.error);
         })
-        .catch(console.error)
+        .catch(console.error);
     },
     changeResidence(residence) {
       api.user.residence_id = residence.id;
-      window.storage.setItem('user', JSON.stringify(this.api.user));
-      this.api.put('users/' + this.api.user.id, { residence_id: residence.id })
-        .then((response) => {
+      window.storage.setItem("user", JSON.stringify(this.api.user));
+      this.api
+        .put("users/" + this.api.user.id, { residence_id: residence.id })
+        .then(response => {
           window.location.reload();
         })
-        .catch(console.error)
+        .catch(console.error);
     },
     newVisit(data) {
       this.visitor = data.visitor;
       this.visitConfirmToast = true;
-      this.audio = new Audio('./static/sounds/beep.mp3');
+      this.audio = new Audio("./static/sounds/beep.mp3");
       this.audio.play();
     },
     getVisits() {
-      this.api.get('visits?with[]=visitor&with[]=visitors&where[residence_id]=' + api.user.residence_id + "limit=500&order[created_at]=desc")
-        .then((resp) => {
+      this.api
+        .get(
+          "visits?with[]=visitor&with[]=visitors&where[residence_id]=" +
+            api.user.residence_id +
+            "limit=500&order[created_at]=desc"
+        )
+        .then(resp => {
           this.api.visits = resp.data;
         })
-        .catch(console.error)
+        .catch(console.error);
     },
     waitingConfirmation() {
-      var count = 0
-      this.api.visits.forEach((visit) => {
-        if (visit.status === 'waiting for confirmation')
-          count++
+      var count = 0;
+      this.api.visits.forEach(visit => {
+        if (visit.status === "waiting for confirmation") count++;
       });
-      return count
+      return count;
     },
     visitConfirm(data) {
       this.visitor = data.visitor;
       this.visit = data.visit;
       this.newVisitModal = true;
-      this.audio = new Audio('./static/sounds/notifications.mp3');
+      this.audio = new Audio("./static/sounds/notifications.mp3");
       this.audio.play();
     },
     visitConfirmed(response) {
-      if (this.audio)
-        this.audio.pause()
-      this.api.post(`visits/${this.visit.id}/visitApprove`, { status: response })
-        .then((resp) => {
+      if (this.audio) this.audio.pause();
+      this.api
+        .post(`visits/${this.visit.id}/visitApprove`, { status: response })
+        .then(resp => {
           console.log(resp);
         })
-        .catch(console.error)
+        .catch(console.error);
       this.newVisitModal = false;
     },
     newChatMessage(thread, message, sender) {
@@ -334,396 +376,438 @@ export default {
         this.message = message.body;
         this.newChat = true;
       }
-      this.audio = new Audio('./static/sounds/chat.mp3');
+      this.audio = new Audio("./static/sounds/chat.mp3");
       this.audio.play();
     },
     startEcho() {
       if (this.api.Echo) {
-        console.warn('already started Echo');
-        this.stopEcho()
+        console.warn("already started Echo");
+        this.stopEcho();
       }
       this.api.Echo = new Echo({
-        key: '807bbfb3ca20f7bb886e',
-        authEndpoint: this.api.url + 'broadcasting/auth',
-        broadcaster: 'socket.io', // pusher o socket.io
+        key: "807bbfb3ca20f7bb886e",
+        authEndpoint: this.api.url + "broadcasting/auth",
+        broadcaster: "socket.io", // pusher o socket.io
         host: this.api.user.hostEcho,
-        auth:
-        {
-          headers:
-          {
-            'Auth-Token': this.api.user.token,
+        auth: {
+          headers: {
+            "Auth-Token": this.api.user.token
           }
         }
-
       });
-      window.Echo = this.api.Echo
-      window.socket = this.api.Echo.connector.socket
+      window.Echo = this.api.Echo;
+      window.socket = this.api.Echo.connector.socket;
 
-      this.api.Echo.private('Application')
-
-
-        .listen('ParkingCreated', (data) => {
+      this.api.Echo
+        .private("Application")
+        .listen("ParkingCreated", data => {
           console.log("created parking:", data);
           data.parking.user = data.user;
           data.parking.residence = data.residence;
           this.api.parkings[this.api.parkings.length] = data.parking;
         })
-        .listen('ParkingUpdated', (data) => {
+        .listen("ParkingUpdated", data => {
           console.log("updated parking:", data);
-          var parking = this.api.parkings.findIndex((parking) => {
+          var parking = this.api.parkings.findIndex(parking => {
             return parking.id === data.parking.id;
           });
           data.parking.user = data.user;
           data.parking.residence = data.residence;
           if (parking >= 0) {
             this.api.parkings[parking] = data.parking;
-          }
-          else {
+          } else {
             this.api.parkings[this.api.parkings.length] = data.parking;
           }
         })
-        .listen('ParkingDeleted', (data) => {
+        .listen("ParkingDeleted", data => {
           console.log("deleted parking:", data);
-          var parking = this.api.parkings.findIndex((parking) => {
+          var parking = this.api.parkings.findIndex(parking => {
             return parking.id === data.parking.id;
           });
           if (parking >= 0) {
             this.api.parkings.splice(parking, 1);
           }
         })
-
-        .listen('SurveyCreated', (data) => {
+        .listen("SurveyCreated", data => {
           console.log("survey created:", data);
-          this.$router.app.$emit('surveyUpdated', data.survey)
+          this.$router.app.$emit("surveyUpdated", data.survey);
         })
-        .listen('SurveyUpdated', (data) => {
+        .listen("SurveyUpdated", data => {
           console.log("survey udpated:", data);
-          this.$router.app.$emit('surveyUpdated', data.survey)
+          this.$router.app.$emit("surveyUpdated", data.survey);
         })
-        .listen('SurveyDeleted', (data) => {
+        .listen("SurveyDeleted", data => {
           console.log("survey deleted:", data);
-          this.$router.app.$emit('surveyUpdated', data.survey)
+          this.$router.app.$emit("surveyUpdated", data.survey);
         })
-
-
-        .listen('VisitorCreated', (data) => {
+        .listen("VisitorCreated", data => {
           console.log("created visitor:", data);
           if (data.visitor.residence_id != api.user.residence_id) return;
-          var visitor = this.api.residence.visitors[this.api.residence.visitors.length] = data.visitor;
-          if (data.image)
-            visitor.image = data.image;
+          var visitor = (this.api.residence.visitors[
+            this.api.residence.visitors.length
+          ] =
+            data.visitor);
+          if (data.image) visitor.image = data.image;
         })
-        .listen('VisitorUpdated', (data) => {
+        .listen("VisitorUpdated", data => {
           console.log("updated visitor:", data);
           if (data.visitor.residence_id !== api.user.residence_id) return;
-          var visitor_index = this.api.residence.visitors.findIndex((visitor) => {
+          var visitor_index = this.api.residence.visitors.findIndex(visitor => {
             return visitor.id === data.visitor.id;
           });
           if (visitor_index > -1)
-            var visitor = this.api.residence.visitors[visitor_index] = data.visitor;
+            var visitor = (this.api.residence.visitors[visitor_index] =
+              data.visitor);
           else {
-            var visitor = this.api.residence.visitors[this.api.residence.visitors.length] = data.visitor;
+            var visitor = (this.api.residence.visitors[
+              this.api.residence.visitors.length
+            ] =
+              data.visitor);
           }
           if (data.image) {
             visitor.image = data.image;
           }
         })
-        .listen('VisitorDeleted', (data) => {
+        .listen("VisitorDeleted", data => {
           console.log("deleted visitor:", data);
-          var visitor = this.api.residence.visitors.findIndex((visitor) => {
+          var visitor = this.api.residence.visitors.findIndex(visitor => {
             return visitor.id === data.visitor.id;
           });
           if (visitor > -1) {
             this.api.residence.visitors.splice(visitor, 1);
           }
         })
-
-
-        .listen('VehicleCreated', (data) => {
+        .listen("VehicleCreated", data => {
           console.log("created vehicle:", data);
           if (data.vehicle.residence_id != api.user.residence_id) return;
-          var vehicle = this.api.residence.vehicles[this.api.residence.vehicles.length] = data.vehicle;
-          if (data.image)
-            vehicle.image = data.image;
+          var vehicle = (this.api.residence.vehicles[
+            this.api.residence.vehicles.length
+          ] =
+            data.vehicle);
+          if (data.image) vehicle.image = data.image;
         })
-        .listen('VehicleUpdated', (data) => {
+        .listen("VehicleUpdated", data => {
           console.log("updated vehicle:", data);
           if (data.vehicle.residence_id !== api.user.residence_id) return;
-          var vehicle_index = this.api.residence.vehicles.findIndex((vehicle) => {
+          var vehicle_index = this.api.residence.vehicles.findIndex(vehicle => {
             return vehicle.id === data.vehicle.id;
           });
           if (vehicle_index > -1)
-            var vehicle = this.api.residence.vehicles[vehicle_index] = data.vehicle;
+            var vehicle = (this.api.residence.vehicles[vehicle_index] =
+              data.vehicle);
           else {
-            var vehicle = this.api.residence.vehicles[this.api.residence.vehicles.length] = data.vehicle;
+            var vehicle = (this.api.residence.vehicles[
+              this.api.residence.vehicles.length
+            ] =
+              data.vehicle);
           }
           if (data.image) {
             vehicle.image = data.image;
           }
         })
-        .listen('VehicleDeleted', (data) => {
+        .listen("VehicleDeleted", data => {
           console.log("deleted vehicle:", data);
-          var vehicle = this.api.residence.vehicles.findIndex((vehicle) => {
+          var vehicle = this.api.residence.vehicles.findIndex(vehicle => {
             return vehicle.id === data.vehicle.id;
           });
           if (vehicle > -1) {
             this.api.residence.vehicles.splice(vehicle, 1);
           }
         })
-
-
-        .listen('WorkerCreated', (data) => {
+        .listen("WorkerCreated", data => {
           console.log("created worker:", data);
           if (data.worker.residence_id != api.user.residence_id) return;
-          var worker = this.api.residence.workers[this.api.residence.workers.length] = data.worker;
-          if (data.image)
-            worker.image = data.image;
+          var worker = (this.api.residence.workers[
+            this.api.residence.workers.length
+          ] =
+            data.worker);
+          if (data.image) worker.image = data.image;
         })
-        .listen('WorkerUpdated', (data) => {
+        .listen("WorkerUpdated", data => {
           console.log("updated worker:", data);
           if (data.worker.residence_id !== api.user.residence_id) return;
-          var worker_index = this.api.residence.workers.findIndex((worker) => {
+          var worker_index = this.api.residence.workers.findIndex(worker => {
             return worker.id === data.worker.id;
           });
           if (worker_index > -1)
-            var worker = this.api.residence.workers[worker_index] = data.worker;
+            var worker = (this.api.residence.workers[worker_index] =
+              data.worker);
           else {
-            var worker = this.api.residence.workers[this.api.residence.workers.length] = data.worker;
+            var worker = (this.api.residence.workers[
+              this.api.residence.workers.length
+            ] =
+              data.worker);
           }
           if (data.image) {
             worker.image = data.image;
           }
         })
-        .listen('WorkerDeleted', (data) => {
+        .listen("WorkerDeleted", data => {
           console.log("deleted worker:", data);
-          var worker = this.api.residence.workers.findIndex((worker) => {
+          var worker = this.api.residence.workers.findIndex(worker => {
             return worker.id === data.worker.id;
           });
           if (worker > -1) {
             this.api.residence.workers.splice(worker, 1);
           }
         })
-
-
-        .listen('PetCreated', (data) => {
+        .listen("PetCreated", data => {
           console.log("created pet:", data);
           if (data.pet.residence_id != api.user.residence_id) return;
-          var pet = this.api.residence.pets[this.api.residence.pets.length] = data.pet;
-          if (data.image)
-            pet.image = data.image;
+          var pet = (this.api.residence.pets[this.api.residence.pets.length] =
+            data.pet);
+          if (data.image) pet.image = data.image;
         })
-        .listen('PetUpdated', (data) => {
+        .listen("PetUpdated", data => {
           console.log("updated pet:", data);
           if (data.pet.residence_id !== api.user.residence_id) return;
-          var pet_index = this.api.residence.pets.findIndex((pet) => {
+          var pet_index = this.api.residence.pets.findIndex(pet => {
             return pet.id === data.pet.id;
           });
           if (pet_index > -1)
-            var pet = this.api.residence.pets[pet_index] = data.pet;
+            var pet = (this.api.residence.pets[pet_index] = data.pet);
           else {
-            var pet = this.api.residence.pets[this.api.residence.pets.length] = data.pet;
+            var pet = (this.api.residence.pets[this.api.residence.pets.length] =
+              data.pet);
           }
           if (data.image) {
             pet.image = data.image;
           }
         })
-        .listen('PetDeleted', (data) => {
+        .listen("PetDeleted", data => {
           console.log("deleted pet:", data);
-          var pet = this.api.residence.pets.findIndex((pet) => {
+          var pet = this.api.residence.pets.findIndex(pet => {
             return pet.id === data.pet.id;
           });
           if (pet > -1) {
             this.api.residence.pets.splice(pet, 1);
           }
         })
-
-
-        .listen('VisitCreated', (data) => {
+        .listen("VisitCreated", data => {
           console.log("created visit:", data);
           if (data.visit.residence_id != api.user.residence_id) return;
-          data.visit.visitor = data.visitor
-          data.visit.visitors = data.visitors
-          this.api.visits = [data.visit].concat(this.api.visits)
-          this.$router.app.$emit('visitCreated', data.visit)
-          if (data.visit.status === 'approved')
-            this.newVisit(data);
-        })
-        .listen('VisitUpdated', (data) => {
-          console.log("updated visit:", data);
-          if (data.visit.residence_id != api.user.residence_id) return;
-          var visit_index = this.api.visits.findIndex((ev) => {
+          var visit_index = this.api.visits.findIndex(ev => {
             return ev.id === data.visit.id;
           });
-          data.visit.visitor = data.visitor
-          data.visit.visitors = data.visitors
+          data.visit.visitor = data.visitor;
+          data.visit.visitors = data.visitors;
           if (visit_index > -1) {
-            if (this.api.visits[visit_index].status !== 'approved' && data.visit.status === 'approved')
+            if (
+              this.api.visits[visit_index].status !== "approved" &&
+              data.visit.status === "approved"
+            )
               this.newVisit(data);
-            this.api.visits = [data.visit].concat(this.api.visits)
-
+            this.api.visits = [data.visit].concat(this.api.visits);
+          } else {
+            if (data.visit.status === "approved") this.newVisit(data);
+            this.api.visits[this.api.visits.length] = data.visit;
           }
-          else {
-            if (data.visit.status === 'approved')
-              this.newVisit(data);
-            this.api.visits[this.api.visits.length] = data.visit
-          }
-          this.$router.app.$emit('visitUpdated', data.visit)
-
+          this.$router.app.$emit("visitCreated", data.visit);
+          if (data.visit.status === "approved") this.newVisit(data);
         })
-        .listen('VisitDeleted', (data) => {
+        .listen("VisitUpdated", data => {
+          console.log("updated visit:", data);
+          if (data.visit.residence_id != api.user.residence_id) return;
+          var visit_index = this.api.visits.findIndex(ev => {
+            return ev.id === data.visit.id;
+          });
+          data.visit.visitor = data.visitor;
+          data.visit.visitors = data.visitors;
+          if (visit_index > -1) {
+            if (
+              this.api.visits[visit_index].status !== "approved" &&
+              data.visit.status === "approved"
+            )
+              this.newVisit(data);
+            this.api.visits = [data.visit].concat(this.api.visits);
+          } else {
+            if (data.visit.status === "approved") this.newVisit(data);
+            this.api.visits[this.api.visits.length] = data.visit;
+          }
+          this.$router.app.$emit("visitUpdated", data.visit);
+        })
+        .listen("VisitDeleted", data => {
           console.log("deleted visit:", data);
-          var visit_index = this.api.visits.findIndex((ev) => {
+          var visit_index = this.api.visits.findIndex(ev => {
             return ev.id === data.visit.id;
           });
           if (visit_index >= -1) {
             this.api.visits.splice(visit_index, 1);
-            this.$router.app.$emit('visitDeleted', data.visit)
+            this.$router.app.$emit("visitDeleted", data.visit);
           }
         })
-
-
-        .listen('EventCreated', (data) => {
-          if (!(data.event.privacity == "public" || data.residence.id == api.user.residence_id)) return;
+        .listen("EventCreated", data => {
+          if (
+            !(
+              data.event.privacity == "public" ||
+              data.residence.id == api.user.residence_id
+            )
+          )
+            return;
           console.log("created event:", data);
-          this.api.events[this.api.events.length] = data.event
+          this.api.events[this.api.events.length] = data.event;
 
-          if (data.event.privacity == 'private') {
+          if (data.event.privacity == "private") {
             data.event.borderColor = "red";
           } else {
             data.event.borderColor = "lime";
           }
           data.event.className = data.event.type;
-          this.$router.app.$emit('eventCreated', data.event)
+          this.$router.app.$emit("eventCreated", data.event);
         })
-        .listen('EventUpdated', (data) => {
+        .listen("EventUpdated", data => {
           console.log("updated event:", data);
-          if (!(data.event.privacity == "public" || data.residence.id == api.user.residence_id)) return;
-          var event_index = this.api.events.findIndex((ev) => {
+          if (
+            !(
+              data.event.privacity == "public" ||
+              data.residence.id == api.user.residence_id
+            )
+          )
+            return;
+          var event_index = this.api.events.findIndex(ev => {
             return ev.id === data.event.id;
           });
-          if (event_index > -1)
-            this.api.events[event_index] = data.event;
-          else
-            this.api.events[this.api.events.length] = data.event
+          if (event_index > -1) this.api.events[event_index] = data.event;
+          else this.api.events[this.api.events.length] = data.event;
 
-          if (data.event.privacity == 'private') {
+          if (data.event.privacity == "private") {
             data.event.borderColor = "red";
           } else {
             data.event.borderColor = "lime";
           }
           data.event.className = data.event.type;
 
-          this.$router.app.$emit('eventChanged', data.event)
+          this.$router.app.$emit("eventChanged", data.event);
         })
-        .listen('EventDeleted', (data) => {
+        .listen("EventDeleted", data => {
           console.log("deleted event:", data);
-          var event_index = this.api.events.findIndex((ev) => {
+          var event_index = this.api.events.findIndex(ev => {
             return ev.id === data.event.id;
           });
           if (event_index >= -1) {
             this.api.events.splice(event_index, 1);
-            this.$router.app.$emit('eventDeleted', data.event)
+            this.$router.app.$emit("eventDeleted", data.event);
           }
-        })
+        });
 
-
-      this.api.Echo.private('App.Residence.' + api.user.residence_id)
-        .listen('VisitConfirm', (data) => {
+      this.api.Echo
+        .private("App.Residence." + api.user.residence_id)
+        .listen("VisitConfirm", data => {
           console.log("VisitConfirm: ", data);
-          data.visit.visitor = data.visitor
-          data.visit.visitors = data.visitors
+          data.visit.visitor = data.visitor;
+          data.visit.visitors = data.visitors;
           this.visitConfirm(data);
-          this.$router.app.$emit('VisitConfirm', data)
-        })
+          this.$router.app.$emit("VisitConfirm", data);
+        });
 
-      this.api.Echo.private('App.User.' + this.api.user.id)
-        .listen('Chat', (data) => {
+      this.api.Echo
+        .private("App.User." + this.api.user.id)
+        .listen("Chat", data => {
           console.log("new chat event", data);
-          var thread = data.thread
-          var message = data.message
-          var sender = data.sender
-          var residence = data.residence
-          this.newChatMessage(thread, message, sender)
-          this.$router.app.$emit('Chat', { thread: thread, message: message, sender: sender, residence: residence })
+          var thread = data.thread;
+          var message = data.message;
+          var sender = data.sender;
+          var residence = data.residence;
+          this.newChatMessage(thread, message, sender);
+          this.$router.app.$emit("Chat", {
+            thread: thread,
+            message: message,
+            sender: sender,
+            residence: residence
+          });
         })
-        .notification((notification) => {
+        .notification(notification => {
           console.log(notification);
         });
 
-
-      this.api.Echo.join('App.Mobile')
-        .here((data) => {
+      this.api.Echo
+        .join("App.Mobile")
+        .here(data => {
           console.log("here:", data);
         })
-        .joining((data) => {
+        .joining(data => {
           console.log("joining", data);
         })
-        .leaving((data) => {
+        .leaving(data => {
           console.log("leaving", data);
-        })
+        });
     },
     stopEcho() {
-      this.api.Echo.leave('Application');
-      this.api.Echo.leave('App.User.' + this.api.user.id);
-      this.api.Echo.leave('App.Residence.' + api.user.residence_id);
-      this.api.Echo.leave('App.Mobile');
+      this.api.Echo.leave("Application");
+      this.api.Echo.leave("App.User." + this.api.user.id);
+      this.api.Echo.leave("App.Residence." + api.user.residence_id);
+      this.api.Echo.leave("App.Mobile");
       this.api.Echo = undefined;
     },
     navigate(uri) {
-      this.$router.push(uri)
+      this.$router.push(uri);
     },
     logout() {
       this.api.user = {};
       window.storage.clear();
-      this.$router.push('/login')
+      this.$router.push("/login");
     },
     panic() {
-      this.api.post('panic', {})
-        .then((resp) => {
-          console.log(resp.data)
-          this.panicSent = true
+      this.api
+        .post("panic", {})
+        .then(resp => {
+          console.log(resp.data);
+          this.panicSent = true;
         })
-        .catch(console.error)
+        .catch(console.error);
     },
     siteHas(modul) {
-      if (this.api.modules === undefined)
-        return false
+      if (this.api.modules === undefined) return false;
       if (modul === undefined || this.api.modules[modul] === undefined)
-        return true
-      return this.api.modules[modul]
+        return true;
+      return this.api.modules[modul];
     }
   }
-}
+};
 </script>
 
 <style lang="stylus">
-  @import './stylus/main'
-  .fade-enter-active, .fade-leave-active {
-      transition: opacity 0.3s ease;
-    }
+@import './stylus/main';
 
-    .fade-enter, .fade-leave-to {
-      opacity: 0;
-    }
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease;
+}
 
-  .avatar
-      border-radius: 50px
-      margin: 0 6px
-      &.small
-        width: 40px
-        height:40px
-      &.medium
-        width: 70px
-        height 70px
-  .text-capitalize
-    text-transform:capitalize
-  .logo
-    height 55px
-    margin-top 5px
-    cursor pointer
-    transition all .4s
-    &:hover
-      height 70px
-  .router-link-exact-active
-    background: rgba(127,127,127,.4)
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+.avatar {
+  border-radius: 50px;
+  margin: 0 6px;
+
+  &.small {
+    width: 40px;
+    height: 40px;
+  }
+
+  &.medium {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+.text-capitalize {
+  text-transform: capitalize;
+}
+
+.logo {
+  height: 55px;
+  margin-top: 5px;
+  cursor: pointer;
+  transition: all 0.4s;
+
+  &:hover {
+    height: 70px;
+  }
+}
+
+.router-link-exact-active {
+  background: rgba(127, 127, 127, 0.4);
+}
 </style>
