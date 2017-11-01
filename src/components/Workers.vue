@@ -19,7 +19,7 @@ v-layout(wrap)
               v-list-tile-title.body-2 {{worker.name}}
               v-list-tile-sub-title.caption {{worker.document}}
               v-list-tile-sub-title.caption {{worker.work}}
-            v-btn.hidden-xs-only(icon, @click.stop="editworker(worker)")
+            v-btn.hidden-xs-only(icon, @click.stop="editWorker(worker)")
               v-icon edit
             v-btn.hidden-xs-only(icon, @click.native="deleteworker(worker)")
               v-icon delete
@@ -32,7 +32,7 @@ v-layout(wrap)
                     v-list-tile-avatar
                       v-icon edit
                     v-list-tile-title {{api.trans('crud.edit')}}
-                  v-list-tile(@click.native="deleteworker(worker)")
+                  v-list-tile(@click.native="deleteWorker(worker)")
                     v-list-tile-avatar
                       v-icon delete
                     v-list-tile-title {{api.trans('crud.delete')}}
@@ -100,7 +100,7 @@ module.exports =
         console.log resp.data
         @worker={name:'',document:'',phone_number:'',schedule_id:''}
         @creator=false
-    deleteworker: (worker)->
+    deleteWorker: (worker)->
       if !confirm @api.trans '__.are you sure?'
         return
       @api.delete """workers/#{worker.id}"""
@@ -126,11 +126,14 @@ module.exports =
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus">
-.avatar-image
-  border-radius 50%
-  height 70px
-  width 70px
-.avatar img.large
-  height 46px !important
-  width 46px !important
+.avatar-image {
+  border-radius: 50%;
+  height: 70px;
+  width: 70px;
+}
+
+.avatar img.large {
+  height: 46px !important;
+  width: 46px !important;
+}
 </style>

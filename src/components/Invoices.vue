@@ -152,16 +152,15 @@ v-container(fluid='')
 </template>
 
 <script>
-var api = require('../services/api.js')
-const moment = require('moment')
-window.__ = require('underscore')._
+var api = require("../services/api.js");
+const moment = require("moment");
+window.__ = require("underscore")._;
 export default {
-  name: 'invoices',
+  name: "invoices",
   mounted() {
-    this.api.ready
-      .then(() => {
-        this.getInvoices();
-      });
+    this.api.ready.then(() => {
+      this.getInvoices();
+    });
   },
   data() {
     return {
@@ -175,122 +174,154 @@ export default {
       payment: {},
       invoices: [],
       loading: false,
-      pagination: { sortBy: 'date', page: 1, rowsPerPage: 50, descending: true },
+      pagination: {
+        sortBy: "date",
+        page: 1,
+        rowsPerPage: 50,
+        descending: true
+      },
       headers: [
-        { text: api.trans('literals.#'), value: 'number' },
-        { text: api.trans('literals.type'), value: 'type' },
-        { text: api.trans('literals.date'), value: 'date' },
-        { text: api.trans('literals.total'), value: 'total' },
-        { text: api.trans('literals.status'), value: 'status' },
-        { text: api.trans('crud.actions'), value: 'actions' },
+        { text: api.trans("literals.#"), value: "number" },
+        { text: api.trans("literals.type"), value: "type" },
+        { text: api.trans("literals.date"), value: "date" },
+        { text: api.trans("literals.total"), value: "total" },
+        { text: api.trans("literals.status"), value: "status" },
+        { text: api.trans("crud.actions"), value: "actions" }
       ],
-      pagination_items: { sortBy: 'amount', page: 1, rowsPerPage: 50, descending: false },
+      pagination_items: {
+        sortBy: "amount",
+        page: 1,
+        rowsPerPage: 50,
+        descending: false
+      },
       headers_items: [
-        { text: api.trans('literals.concept'), value: 'concept' },
-        { text: api.trans('literals.amount'), value: 'amount' },
-        { text: api.trans('literals.quantity'), value: 'quantity' },
+        { text: api.trans("literals.concept"), value: "concept" },
+        { text: api.trans("literals.amount"), value: "amount" },
+        { text: api.trans("literals.quantity"), value: "quantity" }
       ],
       api: api,
       labels: [],
       values: [],
       transactions: [
-        { value: "deposit", text: api.trans('literals.deposit') },
-        { value: "check", text: api.trans('literals.check') },
-        { value: "cash", text: api.trans('literals.cash') },
-        { value: "credit card", text: api.trans('literals.credit card') },
-        { value: "debit card", text: api.trans('literals.debit card') },
-        { value: "other", text: api.trans('literals.other') }
+        { value: "deposit", text: api.trans("literals.deposit") },
+        { value: "check", text: api.trans("literals.check") },
+        { value: "cash", text: api.trans("literals.cash") },
+        { value: "credit card", text: api.trans("literals.credit card") },
+        { value: "debit card", text: api.trans("literals.debit card") },
+        { value: "other", text: api.trans("literals.other") }
       ],
-      colors: ['#F44336', '#2196F3', '#4CAF50', '#FFEB3B', '#009688', '#E91E63', '#9C27B0', '#3F51B5', '#FF5722'],
-    }
+      colors: [
+        "#F44336",
+        "#2196F3",
+        "#4CAF50",
+        "#FFEB3B",
+        "#009688",
+        "#E91E63",
+        "#9C27B0",
+        "#3F51B5",
+        "#FF5722"
+      ]
+    };
   },
   methods: {
     getInvoices() {
-      this.loading = false
-      this.api.get('invoices?with[]=receipts&with[]=items&where[residence_id]=' + this.api.user.residence_id)
-        .then((response) => {
-          this.loading = true
-          console.log(response.data)
-          this.invoices = this.api.residence.invoices = response.data
+      this.loading = false;
+      this.api
+        .get(
+          `invoices?order[date]=desc&orWhere[residence_id]=${this.api.user
+            .residence_id}&orWhere[user_id]=${this.api.user
+            .id}&with[]=user&with[]=receipts&with[]=items&take=50`
+        )
+        .then(response => {
+          this.loading = true;
+          console.log(response.data);
+          this.invoices = this.api.residence.invoices = response.data;
         })
-        .catch(console.error)
+        .catch(console.error);
     },
     sendMailInvoice: function(invoice) {
-      if (confirm(this.api.trans('__.are you sure?')))
-        this.api.post(`invoice/${invoice.id}/email`)
-          .then((data) => {
-            this.success_email = true
+      if (confirm(this.api.trans("__.are you sure?")))
+        this.api
+          .post(`invoice/${invoice.id}/email`)
+          .then(data => {
+            this.success_email = true;
           })
           .catch(console.error);
     },
     sendMailReceipt: function(receipt) {
-      if (confirm(this.api.trans('__.are you sure?')))
-        this.api.post(`receipt/${receipt.id}/email`)
-          .then((data) => {
-            this.success_email = true
+      if (confirm(this.api.trans("__.are you sure?")))
+        this.api
+          .post(`receipt/${receipt.id}/email`)
+          .then(data => {
+            this.success_email = true;
           })
           .catch(console.error);
     },
     moment(date) {
-      return moment(date)
+      return moment(date);
     },
     seeInvoice(invoice) {
       this.invoice = invoice;
-      this.labels = __.pluck(this.invoice.items, 'concept')
-      var values = __.pluck(this.invoice.items, 'amount')
-      this.values = []
+      this.labels = __.pluck(this.invoice.items, "concept");
+      var values = __.pluck(this.invoice.items, "amount");
+      this.values = [];
       this.labels.forEach((label, index) => {
-        this.values[this.values.length] = { name: label, data: {} }
-        this.values[this.values.length - 1].data[label] = values[index]
+        this.values[this.values.length] = { name: label, data: {} };
+        this.values[this.values.length - 1].data[label] = values[index];
       });
       setTimeout(() => {
-        this.see_dialog = true
-      }, 100)
+        this.see_dialog = true;
+      }, 100);
     },
     pay(invoice) {
-      this.see_dialog = false
-      this.invoice = invoice
+      this.see_dialog = false;
+      this.invoice = invoice;
       this.payment = {
         amount: this.invoice.total - this.invoice.partially_paid,
-        transaction: 'deposit',
-      }
-      console.log(invoice)
+        transaction: "deposit"
+      };
+      console.log(invoice);
       setTimeout(() => {
-        this.see_payment = true
-      }, 100)
+        this.see_payment = true;
+      }, 100);
     },
     reportPayment(invoice) {
-      this.proccesingPayment = true
-      this.api.post(`invoices/${invoice.id}/Payment`, this.payment)
-        .then((response) => {
-          console.log(response.data)
-          this.see_dialog = false
-          this.see_payment = false
-          this.payment_success = true
-          this.proccesingPayment = false
-          this.getInvoices()
+      this.proccesingPayment = true;
+      this.api
+        .post(`invoices/${invoice.id}/Payment`, this.payment)
+        .then(response => {
+          console.log(response.data);
+          this.see_dialog = false;
+          this.see_payment = false;
+          this.payment_success = true;
+          this.proccesingPayment = false;
+          this.getInvoices();
         })
-        .catch(console.error)
+        .catch(console.error);
     }
   },
   computed: {
     debt: function() {
-      var total = 0
+      var total = 0;
       this.invoices.forEach(inv => {
-        if (inv.status === 'unpaid' || inv.status === 'partially paid' || inv.status === 'overdue')
-          total += inv.total
-      })
-      return total
+        if (
+          inv.status === "unpaid" ||
+          inv.status === "partially paid" ||
+          inv.status === "overdue"
+        )
+          total += inv.total;
+      });
+      return total;
     },
     total: function() {
-      var total = 0
+      var total = 0;
       this.invoices.forEach(inv => {
-        total += inv.total
-      })
-      return total
+        total += inv.total;
+      });
+      return total;
     }
   }
-}
+};
 </script>
 
 
