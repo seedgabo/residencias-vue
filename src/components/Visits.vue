@@ -30,7 +30,7 @@ div
         v-layout
           v-flex
             v-select(v-bind:items="api.residence.visitors" v-model="visit.visitor_id", :label="api.trans('literals.visitor')" single-line bottom item-text="name" item-value="id" prepend-icon="person")
-            v-text-field(v-model='visit.note', :label="api.trans('literals.notes')" prepend-icon="paragraph")
+            v-text-field(v-model='visit.note', :label="api.trans('literals.notes')" prepend-icon="textsms")
       v-card-actions
         v-spacer
         v-btn(flat color="primary", :disabled="!canAddVisit()", @click="addVisit()") {{api.trans('crud.add')}}
