@@ -443,7 +443,10 @@ export default {
         .listen("VisitorCreated", data => {
           console.log("created visitor:", data);
           if (data.visitor.residence_id != api.user.residence_id) return;
-          var visitor = (this.api.residence.visitors[ this.api.residence.visitors.length ] = data.visitor);
+          var visitor = (this.api.residence.visitors[
+            this.api.residence.visitors.length
+          ] =
+            data.visitor);
           if (data.image) visitor.image = data.image;
         })
         .listen("VisitorUpdated", data => {
@@ -611,8 +614,12 @@ export default {
           data.visit.visitor = data.visitor;
           data.visit.visitors = data.visitors;
           if (visit_index > -1) {
-            if ( this.api.visits[visit_index].status !== "approved" && data.visit.status === "approved" )this.newVisit(data);
-            var visit = this.api.visits[visit_index] = data.visit;
+            if (
+              this.api.visits[visit_index].status !== "approved" &&
+              data.visit.status === "approved"
+            )
+              this.newVisit(data);
+            var visit = (this.api.visits[visit_index] = data.visit);
           }
           this.$router.app.$emit("visitUpdated", data.visit);
         })
