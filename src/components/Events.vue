@@ -95,11 +95,11 @@
               </v-flex>
 
               <v-flex xs12 sm4>
-                <v-select prepend-icon="lock" v-bind:items="privacities" v-model="event.privacity " :label="api.trans('literals.privacity')" autocomplete></v-select>
+                <v-select prepend-icon="lock" v-bind:items="privacities" v-model="event.privacity" :label="api.trans('literals.privacity')" autocomplete></v-select>
               </v-flex>
 
               <v-flex xs12 sm4>
-                <v-select prepend-icon="nature_people" v-bind:items="types" v-model="event.type " :label="api.trans('literals.type')" autocomplete></v-select>
+                <v-select prepend-icon="nature_people" v-bind:items="types" v-model="event.type" :label="api.trans('literals.type')" autocomplete></v-select>
               </v-flex>
 
               <v-flex xs12 sm4>

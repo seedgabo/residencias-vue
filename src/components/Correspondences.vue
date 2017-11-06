@@ -86,9 +86,10 @@ module.exports =
 			@selected = corres
 			@sheet = true
 		markAsDone: (corres)->
-			@api.post("correspondences/#{corres.id}/delivered",{})
+			@sheet = false
+			@api.post("correspondences/#{corres.id}/deliver",{})
 			.then (resp)=>
-				corres.status = delivered
+				corres.status = 'delivered'
 
 			.catch console.error
 		filter: ()->

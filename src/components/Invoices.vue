@@ -277,7 +277,7 @@ export default {
       this.see_dialog = false;
       this.invoice = invoice;
       this.payment = {
-        amount: this.invoice.total - this.invoice.partially_paid,
+        amount: Math.ceil(this.invoice.total - this.invoice.partially_paid),
         transaction: "deposit"
       };
       console.log(invoice);

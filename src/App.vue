@@ -750,8 +750,34 @@ export default {
         .then(resp => {
           console.log(resp.data);
           this.panicSent = true;
+          this.panicWithLocation(resp.data);
         })
         .catch(console.error);
+    },
+    panicWithLocation(panic) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(resp => {
+          console.log(resp);
+          var locs = {
+            accuracy: resp.coords.accuracy,
+            altitude: resp.coords.altitude,
+            latitude: resp.coords.latitude,
+            longitude: resp.coords.longitude,
+            speed: resp.coords.speed,
+            heading: resp.coords.heading,
+            altitudeAccuracy: resp.coords.altitudeAccuracy,
+            timestamp: resp.timestamp
+          };
+          this.api
+            .put("panics/" + panic.id, { location: locs })
+            .then(dataL => {
+              console.log("panic with locs", dataL);
+            })
+            .catch(err => {
+              console.error("error sending panic with location", err);
+            });
+        }, console.error);
+      }
     },
     siteHas(modul) {
       if (this.api.modules === undefined) return false;
