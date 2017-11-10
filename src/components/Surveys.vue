@@ -27,9 +27,9 @@ v-container(fluid="")
 						v-card-title 
 							h3.headline.primary--text {{survey.question}}
 						v-card-text
-							<pie-chart :data="data" :colors="colors" :discrete="true" :label="api.trans('literas.votes')" :library="{animation: {duration:700}}" :download="true"></pie-chart>
+							pie-chart(:data="data", :colors="colors", :discrete="true", :label="api.trans('literas.votes')", :library="{animation: {duration:700}}", :download="true")
 							div.text-capitalize(v-if="response &&  survey['response_'+my_vote.response]")
-								b {{ api.trans('__.my vote') }}:
+								b {{ api.trans('literals.your_vote') }}:
 								span {{survey['response_'+my_vote.response]}}
 							v-btn(success="" v-else @click.stop="voting=true;selectResponse()")
 								v-icon(dark="") thumbs_up_down
@@ -38,12 +38,13 @@ v-container(fluid="")
 					v-card-title {{survey.question}}
 					v-divider
 					v-card-text
-						v-radio(:label="survey.response_1", :value="1" v-if="survey.response_1" v-model="response")
-						v-radio(:label="survey.response_2", :value="2" v-if="survey.response_2" v-model="response")
-						v-radio(:label="survey.response_3", :value="3" v-if="survey.response_3" v-model="response")
-						v-radio(:label="survey.response_4", :value="4" v-if="survey.response_4" v-model="response")
-						v-radio(:label="survey.response_5", :value="5" v-if="survey.response_5" v-model="response")
-						v-radio(:label="survey.response_6", :value="6" v-if="survey.response_6" v-model="response")
+						v-radio-group(v-model="response")
+							v-radio(:label="survey.response_1", value="1" v-if="survey.response_1")
+							v-radio(:label="survey.response_2", value="2" v-if="survey.response_2")
+							v-radio(:label="survey.response_3", value="3" v-if="survey.response_3")
+							v-radio(:label="survey.response_4", value="4" v-if="survey.response_4")
+							v-radio(:label="survey.response_5", value="5" v-if="survey.response_5")
+							v-radio(:label="survey.response_6", value="6" v-if="survey.response_6")
 					v-card-actions
 						v-btn.primary--text.darken-1(flat="" @click.native="voting=false") {{ api.trans('crud.cancel') }}
 						v-btn.primary--text.darken-1(flat="" @click.native="postVote(survey,response)") {{ api.trans('crud.save') }}
@@ -108,7 +109,7 @@ module.exports =
 			@response= @my_vote?.response
 		getVote: (survey)->
 			@vote =null
-			@api.get("""votes?where[user_id]=#{@api.user.id}&survey_id=#{survey.id}""")
+			@api.get("""votes?where[user_id]=#{@api.user.id}&where[survey_id]=#{survey.id}""")
 			.then (resp)=>
 				console.log 'my vote', resp.data
 				@my_vote=resp.data[0]
@@ -138,5 +139,4 @@ module.exports =
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus" scoped>
-	
 </style>
