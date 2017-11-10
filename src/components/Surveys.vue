@@ -94,17 +94,24 @@ module.exports =
 				@survey=resp.data
 			.catch console.error
 		selectSurvey: (survey)->
-			@data=[
-				[survey.response_1,__.filter(survey.surveyuser,(vote)-> vote.response==1).length]
-				[survey.response_2,__.filter(survey.surveyuser,(vote)-> vote.response==2).length]
-				[survey.response_3,__.filter(survey.surveyuser,(vote)-> vote.response==3).length]
-				[survey.response_4,__.filter(survey.surveyuser,(vote)-> vote.response==4).length]
-				[survey.response_5,__.filter(survey.surveyuser,(vote)-> vote.response==5).length]
-				[survey.response_6,__.filter(survey.surveyuser,(vote)-> vote.response==6).length]
-			]
-			@survey=survey
-			@voting=false
-			@getVote(survey)
+		data []
+		if survey.response_1
+			data.push [survey.response_1,__.filter(survey.surveyuser,(vote)-> vote.response==1).length]
+		if survey.response_2
+			data.push [survey.response_2,__.filter(survey.surveyuser,(vote)-> vote.response==2).length]
+		if survey.response_3
+			data.push [survey.response_3,__.filter(survey.surveyuser,(vote)-> vote.response==1).length]
+		if survey.response_4
+			data.push [survey.response_4,__.filter(survey.surveyuser,(vote)-> vote.response==1).length]
+		if survey.response_5
+			data.push [survey.response_5,__.filter(survey.surveyuser,(vote)-> vote.response==1).length]
+		if survey.response_6
+			data.push [survey.response_6,__.filter(survey.surveyuser,(vote)-> vote.response==1).length]
+			
+		@data=data
+		@survey=survey
+		@voting=false
+		@getVote(survey)
 		selectResponse: ()->
 			@response= @my_vote?.response
 		getVote: (survey)->
