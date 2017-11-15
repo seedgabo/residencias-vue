@@ -96,17 +96,17 @@ module.exports =
 		selectSurvey: (survey)->
 			data= []
 			if survey.response_1
-				data.push [survey.response_1,__.filter(survey.surveyuser,(vote)-> vote.response==1).length]
+				data.push [survey.response_1,survey.results[1]]
 			if survey.response_2
-				data.push [survey.response_2,__.filter(survey.surveyuser,(vote)-> vote.response==2).length]
+				data.push [survey.response_2,survey.results[2]]
 			if survey.response_3
-				data.push [survey.response_3,__.filter(survey.surveyuser,(vote)-> vote.response==1).length]
+				data.push [survey.response_3,survey.results[3]]
 			if survey.response_4
-				data.push [survey.response_4,__.filter(survey.surveyuser,(vote)-> vote.response==1).length]
+				data.push [survey.response_4,survey.results[4]]
 			if survey.response_5
-				data.push [survey.response_5,__.filter(survey.surveyuser,(vote)-> vote.response==1).length]
+				data.push [survey.response_5,survey.results[5]]
 			if survey.response_6
-				data.push [survey.response_6,__.filter(survey.surveyuser,(vote)-> vote.response==1).length]			
+				data.push [survey.response_6,survey.results[6]]			
 			@data=data
 			@survey=survey
 			@voting=false
