@@ -110,7 +110,7 @@ module.exports =
 			@data=data
 			@survey=survey
 			@voting=false
-		@getVote(survey)
+			@getVote(survey)
 		selectResponse: ()->
 			@response= @my_vote?.response
 		getVote: (survey)->
