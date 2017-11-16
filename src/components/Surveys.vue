@@ -72,7 +72,7 @@ module.exports =
 		surveys: []
 		voting:false
 		loading:false
-		colors: ['#F44336', '#2196F3', '#4CAF50', '#FFEB3B', '#FF5722', '#E91E63', '#9C27B0', '#3F51B5', '#009688'],
+		colors: ["#2196F3", "#F44336", "#FFC107", "#4CAF50", "#9C27B0", "#E91E63"],
 		labels:[]
 		values:[]
 		data:{}
