@@ -30,12 +30,12 @@ v-container(fluid='')
               td.text-capitalize(v-else='') {{ props.item.date | moment('MMMM/YYYY') }}
               td
                 span {{ props.item.total | currency }}
-                small(v-if="props.item.status!== 'paid' && props.item.in_discount")  ({{ api.trans('literals.in discount') }})
-                small(v-if="props.item.status!== 'paid' && props.item.in_interest")  ({{ api.trans('literals.in interest') }})
+                small(v-if="props.item.status!== 'paid' && props.item.status!== 'cancelled' && props.item.in_discount")  ({{ api.trans('literals.in discount') }})
+                small(v-if="props.item.status!== 'paid' && props.item.status!== 'cancelled' && props.item.in_interest")  ({{ api.trans('literals.in interest') }})
               td(:class="(props.item.status=='paid'?'green':'red') + '--text'")
                 strong {{ api.trans('literals.'+props.item.status)}}
               td
-                v-btn(@click.stop='pay(props.item)', v-if="props.item.status !== 'paid'", icon='')
+                v-btn(@click.stop='pay(props.item)', v-if="props.item.status !== 'paid' && props.item.status!== 'cancelled'", icon='')
                   v-tooltip(bottom)
                     span {{api.trans('__.report payment')}}
                     v-icon.primary--text(slot="activator") credit_card
@@ -61,15 +61,15 @@ v-container(fluid='')
                 v-list-tile-title {{api.trans('literals.invoice')}} # {{invoice.number}}
                 v-list-tile-sub-title
                   span {{invoice.total | currency}}
-                  small(v-if="invoice.status!== 'paid' && invoice.in_discount")  ({{ api.trans('literals.in discount') }})
-                  small(v-if="invoice.status!== 'paid' && invoice.in_interest")  ({{ api.trans('literals.in interest') }})
+                  small(v-if="invoice.status!== 'paid' && invoice.status!== 'cancelled' && invoice.in_discount")  ({{ api.trans('literals.in discount') }})
+                  small(v-if="invoice.status!== 'paid' && invoice.status!== 'cancelled' && invoice.in_interest")  ({{ api.trans('literals.in interest') }})
               v-list-tile-action
                 v-list-tile-action-text(v-if="invoice.type != 'residential'") {{ invoice.date | moment("dddd, MMMM D YYYY")}}
                 v-list-tile-action-text.text-capitalize(v-else='') {{ invoice.date | moment('MMMM/YYYY') }}
                 v-menu(offfset-y left)
                   v-btn(icon slot="activator"): v-icon more_vert
                   v-list
-                    v-list-tile(@click.stop='pay(invoice)', v-if="invoice.status !== 'paid'")
+                    v-list-tile(@click.stop='pay(invoice)', v-if="invoice.status !== 'paid' && invoice.status!== 'cancelled'")
                       v-list-tile-title
                         //- v-icon.primary--text credit_card
                         span &nbsp;{{api.trans('__.report payment')}}
@@ -113,11 +113,15 @@ v-container(fluid='')
               | {{api.trans('literals.status')}}:
               span(:class="(invoice.status=='paid'? 'green' : 'red') +'--text'")
                 | {{ api.trans('literals.'+invoice.status)}}
+          v-flex(xs12='' v-if="invoice.note")
+            h3.headline.dark--text.text-xs-center
+              | {{api.trans('literals.note')}}:
+              span() {{ note }}
         v-speed-dial(v-model='fab', fixed='', bottom='', right='', direction='top', :transition="'scale'")
           v-btn.blue.darken-2(slot='activator', style='right:5px', dark='', hover='', fab='', v-model='fab')
             v-icon menu
             v-icon close
-          v-btn.green(v-if="invoice.status !== 'paid'", @click.native='pay(invoice)', fab='', dark='', small='', style='right:5px')
+          v-btn.green(v-if="invoice.status !== 'paid' && invoice.status!== 'cancelled'", @click.native='pay(invoice)', fab='', dark='', small='', style='right:5px')
             v-tooltip(left)
               span {{api.trans('__.report payment')}}
               v-icon(slot="activator") credit_card
