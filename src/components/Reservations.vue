@@ -28,6 +28,8 @@ v-container()
 												p 
 													b {{api.trans('literals.quotas')}}: &nbsp;
 													span {{reserv.quotas}}
+										v-list-tile-action
+											v-btn(v-if="canCancel(reserv)" @click="cancelReservation(reserv)") {{ api.trans('crud.cancel') }} {{api.trans('literals.reservation')}}
 												
 				//- List of Zones
 				v-layout(key="zones" v-if="mode=='zones'"  wrap="")
@@ -331,6 +333,17 @@ module.exports =
 			.then (resp)=>
 				@my_reservations = resp.data
 			.catch console.error
+		cancelReservation: (reservation)->
+			note = prompt(@api.trans('__.Nota de cancelación'))
+			@api.put("reservations/#{reservation.id}", { status: 'cancelled', 'note': note})
+			.then (resp)=>
+				 reservation.status = 'cancelled'
+
+		canCancel: (reserv)->
+			hours = @api.settings.hours_to_cancel_reservation
+			if not hours?
+				hours = 24;
+			return moment(reserv.start).subtract(hours, "hours") <= moment()
 
 </script>
 
