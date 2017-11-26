@@ -18,14 +18,26 @@
 									v-list-tile-action-text 
 										v-btn(icon small @click.stop="editTicket(ticket)")
 											v-icon edit
-		v-btn(fab dark color="pink" fixed bottom right)
+		v-btn(fab dark color="pink" fixed bottom right @click="createTicket()")
 			v-icon add
 		v-dialog(v-model="editor" fullscreen transition="dialog-bottom-transition", :overlay="false")
 			v-card
 				v-toolbar(dark color="primary")
+					v-toolbar-title(v-if="ticket") {{ticket.subject}}
 					v-spacer
+					v-btn(flat :disabled="!canSave()" @click="save()") {{api.trans('crud.save')}}
 					v-btn(icon @click.native="editor=false")
 						v-icon close
+				v-card-text(v-if="ticket")
+					v-container
+						v-text-field(v-model="ticket.subject", :placeholder="api.trans('literals.subject')", :label="api.trans('literals.subject')")
+
+						v-text-field(v-model="ticket.text", :placeholder="api.trans('literals.text')", :label="api.trans('literals.text')" multi-line)
+
+						v-select(disabled v-bind:items="statuses" v-model="ticket.status", :label="api.trans('literals.status')" single-line bottom)
+
+						v-flex(xs12="" v-if="canSave()")
+							v-btn(color="primary" @click="save()") {{api.trans('crud.save')}}
 
 </template>
 
@@ -42,6 +54,12 @@ module.exports =
 		ticket:null
 		editor:false
 		open:false
+		statuses: [
+			{ text: api.trans('literals.open'), value: 'open' }
+			{ text: api.trans('literals.closed'), value: 'closed' }
+			{ text: api.trans('literals.in progress'), value: 'in progress' }
+			{ text: api.trans('literals.rejected'), value: 'rejected' }
+		]
 	methods:
 		getData: ()->
 			@api.get "tickets?where[user_id]=#{@api.user.id}&with[]=user&with[]=comments&with[]=user.residence&order[updated_at]=desc&take=300"
@@ -57,9 +75,24 @@ module.exports =
 			@editor = true
 			return
 		createTicket: (ticket)->
-			@ticket = {subject:"",status:"open", user_id:@api.user.id}
+			@ticket = {subject:"",status:"open",text:"", user_id: @api.user.id}
 			@editor = true
 			return
+		canSave: ()->
+			@ticket && @ticket.subject.length > 2 && @ticket.text.length > 2
+		save: ()->
+			data = {subject: @ticket.subject, text:@ticket.text, status:@ticket.status, user_id: @ticket.user_id}
+			if @ticket.id
+				promise = @api.put("tickets/#{@ticket.id}",data)
+			else
+				promise = @api.post("tickets",data)
+			
+			promise.then (resp)=>
+				if not @ticket.id
+					resp.data.user = @api.user
+					@tickets.push resp.data
+				@editor = false
+				@ticket = null
 </script>
 
 
