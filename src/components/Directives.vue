@@ -5,7 +5,7 @@
 				v-card
 					v-toolbar.primary(dark)
 						v-toolbar-title {{api.trans('literals.directives')}}
-					v-card-content
+					v-card-text
 						v-list(two-line)
 							v-list-tile(v-for="dir in directives", :key="dir.id")
 								v-list-tile-content

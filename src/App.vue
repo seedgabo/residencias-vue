@@ -259,6 +259,12 @@ export default {
           url: "directives",
           siteHas: "directives"
         },
+        {
+          icon: "fa-ticket",
+          title: "tickets",
+          url: "tickets",
+          siteHas: "tickets"
+        },
         { icon: "event", title: "events", url: "events", siteHas: "events" },
         {
           icon: "insert_drive_file",
