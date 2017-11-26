@@ -12,6 +12,7 @@ import Tables from '@/components/Tables'
 import Reservations from '@/components/Reservations'
 import Chat from '@/components/Chat'
 import Correspondences from '@/components/Correspondences'
+import Directives from '@/components/Directives'
 import VisitsPage from '@/components/VisitsPage'
 import Example from '@/components/Example'
 
@@ -65,6 +66,10 @@ export default new Router({
     path: '/correspondences',
     name: 'Correspondences',
     component: Correspondences
+  }, {
+    path: '/directives',
+    name: 'Directives',
+    component: Directives
   }, {
     path: '/login',
     name: 'Login',

@@ -253,6 +253,12 @@ export default {
           url: "correspondences",
           siteHas: "correspondences"
         },
+        {
+          icon: "fa-sitemap",
+          title: "directives",
+          url: "directives",
+          siteHas: "directives"
+        },
         { icon: "event", title: "events", url: "events", siteHas: "events" },
         {
           icon: "insert_drive_file",
