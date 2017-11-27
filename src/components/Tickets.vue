@@ -39,6 +39,28 @@
 						v-flex(xs12="" v-if="canSave()")
 							v-btn(color="primary" @click="save()") {{api.trans('crud.save')}}
 
+		v-dialog(v-model="open" fullscreen transition="dialog-bottom-transition", :overlay="false")
+			v-card
+				v-toolbar(dark color="primary")
+					v-toolbar-title(v-if="ticket") {{ticket.subject}}
+					v-spacer
+					v-btn(icon @click.native="open=false")
+						v-icon close
+				v-card-text(v-if="ticket")
+					v-container
+						h3.text-xs-center.headline {{ticket.subject}}
+						div.elevation-3.pa-3
+							p(v-html="ticket.text")
+						h4.text-xs-center.headline.primary--text {{api.trans('literals.comments')}}
+						div.text-xs-center
+							v-text-field(multi-line :label="api.trans('literals.comment')" v-model="new_comment.text" )
+							v-btn(flat color="orange", :disabled="new_comment.text.length < 3" @click="addComment()") {{api.trans('crud.add')}} {{api.trans('literals.comment')}}
+						v-list.elevation-3.pa-3
+							v-list-tile(v-for="com in ticket.comments", :key="com.id")
+								v-list-tile-content
+									{{com.text}}
+								v-list-tile-action
+									span(v-if="com.user") {{com.user.name}}
 </template>
 
 <script lang="coffee">
@@ -60,15 +82,17 @@ module.exports =
 			{ text: api.trans('literals.in progress'), value: 'in progress' }
 			{ text: api.trans('literals.rejected'), value: 'rejected' }
 		]
+		new_comment: {text:"",user_id:api.user.id}
 	methods:
 		getData: ()->
-			@api.get "tickets?where[user_id]=#{@api.user.id}&with[]=user&with[]=comments&with[]=user.residence&order[updated_at]=desc&take=300"
+			@api.get "tickets?where[user_id]=#{@api.user.id}&with[]=user&with[]=comments&with[]=comments.user&with[]=comments.user.residence&with[]=user.residence&order[updated_at]=desc&take=300"
 			.then (resp)=>
 				console.log 'data', resp.data
 				@tickets = resp.data
 			.catch console.error
 		seeTicket: (ticket)->
 			console.log ticket
+			@ticket = ticket
 			@open = true
 		editTicket: (ticket)->
 			@ticket = ticket
@@ -93,6 +117,14 @@ module.exports =
 					@tickets.push resp.data
 				@editor = false
 				@ticket = null
+		addComment: ()->
+			@new_comment.ticket_id = @ticket.id
+			@api.post("comments", @new_comment)
+			.then (resp)=>
+				@new_comment.text = ""
+				resp.data.user = @api.user
+				@ticket.comments.push(resp.data)
+
 </script>
 
 
