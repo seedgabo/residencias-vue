@@ -50,17 +50,23 @@
 					v-container
 						h3.text-xs-center.headline {{ticket.subject}}
 						div.elevation-3.pa-3
-							p(v-html="ticket.text")
+							p(v-html="ticket.text")						
+							v-select(v-bind:items="statuses" v-model="ticket.status", :label="api.trans('literals.status')")
 						h4.text-xs-center.headline.primary--text {{api.trans('literals.comments')}}
 						div.text-xs-center
 							v-text-field(multi-line :label="api.trans('literals.comment')" v-model="new_comment.text" )
 							v-btn(flat color="orange", :disabled="new_comment.text.length < 3" @click="addComment()") {{api.trans('crud.add')}} {{api.trans('literals.comment')}}
 						v-list.elevation-3.pa-3
-							v-list-tile(v-for="com in ticket.comments", :key="com.id")
+							v-list-tile(v-for="com in ticket.comments", :key="com.id" avatar three-line)
 								v-list-tile-content
-									{{com.text}}
+									v-list-tile-title {{com.text}}
+									v-list-tile-sub-title: small {{ com.created_at | moment("from") }}
 								v-list-tile-action
-									span(v-if="com.user") {{com.user.name}}
+									small(v-if="com.user") 
+										v-avatar(size="22px", :title="com.user.name") 
+											img(:src="com.user.image_url" )
+										span.hidden-sm-and-down {{com.user.name}}
+										span.hidden-sm-and-down(v-if="com.user.residence") - {{com.user.residence.name}}
 </template>
 
 <script lang="coffee">
