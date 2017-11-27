@@ -2,9 +2,12 @@
 v-container(fluid='')
   v-layout(wrap='')
     v-flex(xs12='', center='')
-      h2.headline.text-xs-center(color="primary")
+      h2.headline(color="primary")
         v-icon fa-files-o
         | {{api.trans('literals.invoices')}}
+        v-spacer
+        v-btn(flat color="primary" v-if="api.modules.external_link_invoices", :href="api.modules.external_link_invoices" target="_blank")
+          | {{ api.trans('__.Pague Aquí') }}
     v-flex(xs12='')
       v-card
         v-card-title
