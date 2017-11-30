@@ -39,6 +39,7 @@
 						v-flex(xs12="" v-if="canSave()")
 							v-btn(color="primary" @click="save()") {{api.trans('crud.save')}}
 
+
 		v-dialog(v-model="open" fullscreen transition="dialog-bottom-transition", :overlay="false")
 			v-card
 				v-toolbar(dark color="primary")
@@ -51,7 +52,7 @@
 						h3.text-xs-center.headline {{ticket.subject}}
 						div.elevation-3.pa-3
 							p(v-html="ticket.text")						
-							v-select(v-bind:items="statuses" v-model="ticket.status", :label="api.trans('literals.status')")
+							v-select(v-bind:items="statuses" v-model="ticket.status", :label="api.trans('literals.status')" v-on:change="updateStatus")
 						h4.text-xs-center.headline.primary--text {{api.trans('literals.comments')}}
 						div.text-xs-center
 							v-text-field(multi-line :label="api.trans('literals.comment')" v-model="new_comment.text" )
@@ -67,6 +68,10 @@
 											img(:src="com.user.image_url" )
 										span.hidden-sm-and-down {{com.user.name}}
 										span.hidden-sm-and-down(v-if="com.user.residence") - {{com.user.residence.name}}
+		v-snackbar.success(:timeout="3000" top right v-model="success")
+			span {{api.trans('literals.ticket')}}  {{api.trans('crud.saved')}}
+			v-btn(flat @click.native="success=false" icon)
+				v-icon close
 </template>
 
 <script lang="coffee">
@@ -82,6 +87,7 @@ module.exports =
 		ticket:null
 		editor:false
 		open:false
+		success: false
 		statuses: [
 			{ text: api.trans('literals.open'), value: 'open' }
 			{ text: api.trans('literals.closed'), value: 'closed' }
@@ -108,6 +114,15 @@ module.exports =
 			@ticket = {subject:"",status:"open",text:"", user_id: @api.user.id}
 			@editor = true
 			return
+		updateStatus:(value)->
+			console.log value
+			@api.put("tickets/#{@ticket.id}",{status:value})
+			.then (resp)=>
+				@success = true
+				@open = false
+
+				
+
 		canSave: ()->
 			@ticket && @ticket.subject.length > 2 && @ticket.text.length > 2
 		save: ()->
@@ -118,18 +133,22 @@ module.exports =
 				promise = @api.post("tickets",data)
 			
 			promise.then (resp)=>
+				console.log resp.data
 				if not @ticket.id
 					resp.data.user = @api.user
-					@tickets.push resp.data
-				@editor = false
+					resp.data.comments = []
+					@tickets.unshift resp.data
+				@success=true
 				@ticket = null
+				@editor = false
 		addComment: ()->
 			@new_comment.ticket_id = @ticket.id
 			@api.post("comments", @new_comment)
 			.then (resp)=>
 				@new_comment.text = ""
 				resp.data.user = @api.user
-				@ticket.comments.push(resp.data)
+				@success = true
+				@ticket.comments.push resp.data
 
 </script>
 
