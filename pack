@@ -1,0 +1,3 @@
+#!/bin/bash
+cd ./dist
+rsync -av -z --delete --exclude ./static/header.js . ../../penon/web/
