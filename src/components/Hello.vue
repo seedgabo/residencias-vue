@@ -24,7 +24,7 @@ div
               | {{post.title}}
           v-card-text.text-xs-justify(v-html='post.text.substring(0,100)')
           v-card-text(v-if="post.image")
-            img(:src="post.image.url" style="max-width:100%; max-heigt:100px")
+            img(:src="post.image.url" style="max-width:100%;")
           v-card-text.text-xs-right
             span.headline-2.mr-4(v-if='post.user') {{post.user.name}}
             span.grey--text

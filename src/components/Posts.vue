@@ -14,7 +14,7 @@ div
               v-btn(icon='', @click='deletePost(post)')
                 v-icon delete
           .text-xs-center(style='margin:0 auto;', v-if='post.image')
-            img(:src='post.image.url', style='max-width:100%;max-height:200px', alt='')
+            img(:src='post.image.url', style='max-width:100%;', alt='')
           v-card-text.pl-5.text-xs-justify(justify-center='')
             div(v-html='post.text')
           v-divider
