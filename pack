@@ -1,3 +1,22 @@
 #!/bin/bash
+# a Sample bash script
+if [ -z "$1" ]
+  then
+    echo "No argument supplied"
+    exit
+fi
 cd ./dist
-rsync -av -z --delete --exclude ./static/header.js . ../../penon/web/
+
+# rsync --exclude=assets/header.js -avz --delete . "eyc_proveedores@newton.eycproveedores.com:htdocs/$1/admin"
+
+b="with-header"
+if [ "$2" == "$b" ]
+  then
+    echo "Including header.js"
+    rsync -avz --delete . "eyc_proveedores@newton.eycproveedores.com:htdocs/$1/web"
+  else
+    echo "Excluding header.js"
+    rsync --exclude=static/header.js -avz --delete . "eyc_proveedores@newton.eycproveedores.com:htdocs/$1/web" 
+fi
+echo "syncronized"
+cd ../
