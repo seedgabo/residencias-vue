@@ -51,7 +51,7 @@
 					v-container
 						h3.text-xs-center.headline {{ticket.subject}}
 						div.elevation-3.pa-3
-							p(v-html="ticket.text")						
+							p(v-html="ticket.text")
 							v-select(v-bind:items="statuses" v-model="ticket.status", :label="api.trans('literals.status')" v-on:change="updateStatus")
 						h4.text-xs-center.headline.primary--text {{api.trans('literals.comments')}}
 						div.text-xs-center
