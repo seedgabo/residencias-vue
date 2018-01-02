@@ -19,18 +19,19 @@ v-container()
 										v-list-tile-avatar(v-if="reserv.zone")
 											img(:src="reserv.zone.image_url")
 										v-list-tile-content
-											v-list-tile-title 
+											v-list-tile-title
 												span {{reserv.zone.name }}
-											v-list-tile-sub-title 
+											v-list-tile-sub-title
 												h3(v-if="reserv.event") {{reserv.event.name}}
-												span {{reserv.start | moment('calendar') }} - 
+												span {{reserv.start | moment('calendar') }} -
 												span {{reserv.end  | moment('calendar') }}
-												p 
+												p
 													b {{api.trans('literals.quotas')}}: &nbsp;
 													span {{reserv.quotas}}
 										v-list-tile-action
 											v-btn(v-if="canCancel(reserv)" @click="cancelReservation(reserv)") {{ api.trans('crud.cancel') }} {{api.trans('literals.reservation')}}
-												
+											span(v-else) {{ api.trans('literals.' + reserv.status) }}
+
 				//- List of Zones
 				v-layout(key="zones" v-if="mode=='zones'"  wrap="")
 					v-flex(xs12="" sm12="" md6="" v-for="zone in zones", :key="zone.id")
@@ -101,7 +102,7 @@ v-container()
 				v-text-field(v-model="quotas" type="number", value="1", min="1", max="interval.available", :label="api.trans('literals.quota')")
 			v-card-actions
 				v-spacer
-				v-btn(color="primary" @click="postReservations(interval,quotas)") {{api.trans('literals.reservate')}}
+				v-btn(color="primary", :disabled="loading" @click="postReservations(interval,quotas)") {{api.trans('literals.reservate')}}
 				v-btn(flat, @click="reservation_dialog=false") {{api.trans('crud.cancel')}}
 	v-dialog(v-model="view_reservation" fullscreen)
 		v-card(v-if="zone && interval && interval.reserved")
@@ -191,7 +192,7 @@ module.exports =
 			.catch console.error
 		formatZones: ()->
 			@zones.forEach (zone)=>
-				if (zone.schedule) 
+				if (zone.schedule)
 					zone.days = []
 
 					if (zone.schedule.monday.length > 0 && zone.schedule.monday[0] != null)
@@ -284,6 +285,7 @@ module.exports =
 				return interval + " " + "minutos"
 		postReservations:(interval,quotas)->
 			date = moment.utc(@date)
+			@loading =true
 			@api.post('reservations',
 				zone_id: @zone.id
 				user_id: @api.user.id
@@ -296,7 +298,10 @@ module.exports =
 				@cancel()
 				@reservation_dialog = false
 				@saved = true
-			.catch (err)=> console.error err
+				@loading = false
+			.catch (err)=>
+				console.error err
+				@loading = false
 
 		getAvailableDays: (availables_days) ->
 			dates = []
@@ -337,13 +342,16 @@ module.exports =
 			note = prompt(@api.trans('__.Nota de cancelación'))
 			@api.put("reservations/#{reservation.id}", { status: 'cancelled', 'note': note})
 			.then (resp)=>
-				 reservation.status = 'cancelled'
+				reservation.status = 'cancelled'
+				@myReservations()
 
 		canCancel: (reserv)->
+			if reserv.status == 'cancelled'
+				return false
 			hours = @api.settings.hours_to_cancel_reservation
 			if not hours?
 				hours = 24;
-			return moment(reserv.start).subtract(hours, "hours") <= moment()
+			return moment(reserv.start).subtract(hours, "hours") >= moment()
 
 </script>
 
