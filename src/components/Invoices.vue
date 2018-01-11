@@ -42,13 +42,13 @@ v-container(fluid='')
                   v-tooltip(bottom)
                     span {{api.trans('__.report payment')}}
                     v-icon.primary--text(slot="activator") credit_card
-                v-btn(v-if='props.item.receipts.length!==0 ', icon='', :href="api.url + 'receipt/'+ props.item.receipts[0].id +'/pdf?token='+ api.user.token", target='receipt', @click.stop='null')
+                v-btn(v-if='props.item.receipts.length!==0 ', icon='', :href="api.url + 'receipt/'+ props.item.receipts[0].id +'/pdf?pdf=1&token='+ api.user.token", target='receipt', @click.stop='null')
                   v-tooltip(bottom)
                     span {{api.trans('literals.download')}} {{api.trans('literals.receipt')}}
                     v-icon.green--text(slot="activator") fa-file-text-o
-                v-btn(icon='', :href="api.url + 'invoice/'+ props.item.id +'/pdf?token='+ api.user.token", target='invoice', @click.stop='null')
+                v-btn(icon='', :href="api.url + 'invoice/'+ props.item.id +'/pdf?pdf=1&token='+ api.user.token", target='invoice', @click.stop='null')
                   v-tooltip(bottom)
-                    span {{api.trans('literals.download')}} 
+                    span {{api.trans('literals.download')}}
                     v-icon.red--text(slot="activator") fa-file-pdf-o
                 v-btn(icon='', small='', @click.stop='sendMailInvoice(props.item)')
                   v-tooltip(bottom)
@@ -81,7 +81,7 @@ v-container(fluid='')
                       v-list-tile-title
                         //- v-icon.green--text fa-file-text-o
                         span &nbsp; {{api.trans('literals.download')}} {{api.trans('literals.receipt') }}
-                    v-list-tile(:href="api.url + 'invoice/'+ invoice.id +'/pdf?token='+ api.user.token", target='invoice', @click.stop='null')
+                    v-list-tile(:href="api.url + 'invoice/'+ invoice.id +'/pdf?pdf=1&token='+ api.user.token", target='invoice', @click.stop='null')
                       v-list-tile-title
                         //- v-icon.red--text fa-file-pdf-o
                         span &nbsp; {{api.trans('literals.download')}}
@@ -128,7 +128,7 @@ v-container(fluid='')
             v-tooltip(left)
               span {{api.trans('__.report payment')}}
               v-icon(slot="activator") credit_card
-          v-btn.red(:href="api.url + 'invoice/'+ invoice.id +'/pdf?token='+ api.user.token", target='invoice', fab='', dark='', small='', style='right:5px')
+          v-btn.red(:href="api.url + 'invoice/'+ invoice.id +'/pdf?pdf=1&token='+ api.user.token", target='invoice', fab='', dark='', small='', style='right:5px')
             v-tooltip(left)
               span {{api.trans('__.print as pdf')}}
               v-icon(slot="activator") fa-file-pdf-o

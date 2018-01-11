@@ -19,6 +19,11 @@ import 'fullcalendar'
 import '../node_modules/fullcalendar/dist/locale-all.js'
 import FullCalendar from 'vue-full-calendar'
 
+Vue.filter('trans', function (string) {
+  var trans = _.get(window.i18n, string);
+  if (!trans) trans = string;
+  return trans.replace("__.", "").replace("literals.", "");
+})
 
 require('vue2-animate/dist/vue2-animate.min.css')
 
