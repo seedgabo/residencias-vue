@@ -37,7 +37,7 @@
 						v-select(disabled v-bind:items="statuses" v-model="ticket.status", :label="api.trans('literals.status')" single-line bottom)
 
 						v-flex(xs12="" v-if="canSave()")
-							v-btn(color="primary" @click="save()") {{api.trans('crud.save')}}
+							v-btn(:disabled="isSaving" color="primary" @click="save()") {{api.trans('crud.save')}}
 
 
 		v-dialog(v-model="open" fullscreen transition="dialog-bottom-transition", :overlay="false")
@@ -56,7 +56,7 @@
 						h4.text-xs-center.headline.primary--text {{api.trans('literals.comments')}}
 						div.text-xs-center
 							v-text-field(multi-line :label="api.trans('literals.comment')" v-model="new_comment.text" )
-							v-btn(flat color="orange", :disabled="new_comment.text.length < 3" @click="addComment()") {{api.trans('crud.add')}} {{api.trans('literals.comment')}}
+							v-btn(flat color="orange", :disabled="new_comment.text.length < 3 || isSaving" @click="addComment()") {{api.trans('crud.add')}} {{api.trans('literals.comment')}}
 						v-list.elevation-3.pa-3
 							v-list-tile(v-for="com in ticket.comments", :key="com.id" avatar three-line)
 								v-list-tile-content
@@ -88,6 +88,7 @@ module.exports =
 		editor:false
 		open:false
 		success: false
+		isSaving: false
 		statuses: [
 			{ text: api.trans('literals.open'), value: 'open' }
 			{ text: api.trans('literals.closed'), value: 'closed' }
@@ -116,8 +117,10 @@ module.exports =
 			return
 		updateStatus:(value)->
 			console.log value
+			@isSaving = true
 			@api.put("tickets/#{@ticket.id}",{status:value})
 			.then (resp)=>
+				@isSaving = false
 				@success = true
 				@open = false
 
@@ -127,6 +130,7 @@ module.exports =
 			@ticket && @ticket.subject.length > 2 && @ticket.text.length > 2
 		save: ()->
 			data = {subject: @ticket.subject, text:@ticket.text, status:@ticket.status, user_id: @ticket.user_id}
+			@isSaving = true
 			if @ticket.id
 				promise = @api.put("tickets/#{@ticket.id}",data)
 			else
@@ -138,18 +142,27 @@ module.exports =
 					resp.data.user = @api.user
 					resp.data.comments = []
 					@tickets.unshift resp.data
+				@isSaving = false
 				@success=true
 				@ticket = null
 				@editor = false
+			.catch (err)=>
+				@isSaving = false
+				alert("Error", JSON.stringify(err))
+
 		addComment: ()->
+			@isSaving = true
 			@new_comment.ticket_id = @ticket.id
 			@api.post("comments", @new_comment)
 			.then (resp)=>
+				@isSaving = false
 				@new_comment.text = ""
 				resp.data.user = @api.user
 				@success = true
 				@ticket.comments.push resp.data
-
+			.catch (err)=>
+				@isSaving = false
+				alert("Error", JSON.stringify(err))
 </script>
 
 
