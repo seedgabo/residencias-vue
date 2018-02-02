@@ -54,7 +54,7 @@ v-container()
 										v-icon.primary--text(large) attach_money
 										span &nbsp;
 											b {{api.trans('literals.price')}}:
-											span(v-if="zone.price != 0") &nbsp; {{ zone.price | currency }}
+											span(v-if="zone.price != 0") &nbsp; {{ zone.price | currency('$', 0, { thousandsSeparator: '.' }) }}
 											span(v-if="zone.price == 0") &nbsp; {{api.trans('literals.free')}}
 									p
 										v-icon.cyan--text(large) event
@@ -86,7 +86,7 @@ v-container()
 								v-icon(large, :class="interval.reserved?'primary--text':interval.available>0?'green--text':'red--text'") {{ interval.reserved ?'check':interval.available>0?'event_available': 'event_busy'}}
 							v-list-tile-content
 								v-list-tile-title {{ interval.start | moment('hh:mm A')}} - {{ interval.end | moment('hh:mm A') }}
-									small  | {{ zone.price | currency }}
+									small  | {{ zone.price | currency('$', 0, { thousandsSeparator: '.' }) }}
 								template(v-if="!interval.reserved")
 									v-list-tile-sub-title(v-if="interval.limit_user == 0") {{api.trans('__.cupos ilimitados')}}
 									v-list-tile-sub-title(v-else) {{interval.available}}
@@ -130,7 +130,7 @@ v-container()
 						v-list-tile-content
 							v-list-tile-title
 								b  {{api.trans('literals.amount')}}
-								span {{interval.reservation.quotas * zone.price | currency}}
+								span {{interval.reservation.quotas * zone.price | currency('$', 0, { thousandsSeparator: '.' }) }}
 					v-divider
 				v-list
 					v-list-tile

@@ -21,7 +21,7 @@ v-container(fluid='')
                 | {{(debt/total*100).toFixed(2)}}%
           v-spacer
           b  {{api.trans('literals.total')}} {{api.trans('literals.debt')}} :
-          span  {{debt | currency }}
+          span  {{debt | currency('$', 0, { thousandsSeparator: '.' }) }}
         v-data-table.hidden-xs-only.elevation-1.text-xs-right(:loading='!loading', :pagination.sync='pagination', :headers='headers', :items='invoices')
           template(slot='items', slot-scope='props')
             tr(@click.stop='seeInvoice(props.item)')
@@ -32,7 +32,7 @@ v-container(fluid='')
               td(v-if="props.item.type != 'residential'") {{ props.item.date | moment("dddd, MMMM D YYYY")}}
               td.text-capitalize(v-else='') {{ props.item.date | moment('MMMM/YYYY') }}
               td
-                span {{ props.item.total | currency }}
+                span {{ props.item.total | currency('$', 0, { thousandsSeparator: '.' }) }}
                 small(v-if="props.item.status!== 'paid' && props.item.status!== 'cancelled' && props.item.in_discount")  ({{ api.trans('literals.in discount') }})
                 small(v-if="props.item.status!== 'paid' && props.item.status!== 'cancelled' && props.item.in_interest")  ({{ api.trans('literals.in interest') }})
               td(:class="(props.item.status=='paid'?'green':'red') + '--text'")
@@ -63,7 +63,7 @@ v-container(fluid='')
               v-list-tile-content(@click.stop='seeInvoice(invoice)')
                 v-list-tile-title {{api.trans('literals.invoice')}} # {{invoice.number}}
                 v-list-tile-sub-title
-                  span {{invoice.total | currency}}
+                  span {{invoice.total | currency('$', 0, { thousandsSeparator: '.' }) }}
                   small(v-if="invoice.status!== 'paid' && invoice.status!== 'cancelled' && invoice.in_discount")  ({{ api.trans('literals.in discount') }})
                   small(v-if="invoice.status!== 'paid' && invoice.status!== 'cancelled' && invoice.in_interest")  ({{ api.trans('literals.in interest') }})
               v-list-tile-action
