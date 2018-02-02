@@ -3,7 +3,7 @@ v-container()
 	v-layout(wrap="")
 		v-flex.text-xs-center(xs12="")
 			v-btn(color="primary",v-if="mode!='reservations'", @click="myReservations();mode='reservations'") {{ api.trans('__.mys') }} {{ api.trans('literals.reservations') }}
-		v-flex(xs12="" sm12="" md8="" offset-md2="")
+		v-flex(xs12="" sm12="" m12="")
 			v-progress-linear(v-if="loading" v-bind:indeterminate="true")
 			transition(name='fadeLeft', enter-active-class='animated zoomIn', leave-active-class='animated zoomOut', mode='out-in', :duration='{ enter: 200, leave:200 }')
 				//- List of reservations
@@ -30,7 +30,8 @@ v-container()
 													span {{reserv.quotas}}
 										v-list-tile-action
 											v-btn(v-if="canCancel(reserv)" @click="cancelReservation(reserv)") {{ api.trans('crud.cancel') }} {{api.trans('literals.reservation')}}
-											span(v-else) {{ api.trans('literals.' + reserv.status) }}
+											small.red--text(v-else) {{ api.trans('__.Ya no es posible cancelar esta reservacion' ) }} (< {{api.settings.hours_to_cancel_reservation || 24}} hrs)
+											span {{ api.trans('literals.' + reserv.status) }}
 
 				//- List of Zones
 				v-layout(key="zones" v-if="mode=='zones'"  wrap="")
@@ -235,18 +236,17 @@ module.exports =
 
 			intervals.forEach (element)=>
 				start = date.clone().startOf('day').add(element[0].split(':')[0], 'hours').add(element[0].split(':')[1], 'minutes')
-
 				end =  date.clone().startOf('day').add(element[1].split(':')[0], 'hours').add(element[1].split(':')[1], 'minutes')
+				if(start > moment() and end >moment())
+					ref  =
+						# available: @zone.limit_user is 0 ? Number.MAX_SAFE_INTEGER : @zone.limit_user
+						limit_user: @zone.limit_user
+						start: start
+						end: end
+						ref: start.format("HH:mm")
 
-				ref  =
-					# available: @zone.limit_user is 0 ? Number.MAX_SAFE_INTEGER : @zone.limit_user
-					limit_user: @zone.limit_user
-					start: start
-					end: end
-					ref: start.format("HH:mm")
-
-				@options.push ref
-				@collection["" + start.clone().format("HH:mm")] = ref
+					@options.push ref
+					@collection["" + start.clone().format("HH:mm")] = ref
 			@getReservations()
 		getReservations: ()->
 			date = moment.utc(@date)
