@@ -15,13 +15,14 @@
 									v-list-tile-sub-title(:class="ticket.status") {{ api.trans('literals.'+ticket.status)}}
 									v-list-tile-sub-title() {{ ticket.updated_at | moment("from") }}
 								v-list-tile-action
-									v-list-tile-action-text 
+									v-list-tile-action-text
 										v-btn(icon small @click.stop="editTicket(ticket)")
 											v-icon edit
 		v-btn(fab dark color="pink" fixed bottom right @click="createTicket()")
 			v-icon add
 		v-dialog(v-model="editor" fullscreen transition="dialog-bottom-transition", :overlay="false")
 			v-card
+				input(type="file" ref="inputImageTicket" style="display:none;", @change="readFile")
 				v-toolbar(dark color="primary")
 					v-toolbar-title(v-if="ticket") {{ticket.subject}}
 					v-spacer
@@ -35,6 +36,11 @@
 						v-text-field(v-model="ticket.text", :placeholder="api.trans('literals.text')", :label="api.trans('literals.text')" multi-line)
 
 						v-select(disabled v-bind:items="statuses" v-model="ticket.status", :label="api.trans('literals.status')" single-line bottom)
+
+						v-btn(v-if="!ticket.id || !ticket.file_id" block @click="askFile" color="light")
+							span(v-if="!file") {{ api.trans('crud.upload') }} {{ api.trans('literals.file') }}
+							span(v-if="file") {{ file_name }}
+
 
 						v-flex(xs12="" v-if="canSave()")
 							v-btn(:disabled="isSaving" color="primary" @click="save()") {{api.trans('crud.save')}}
@@ -52,6 +58,8 @@
 						h3.text-xs-center.headline {{ticket.subject}}
 						div.elevation-3.pa-3
 							p(v-html="ticket.text")
+							v-btn(block v-if="ticket.file" @click="downloadFile()")
+								span {{ api.trans('literals.download') }} {{ticket.file.name}}
 							v-select(v-bind:items="statuses" v-model="ticket.status", :label="api.trans('literals.status')" v-on:change="updateStatus")
 						h4.text-xs-center.headline.primary--text {{api.trans('literals.comments')}}
 						div.text-xs-center
@@ -63,8 +71,8 @@
 									v-list-tile-title {{com.text}}
 									v-list-tile-sub-title: small {{ com.created_at | moment("from") }}
 								v-list-tile-action
-									small(v-if="com.user") 
-										v-avatar(size="22px", :title="com.user.name") 
+									small(v-if="com.user")
+										v-avatar(size="22px", :title="com.user.name")
 											img(:src="com.user.image_url" )
 										span.hidden-sm-and-down {{com.user.name}}
 										span.hidden-sm-and-down(v-if="com.user.residence") - {{com.user.residence.name}}
@@ -95,10 +103,12 @@ module.exports =
 			{ text: api.trans('literals.in progress'), value: 'in progress' }
 			{ text: api.trans('literals.rejected'), value: 'rejected' }
 		]
+		file:null
+		file_name:""
 		new_comment: {text:"",user_id:api.user.id}
 	methods:
 		getData: ()->
-			@api.get "tickets?where[user_id]=#{@api.user.id}&with[]=user&with[]=comments&with[]=comments.user&with[]=comments.user.residence&with[]=user.residence&order[updated_at]=desc&take=300"
+			@api.get "tickets?where[user_id]=#{@api.user.id}&with[]=user&with[]=comments&with[]=comments.user&with[]=comments.user.residence&with[]=file&with[]=user.residence&order[updated_at]=desc&take=300"
 			.then (resp)=>
 				console.log 'data', resp.data
 				@tickets = resp.data
@@ -124,7 +134,7 @@ module.exports =
 				@success = true
 				@open = false
 
-				
+
 
 		canSave: ()->
 			@ticket && @ticket.subject.length > 2 && @ticket.text.length > 2
@@ -135,9 +145,11 @@ module.exports =
 				promise = @api.put("tickets/#{@ticket.id}",data)
 			else
 				promise = @api.post("tickets",data)
-			
+
 			promise.then (resp)=>
 				console.log resp.data
+				if @file?
+					@uploadFile(resp.data.id)
 				if not @ticket.id
 					resp.data.user = @api.user
 					resp.data.comments = []
@@ -149,7 +161,14 @@ module.exports =
 			.catch (err)=>
 				@isSaving = false
 				alert("Error", JSON.stringify(err))
-
+		downloadFile: ()->
+			element = document.createElement('a')
+			element.setAttribute('href', @api.url.replace('api/','files/') + @ticket.file.id)
+			element.setAttribute('download', this.ticket.file.name)
+			element.style.display = 'none'
+			document.body.appendChild(element)
+			element.click()
+			document.body.removeChild(element)
 		addComment: ()->
 			@isSaving = true
 			@new_comment.ticket_id = @ticket.id
@@ -163,6 +182,33 @@ module.exports =
 			.catch (err)=>
 				@isSaving = false
 				alert("Error", JSON.stringify(err))
+		askFile: ()->
+			@$refs.inputImageTicket.click()
+		readFile: ()->
+			try
+				reader = new FileReader
+				reader.readAsDataURL event.target.files[0]
+				if event.target.files[0].size / 1024 / 1024 > 5
+					return @errorFile event.target.files[0].size
+				@file = event.target.files[0]
+				@file_name = event.target.files[0].name
+			catch error
+				@file = null
+				console.error error
+		uploadFile: (id)->
+			formData = new FormData()
+			xhr = new XMLHttpRequest()
+			xhr.open('POST', this.api.url + "files/upload/ticket/" + id, true)
+			formData.append('file', @file, @file_name)
+			xhr.onload = ()=>
+				if (xhr.status == 200)
+					@file = null
+					@file_name = ""
+				else
+					alert("ERROR", xhr.status)
+					console.error(xhr)
+			xhr.setRequestHeader("Auth-Token", @api.user.token)
+			xhr.send(formData)
 </script>
 
 
