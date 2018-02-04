@@ -137,7 +137,6 @@
             </v-btn>
           </v-container>
         </v-card-text>
-        </v-card-actions>
       </v-card>
     </v-dialog>
     <!--//* END EDITOR  -->
@@ -186,7 +185,6 @@
             </v-layout>
           </v-container>
         </v-card-text>
-        </v-card-actions>
       </v-card>
     </v-dialog>
     <!--//* END Visor  -->
