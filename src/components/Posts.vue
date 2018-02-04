@@ -52,10 +52,10 @@ div
                   v-spacer
                   v-btn(color="primary", v-if='!post.id', @click='createPost()', :disabled="!canSave()", :loading="uploading")
                     v-icon(dark='') save
-                    |  {{api.trans('crud.save')}}
+                    |  {{api.trans('crud.updated')}}
                   v-btn(color="primary", v-else='', @click='updatePost(post)', :disabled="!canSave()")
                     v-icon(dark='') save
-                    |  {{api.trans('crud.save')}}
+                    |  {{api.trans('crud.updated')}}
                   v-btn(flat='', @click='creator=false')
                     |  {{api.trans('crud.cancel')}}
 </template>

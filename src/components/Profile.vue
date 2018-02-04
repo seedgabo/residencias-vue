@@ -37,10 +37,10 @@ v-container(fluid='')
                   template(slot-scope='{ save, cancel }')
                     v-card-actions
                       v-btn(flat='', color="primary", @click.native='cancel()') {{api.trans('crud.cancel')}}
-                      v-btn(flat='', color="primary", @click.native='save()') {{api.trans('crud.save')}}
+                      v-btn(flat='', color="primary", @click.native='save()') {{api.trans('crud.updated')}}
             v-flex.text-xs-right(xs12='')
               v-btn(flat='', color="primary", @click.native='updateUser()')
-                | {{api.trans('crud.save')}}  
+                | {{api.trans('crud.updated')}}  
                 v-icon(color="primary") save
     // END CARD PROFILE
     // CARD RESIDENCE
@@ -110,7 +110,7 @@ v-container(fluid='')
             v-text-field(:label="api.trans('literals.emergency_contact') + ' - ' + api.trans('literals.email')", v-model='api.residence.emergency_contact.email')
 
             v-flex.text-xs-right
-              v-btn(flat color="primary" @click="updateResidence()") {{api.trans('crud.save')}}
+              v-btn(flat color="primary" @click="updateResidence()") {{api.trans('crud.updated')}}
         v-card-actions(v-if="!editable")
           v-spacer
           v-btn.orange--text(flat='', to='invoices')
@@ -152,7 +152,7 @@ v-container(fluid='')
           v-text-field(v-model='password', :label="api.trans('literals.password')", required='', type='password')
           v-text-field(v-model='password_confirmation', :label="api.trans('literals.password_confirmation')", type='password', required='')
           v-spacer
-          v-btn(color="primary", full='', :disabled="!(password.length>5 && password === password_confirmation)", @click="updatePassword()",flat="") {{ api.trans('crud.save') }}
+          v-btn(color="primary", full='', :disabled="!(password.length>5 && password === password_confirmation)", @click="updatePassword()",flat="") {{ api.trans('crud.updated') }}
     // //* END PASSWORD
     // //* NEW USER DIALOG
     v-dialog(v-model='new_user', persistent='')

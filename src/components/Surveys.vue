@@ -47,7 +47,7 @@ v-container(fluid="")
 							v-radio(:label="survey.response_6", value="6" v-if="survey.response_6")
 					v-card-actions
 						v-btn.primary--text.darken-1(flat="" @click.native="voting=false") {{ api.trans('crud.cancel') }}
-						v-btn.primary--text.darken-1(flat="" @click.native="postVote(survey,response)") {{ api.trans('crud.save') }}
+						v-btn.primary--text.darken-1(flat="" @click.native="postVote(survey,response)") {{ api.trans('crud.updated') }}
 </template>
 
 <script lang="coffee">

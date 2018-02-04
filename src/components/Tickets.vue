@@ -26,7 +26,7 @@
 				v-toolbar(dark color="primary")
 					v-toolbar-title(v-if="ticket") {{ticket.subject}}
 					v-spacer
-					v-btn(flat :disabled="!canSave()" @click="save()") {{api.trans('crud.save')}}
+					v-btn(flat :disabled="!canSave()" @click="save()") {{api.trans('crud.updated')}}
 					v-btn(icon @click.native="editor=false")
 						v-icon close
 				v-card-text(v-if="ticket")
@@ -43,7 +43,7 @@
 
 
 						v-flex(xs12="" v-if="canSave()")
-							v-btn(:disabled="isSaving" color="primary" @click="save()") {{api.trans('crud.save')}}
+							v-btn(:disabled="isSaving" color="primary" @click="save()") {{api.trans('crud.updated')}}
 
 
 		v-dialog(v-model="open" fullscreen transition="dialog-bottom-transition", :overlay="false")
@@ -77,7 +77,7 @@
 										span.hidden-sm-and-down {{com.user.name}}
 										span.hidden-sm-and-down(v-if="com.user.residence") - {{com.user.residence.name}}
 		v-snackbar.success(:timeout="3000" top right v-model="success")
-			span {{api.trans('literals.ticket')}}  {{api.trans('crud.saved')}}
+			span {{api.trans('literals.ticket')}}  {{api.trans('crud.updatedd')}}
 			v-btn(flat @click.native="success=false" icon)
 				v-icon close
 </template>
@@ -184,14 +184,13 @@ module.exports =
 				alert("Error", JSON.stringify(err))
 		askFile: ()->
 			@$refs.inputImageTicket.click()
-		readFile: ()->
+		readFile: (evt)->
 			try
 				reader = new FileReader
-				reader.readAsDataURL event.target.files[0]
-				if event.target.files[0].size / 1024 / 1024 > 5
-					return @errorFile event.target.files[0].size
-				@file = event.target.files[0]
-				@file_name = event.target.files[0].name
+				if evt.target.files[0].size / 1024 / 1024 > 5
+					return @errorFile evt.target.files[0].size
+				@file = evt.target.files[0]
+				@file_name = evt.target.files[0].name
 			catch error
 				@file = null
 				console.error error

@@ -86,7 +86,7 @@ div
         div()
           v-select(:items="statuses", v-model="selected.status", :label="api.trans('literals.status')", prepend-icon="transfer_within_a_station")
           div.text-xs-right
-            v-btn(@click="updateVisit(selected,selected.status)" flat color="primary") {{api.trans('crud.save')}}
+            v-btn(@click="updateVisit(selected,selected.status)" flat color="primary") {{api.trans('crud.updated')}}
 </template>
 
 <script lang="coffee">

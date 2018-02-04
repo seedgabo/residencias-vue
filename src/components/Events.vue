@@ -117,7 +117,7 @@
             </v-layout>
             <v-btn :disabled="!canSave()" v-if="event.id" fixed bottom right color="primary" dark fab @click.native="saveEvent()">
               <v-tooltip top>
-                <span>{{ api.trans('crud.save') }}</span>
+                <span>{{ api.trans('crud.updated') }}</span>
                 <v-icon slot="activator" dark>save</v-icon>
               </v-tooltip>
             </v-btn>
