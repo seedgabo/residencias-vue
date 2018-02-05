@@ -60,7 +60,7 @@ v-layout(wrap)
       v-divider
       v-card-actions
         v-btn(:disabled="!canSave()" v-if="!vehicle.id" flat color="primary"  @click="createVehicle()") {{api.trans('crud.add')}}
-        v-btn(:disabled="!canSave()" v-else flat color="primary"  @click="updateVehicle(vehicle)") {{api.trans('crud.save')}}
+        v-btn(:disabled="!canSave()" v-else flat color="primary"  @click="updateVehicle(vehicle)") {{api.trans('crud.updated')}}
         v-btn(@click="creator=false" flat color="primary") {{api.trans('crud.cancel')}}
   v-snackbar(:timeout="1500", bottom v-model="imageUploaded")
     span {{ api.trans('__.image uploaded') }}

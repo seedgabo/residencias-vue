@@ -55,12 +55,12 @@ v-layout(wrap)
       v-divider
       v-card-actions
         v-btn(:disabled="!canSave()" v-if="!pet.id" flat color="primary"  @click="createpet()") {{api.trans('crud.add')}}
-        v-btn(:disabled="!canSave()" v-else flat color="primary"  @click="updatepet(pet)") {{api.trans('crud.save')}}
+        v-btn(:disabled="!canSave()" v-else flat color="primary"  @click="updatepet(pet)") {{api.trans('crud.updated')}}
         v-btn(@click="creator=false" flat color="primary") {{api.trans('crud.cancel')}}
   v-snackbar(:timeout="1500", bottom v-model="imageUploaded")
     span {{ api.trans('__.image uploaded') }}
     v-btn.pink--text(flat, @click.native="snackbar=false" icon)
-      v-icon close 
+      v-icon close
 </template>
 
 <script lang="coffee">
@@ -130,11 +130,14 @@ module.exports =
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus">
-.avatar-image
-  border-radius 50%
-  height 70px
-  width 70px
-.avatar img.large
-  height 46px !important
-  width 46px !important
+.avatar-image {
+  border-radius: 50%;
+  height: 70px;
+  width: 70px;
+}
+
+.avatar img.large {
+  height: 46px !important;
+  width: 46px !important;
+}
 </style>

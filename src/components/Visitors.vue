@@ -71,7 +71,7 @@ v-layout(wrap)
       v-divider
       v-card-actions
         v-btn(v-if="!visitor.id" flat color="primary"  @click="createVisitor()") {{api.trans('crud.add')}}
-        v-btn(v-else flat color="primary"  @click="updateVisitor(visitor)") {{api.trans('crud.save')}}
+        v-btn(v-else flat color="primary"  @click="updateVisitor(visitor)") {{api.trans('crud.updated')}}
         v-btn(@click="creator=false" flat color="primary") {{api.trans('crud.cancel')}}
   v-snackbar(:timeout="1500", bottom v-model="imageUploaded")
     span {{ api.trans('__.image uploaded') }}
