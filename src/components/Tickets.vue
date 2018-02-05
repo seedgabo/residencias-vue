@@ -112,7 +112,13 @@ module.exports =
 			@editor = true
 			return
 		createTicket: (ticket)->
-			@ticket = {subject:"",status:"open",text:"", user_id: @api.user.id}
+			@ticket = {
+				subject:"",
+				status:"open",
+				text:"", 
+				user_id: @api.user.id
+				residence_id: @api.user.residence_id
+			}
 			@editor = true
 			return
 		updateStatus:(value)->
@@ -129,7 +135,13 @@ module.exports =
 		canSave: ()->
 			@ticket && @ticket.subject.length > 2 && @ticket.text.length > 2
 		save: ()->
-			data = {subject: @ticket.subject, text:@ticket.text, status:@ticket.status, user_id: @ticket.user_id}
+			data = {
+				subject: @ticket.subject, 
+				text:@ticket.text, 
+				status:@ticket.status, 
+				user_id: @ticket.user_id
+				residence_id: @ticket.residence_id
+			}
 			@isSaving = true
 			if @ticket.id
 				promise = @api.put("tickets/#{@ticket.id}",data)
