@@ -1,25 +1,25 @@
 <template lang="jade">
 	div
 		v-container()
-			visitors(v-show="tab==='visitors'")
-			vehicles(v-show="tab==='vehicles'")
-			parkings(v-show="tab==='parkings'")
-			workers(v-show="tab==='workers'")
+			visitors(v-if="tab==='visitors'")
+			vehicles(v-if="tab==='vehicles'")
+			parkings(v-if="tab==='parkings'")
+			workers(v-if="tab==='workers'")
 			pets(v-show="tab==='pets'")
-		v-bottom-nav.purple(value="true" light="", :shift="windowWidth<500")
-			v-btn(dark=""  @click.native="tab='visitors'", :value="tab==='visitors'")
+		v-bottom-nav.white(:value="true",:active.sync="tab")
+			v-btn(flat color="primary", :value="'visitors'")
 				span {{api.trans('literals.visitors')}}
 				v-icon people
-			v-btn(dark=""  @click.native="tab='vehicles'", :value="tab==='vehicles'")
+			v-btn(flat color="primary", :value="'vehicles'")
 				span {{api.trans('literals.vehicles')}}
 				v-icon directions_car
-			v-btn(dark=""  @click.native="tab='parkings'", :value="tab==='parkings'")
+			v-btn(flat color="primary" , :value="'parkings'")
 				span {{api.trans('literals.parkings')}}
 				v-icon local_parking
-			v-btn(dark=""  @click.native="tab='workers'", :value="tab==='workers'")
+			v-btn(flat color="primary", :value="'workers'")
 				span {{api.trans('literals.workers')}}
 				v-icon work
-			v-btn(dark=""  @click.native="tab='pets'", :value="tab==='pets'")
+			v-btn(flat color="primary", :value="'pets'")
 				span {{api.trans('literals.pets')}}
 				v-icon pets
 </template>
