@@ -64,11 +64,17 @@
 						h4.text-xs-center.headline.primary--text {{api.trans('literals.comments')}}
 						div.text-xs-center
 							v-text-field(multi-line :label="api.trans('literals.comment')" v-model="new_comment.text" )
+							v-btn(block @click="()=>{askFile(true)}" small  color="light")
+								span(v-if="!file") {{ api.trans('crud.upload') }} {{ api.trans('literals.file') }}
+								span(v-if="file") {{ file_name }}							
 							v-btn(flat color="orange", :disabled="new_comment.text.length < 3 || isSaving" @click="addComment()") {{api.trans('crud.add')}} {{api.trans('literals.comment')}}
 						v-list.elevation-3.pa-3
 							v-list-tile(v-for="com in ticket.comments", :key="com.id" avatar three-line)
 								v-list-tile-content
 									v-list-tile-title {{com.text}}
+										v-btn(@click="downloadFile(com.file)" v-if="com.file" small flat color="primary")
+											v-icon file_download
+											span {{api.trans('literals.file')}}
 									v-list-tile-sub-title: small {{ com.created_at | moment("from") }}
 								v-list-tile-action
 									small(v-if="com.user")
@@ -77,7 +83,7 @@
 										span.hidden-sm-and-down {{com.user.name}}
 										span.hidden-sm-and-down(v-if="com.user.residence") - {{com.user.residence.name}}
 		v-snackbar.success(:timeout="3000" top right v-model="success")
-			span {{api.trans('literals.ticket')}}  {{api.trans('crud.updatedd')}}
+			span {{api.trans('literals.ticket')}}  {{api.trans('crud.updated')}}
 			v-btn(flat @click.native="success=false" icon)
 				v-icon close
 </template>
@@ -106,9 +112,10 @@ module.exports =
 		file:null
 		file_name:""
 		new_comment: {text:"",user_id:api.user.id}
+		commentFile:null
 	methods:
 		getData: ()->
-			@api.get "tickets?where[user_id]=#{@api.user.id}&with[]=user&with[]=comments&with[]=comments.user&with[]=comments.user.residence&with[]=file&with[]=user.residence&order[updated_at]=desc&take=300"
+			@api.get "tickets?where[user_id]=#{@api.user.id}&with[]=user&with[]=comments&with[]=comments.user&with[]=comments.user.residence&with[]=comments.file&with[]=file&with[]=user.residence&order[updated_at]=desc&take=300"
 			.then (resp)=>
 				console.log 'data', resp.data
 				@tickets = resp.data
@@ -173,10 +180,12 @@ module.exports =
 			.catch (err)=>
 				@isSaving = false
 				alert("Error", JSON.stringify(err))
-		downloadFile: ()->
+		downloadFile: (file)->
+			if not file?
+				file = @ticket.file
 			element = document.createElement('a')
-			element.setAttribute('href', @api.url.replace('api/','files/') + @ticket.file.id)
-			element.setAttribute('download', this.ticket.file.name)
+			element.setAttribute('href', @api.url.replace('api/','files/') + file.id)
+			element.setAttribute('download', file.name)
 			element.style.display = 'none'
 			document.body.appendChild(element)
 			element.click()
@@ -191,10 +200,13 @@ module.exports =
 				resp.data.user = @api.user
 				@success = true
 				@ticket.comments.push resp.data
+				if @file?
+					@uploadFile(resp.data.id,resp.data)
 			.catch (err)=>
 				@isSaving = false
 				alert("Error", JSON.stringify(err))
-		askFile: ()->
+		askFile: (is_comment=true)->
+			@commentFile = is_comment
 			@$refs.inputImageTicket.click()
 		readFile: (evt)->
 			try
@@ -206,15 +218,23 @@ module.exports =
 			catch error
 				@file = null
 				console.error error
-		uploadFile: (id)->
+		uploadFile: (id, comment)->
+			if @commentFile?
+				type = 'comment'
+			else
+				type = 'ticket'
 			formData = new FormData()
 			xhr = new XMLHttpRequest()
-			xhr.open('POST', this.api.url + "files/upload/ticket/" + id, true)
+			xhr.open('POST', this.api.url + "files/upload/#{type}/" + id, true)
 			formData.append('file', @file, @file_name)
 			xhr.onload = ()=>
 				if (xhr.status == 200)
 					@file = null
 					@file_name = ""
+					if @commentFile
+						@getData()
+						@commentFile=null
+						@open = false
 				else
 					alert("ERROR", xhr.status)
 					console.error(xhr)
