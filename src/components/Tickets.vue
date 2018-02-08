@@ -123,6 +123,10 @@ module.exports =
 		seeTicket: (ticket)->
 			console.log ticket
 			@ticket = ticket
+			@api.get("comments?where[ticket_id]=#{@ticket.id}&with[]=user.residence&with[]=file")
+			.then (comments)=>
+				@ticket.comments = comments.data
+			.catch console.error
 			@open = true
 		editTicket: (ticket)->
 			@ticket = ticket
@@ -232,8 +236,7 @@ module.exports =
 					@file = null
 					@file_name = ""
 					if @commentFile
-						@getData()
-						@commentFile=null
+						@seeTicket(@ticket)
 						@open = false
 				else
 					alert("ERROR", xhr.status)
