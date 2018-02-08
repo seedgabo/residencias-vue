@@ -7,7 +7,6 @@ if [ -z "$1" ]
 fi
 cd ./dist
 
-# rsync --exclude=assets/header.js -avz --delete . "eyc_proveedores@newton.eycproveedores.com:htdocs/$1/admin"
 
 b="with-header"
 if [ "$2" == "$b" ]

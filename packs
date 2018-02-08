@@ -2,8 +2,7 @@
 # a Sample bash script
 echo -n Password: 
 read -s passwd
-cd ./platforms/browser/www
-
+cd ./dist
 folder="plazueladetoscan"
 sshpass -p "$passwd" rsync --exclude=static/header.js -avz --delete . "eyc_proveedores@newton.eycproveedores.com:htdocs/$folder/web" 
 
@@ -20,4 +19,4 @@ folder="horizontesdelcastillo"
 sshpass -p "$passwd" rsync --exclude=static/header.js -avz --delete . "eyc_proveedores@newton.eycproveedores.com:htdocs/$folder/web" 
 
 echo "syncronized"
-cd ../../../
+cd ../
