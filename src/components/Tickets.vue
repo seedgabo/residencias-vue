@@ -54,11 +54,11 @@
 					v-btn(icon @click.native="open=false")
 						v-icon close
 				v-card-text(v-if="ticket")
-					v-container
+					v-container(fluid)
 						h3.text-xs-center.headline {{ticket.subject}}
 						div.elevation-3.pa-3
 							p(v-html="ticket.text")
-							v-btn(block v-if="ticket.file" @click="downloadFile()")
+							v-btn(block color="primary" v-if="ticket.file" @click="downloadFile()")
 								span {{ api.trans('literals.download') }} {{ticket.file.name}}
 							v-select(v-bind:items="statuses" v-model="ticket.status", :label="api.trans('literals.status')" v-on:change="updateStatus")
 						h4.text-xs-center.headline.primary--text {{api.trans('literals.comments')}}
@@ -68,20 +68,21 @@
 								span(v-if="!file") {{ api.trans('crud.upload') }} {{ api.trans('literals.file') }}
 								span(v-if="file") {{ file_name }}							
 							v-btn(flat color="orange", :disabled="new_comment.text.length < 3 || isSaving" @click="addComment()") {{api.trans('crud.add')}} {{api.trans('literals.comment')}}
-						v-list.elevation-3.pa-3
-							v-list-tile(v-for="com in ticket.comments", :key="com.id" avatar three-line)
-								v-list-tile-content
-									v-list-tile-title {{com.text}}
-										v-btn(@click="downloadFile(com.file)" v-if="com.file" small flat color="primary")
-											v-icon file_download
-											span {{api.trans('literals.file')}}
-									v-list-tile-sub-title: small {{ com.created_at | moment("from") }}
-								v-list-tile-action
-									small(v-if="com.user")
+						v-flex.pa-3
+							v-card.pa-3(v-for="com in ticket.comments", :key="com.id" )
+								v-card-title(style="word-break: break-all;") {{com.text}}
+								v-card-actions
+									span.primary--text(v-if="com.user")
 										v-avatar(size="22px", :title="com.user.name")
 											img(:src="com.user.image_url" )
-										span.hidden-sm-and-down {{com.user.name}}
-										span.hidden-sm-and-down(v-if="com.user.residence") - {{com.user.residence.name}}
+										span {{com.user.name}}
+										span(v-if="com.user.residence")  - {{com.user.residence.name}}
+									v-spacer
+									small {{ com.created_at | moment("from") }}
+									v-btn(@click="downloadFile(com.file)" v-if="com.file" small flat color="primary")
+										v-icon file_download
+										span {{api.trans('literals.download')}}
+										span &nbsp; {{api.trans('literals.file')}}
 		v-snackbar.success(:timeout="3000" top right v-model="success")
 			span {{api.trans('literals.ticket')}}  {{api.trans('crud.updated')}}
 			v-btn(flat @click.native="success=false" icon)
