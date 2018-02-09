@@ -238,7 +238,7 @@ module.exports =
 					@file_name = ""
 					if @commentFile
 						@seeTicket(@ticket)
-            @commentFile = false
+						@commentFile = false
 				else
 					alert("ERROR", xhr.status)
 					console.error(xhr)
@@ -250,18 +250,18 @@ module.exports =
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus" scoped>
 .open {
-  color: #4CAF50 !important;
+	color: #4CAF50 !important;
 }
 
 .in.progress {
-  color: #FFEB3B !important;
+	color: #FFEB3B !important;
 }
 
 .closed {
-  color: #2196F3 !important;
+	color: #2196F3 !important;
 }
 
 .rejected {
-  color: #F44336 !important;
+	color: #F44336 !important;
 }
 </style>
