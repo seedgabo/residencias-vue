@@ -66,7 +66,7 @@
 							v-text-field(multi-line :label="api.trans('literals.comment')" v-model="new_comment.text" )
 							v-btn(block @click="()=>{askFile(true)}" small  color="light")
 								span(v-if="!file") {{ api.trans('crud.upload') }} {{ api.trans('literals.file') }}
-								span(v-if="file") {{ file_name }}							
+								span(v-if="file") {{ file_name }}
 							v-btn(flat color="orange", :disabled="new_comment.text.length < 3 || isSaving" @click="addComment()") {{api.trans('crud.add')}} {{api.trans('literals.comment')}}
 						v-flex.pa-3
 							v-card.pa-3(v-for="com in ticket.comments", :key="com.id" )
@@ -137,7 +137,7 @@ module.exports =
 			@ticket = {
 				subject:"",
 				status:"open",
-				text:"", 
+				text:"",
 				user_id: @api.user.id
 				residence_id: @api.user.residence_id
 			}
@@ -158,9 +158,9 @@ module.exports =
 			@ticket && @ticket.subject.length > 2 && @ticket.text.length > 2
 		save: ()->
 			data = {
-				subject: @ticket.subject, 
-				text:@ticket.text, 
-				status:@ticket.status, 
+				subject: @ticket.subject,
+				text:@ticket.text,
+				status:@ticket.status,
 				user_id: @ticket.user_id
 				residence_id: @ticket.residence_id
 			}
@@ -230,7 +230,7 @@ module.exports =
 				type = 'ticket'
 			formData = new FormData()
 			xhr = new XMLHttpRequest()
-			xhr.open('POST', this.api.url + "files/upload/#{type}/" + id, true)
+			xhr.open('POST', @api.url + "files/upload/#{type}/" + id, true)
 			formData.append('file', @file, @file_name)
 			xhr.onload = ()=>
 				if (xhr.status == 200)
@@ -238,7 +238,7 @@ module.exports =
 					@file_name = ""
 					if @commentFile
 						@seeTicket(@ticket)
-						@open = false
+            @commentFile = false
 				else
 					alert("ERROR", xhr.status)
 					console.error(xhr)
