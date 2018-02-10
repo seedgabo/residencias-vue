@@ -210,7 +210,7 @@ module.exports =
 			.catch (err)=>
 				@isSaving = false
 				alert("Error", JSON.stringify(err))
-		askFile: (is_comment=true)->
+		askFile: (is_comment=false)->
 			@commentFile = is_comment
 			@$refs.inputImageTicket.click()
 		readFile: (evt)->
