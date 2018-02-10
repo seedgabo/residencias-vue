@@ -26,7 +26,7 @@
 				v-toolbar(dark color="primary")
 					v-toolbar-title(v-if="ticket") {{ticket.subject}}
 					v-spacer
-					v-btn(flat :disabled="!canSave()" @click="save()") {{api.trans('crud.updated')}}
+					v-btn(flat :disabled="!canSave()" @click="save()") {{api.trans('crud.save')}}
 					v-btn(icon @click.native="editor=false")
 						v-icon close
 				v-card-text(v-if="ticket")
@@ -43,7 +43,7 @@
 
 
 						v-flex(xs12="" v-if="canSave()")
-							v-btn(:disabled="isSaving" color="primary" @click="save()") {{api.trans('crud.updated')}}
+							v-btn(:disabled="isSaving" color="primary" @click="save()") {{api.trans('crud.save')}}
 
 
 		v-dialog(v-model="open" fullscreen transition="dialog-bottom-transition", :overlay="false")
@@ -250,18 +250,18 @@ module.exports =
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="stylus" scoped>
 .open {
-	color: #4CAF50 !important;
+  color: #4CAF50 !important;
 }
 
 .in.progress {
-	color: #FFEB3B !important;
+  color: #FFEB3B !important;
 }
 
 .closed {
-	color: #2196F3 !important;
+  color: #2196F3 !important;
 }
 
 .rejected {
-	color: #F44336 !important;
+  color: #F44336 !important;
 }
 </style>
