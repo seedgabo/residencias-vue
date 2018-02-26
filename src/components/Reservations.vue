@@ -174,8 +174,8 @@ module.exports =
 		reservation_dialog:false
 		view_reservation:false
 		saved:false
-		min: moment.utc().startOf('day').toDate()
-		max: moment.utc().startOf('day').add(1,'year').toDate()
+		min: moment().startOf('day').toDate()
+		max: moment().startOf('day').add(1,'year').toDate()
 		mode: 'zones'
 		reservations:[]
 		collection:{}
@@ -231,7 +231,7 @@ module.exports =
 			@loading=true
 			@options = []
 			@collections = {}
-			date = moment.utc(date)
+			date = moment(date)
 			intervals = @zone.schedule["" + date.locale('en').format('dddd').toLowerCase()];
 
 			intervals.forEach (element)=>
@@ -249,12 +249,12 @@ module.exports =
 					@collection["" + start.clone().format("HH:mm")] = ref
 			@getReservations()
 		getReservations: ()->
-			date = moment.utc(@date)
+			date = moment(@date)
 			@.api.get("reservations?where[zone_id]=#{@zone.id}&whereDateBetween[start]=#{date.format("YYYY-MM-DD")},#{date.clone().add(1, 'd').format("YYYY-MM-DD")}")
 			.then (resp)=>
 				@reservations = resp.data;
 				resp.data.forEach (reservation)=>
-					ref= moment.utc(reservation.start).format("HH:mm")
+					ref= moment(reservation.start).format("HH:mm")
 					@$set(@collection, 'available',@collection[ref].available-reservation.quotas)
 					if reservation.user_id == @api.user.id
 						@$set(@collection[ref], 'reserved',true)
@@ -284,14 +284,14 @@ module.exports =
 			else
 				return interval + " " + "minutos"
 		postReservations:(interval,quotas)->
-			date = moment.utc(@date)
+			date = moment(@date)
 			@loading =true
 			@api.post('reservations',
 				zone_id: @zone.id
 				user_id: @api.user.id
 				quotas: quotas
-				start: moment.utc(interval.start).format('YYYY-MM-DD HH:mm')
-				end: moment.utc(interval.end).format('YYYY-MM-DD HH:mm')
+				start: moment(interval.start).format('YYYY-MM-DD HH:mm')
+				end: moment(interval.end).format('YYYY-MM-DD HH:mm')
 			)
 			.then (data)=>
 				console.log data
@@ -321,13 +321,13 @@ module.exports =
 				sat: 6
 			day = days[dayName.toLowerCase().substr(0, 3)]
 			# Copy start date
-			current = moment.utc(start).toDate()
+			current = moment(start).toDate()
 			# Shift to next of required days
 			current.setDate current.getUTCDate() + (day - current.getUTCDate() + 7) % 7
 			# While less than end date, add dates to result array
 			while current < new Date(end)
 				aux = moment(new Date(+current))
-				result.push moment.utc([aux.year(),aux.month(),aux.date()]).toDate()
+				result.push moment([aux.year(),aux.month(),aux.date()]).toDate()
 				current.setDate current.getDate() + 7
 			result
 		alloweds: (value)->
