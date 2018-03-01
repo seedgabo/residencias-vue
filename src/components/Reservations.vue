@@ -290,8 +290,8 @@ module.exports =
 				zone_id: @zone.id
 				user_id: @api.user.id
 				quotas: quotas
-				start: moment(interval.start).format('YYYY-MM-DD HH:mm')
-				end: moment(interval.end).format('YYYY-MM-DD HH:mm')
+				start: moment(interval.start).local().format('YYYY-MM-DD HH:mm')
+				end: moment(interval.end).local().format('YYYY-MM-DD HH:mm')
 			)
 			.then (data)=>
 				console.log data
@@ -334,7 +334,7 @@ module.exports =
 			# console.log  moment(value).lang("en").format('dddd').toLowerCase(), @zone.days,  moment(value).format('dddd').toLowerCase() in @zone.days
 			return moment(value).diff(moment(),'days') < 120 && moment(value).diff(moment(),'days') >= 0 &&  moment(value).lang("en").format('dddd').toLowerCase() in @zone.days
 		myReservations:()->
-			@api.get("reservations?with[]=zone&with[]=zone.image&with[]=event&whereDategte[start]=#{moment().startOf('day').format("YYYY-MM-DD")}")
+			@api.get("reservations?with[]=zone&with[]=zone.image&with[]=event&whereDategte[start]=#{moment().startOf('day').local().format("YYYY-MM-DD")}")
 			.then (resp)=>
 				@my_reservations = resp.data
 			.catch console.error
