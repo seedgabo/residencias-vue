@@ -399,14 +399,18 @@ export default {
       }, 200);
     },
     saveNewEvent: function() {
-      this.event.start = moment.utc(
-        this.event.start_date + " " + this.event.start_time,
-        "YYYY-MM-DD HH:mma"
-      );
-      this.event.end = moment.utc(
-        this.event.end_date + " " + this.event.end_time,
-        "YYYY-MM-DD HH:mma"
-      );
+      this.event.start = moment
+        .utc(
+          this.event.start_date + " " + this.event.start_time,
+          "YYYY-MM-DD HH:mm"
+        )
+        .local();
+      this.event.end = moment
+        .utc(
+          this.event.end_date + " " + this.event.end_time,
+          "YYYY-MM-DD HH:mm"
+        )
+        .local();
       this.event.creator_id = this.api.user.id;
       this.event.residence_id = this.api.user.residence_id;
       var event = JSON.parse(JSON.stringify(this.event));
@@ -427,14 +431,18 @@ export default {
         .catch(console.error);
     },
     saveEvent: function() {
-      this.event.start = moment.utc(
-        this.event.start_date + " " + this.event.start_time,
-        "YYYY-MM-DD HH:mma"
-      );
-      this.event.end = moment.utc(
-        this.event.end_date + " " + this.event.end_time,
-        "YYYY-MM-DD HH:mma"
-      );
+      this.event.start = moment
+        .utc(
+          this.event.start_date + " " + this.event.start_time,
+          "YYYY-MM-DD HH:mma"
+        )
+        .local();
+      this.event.end = moment
+        .utc(
+          this.event.end_date + " " + this.event.end_time,
+          "YYYY-MM-DD HH:mma"
+        )
+        .local();
       this.event.creator_id = this.api.user.id;
       this.event.residence_id = this.api.user.residence_id;
       var event = JSON.parse(JSON.stringify(this.event));
